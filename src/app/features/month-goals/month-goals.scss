@@ -177,38 +177,6 @@ h2 {
   }
 }
 
-.detail-form {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 12px;
-  padding: 10px;
-  border: 2px dashed var(--soft-line);
-  border-radius: 6px;
-
-  label {
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-
-  strong {
-    color: var(--ink);
-    text-transform: uppercase;
-  }
-}
-
-.detail-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 6px;
-
-  button {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-  }
-}
-
 .bar {
   overflow: hidden;
   width: 130px;
@@ -259,23 +227,6 @@ h2 {
   font-weight: 600;
 }
 
-.goal-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-
-  input,
-  select {
-    min-width: 0;
-    flex: 1 1 200px;
-  }
-
-  .narrow {
-    flex: 0 1 140px;
-  }
-}
-
 @media (max-width: 640px) {
   .goal {
     width: 100%;
@@ -293,6 +244,54 @@ h2 {
     width: 64px;
     flex-shrink: 0;
   }
+}
+
+.goal-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 2px dashed var(--soft-line);
+  border-radius: 6px;
+
+  h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  label {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .grow {
+    flex: 1 1 220px;
+  }
+
+  .narrow {
+    flex: 0 1 150px;
+  }
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
 .help {

@@ -5,6 +5,8 @@
       <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="view.set('year')">Año</button>
     </div>
     <div class="account">
+      <button type="button" class="ghost" (click)="searchOpen.set(true)" title="Buscar ( / )">🔍 Buscar</button>
+      <button type="button" class="ghost" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
       <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
       <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user() }}</span>
       <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
@@ -61,5 +63,18 @@
     <app-theme-picker (closed)="themesOpen.set(false)" />
   }
 
+  @if (categoriesOpen()) {
+    <app-category-manager (closed)="categoriesOpen.set(false)" />
+  }
+
+  @if (searchOpen()) {
+    <app-search-panel
+      (closed)="searchOpen.set(false)"
+      (daySelected)="openDayFromSearch($event)"
+      (monthSelected)="goToMonth($event)"
+    />
+  }
+
   <app-reminder-modal />
+  <app-undo-toast />
 </main>

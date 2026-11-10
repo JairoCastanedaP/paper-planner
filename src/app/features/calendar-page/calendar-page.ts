@@ -9,19 +9,33 @@ import { DayPanel } from '../day-panel/day-panel';
 import { MonthGoals } from '../month-goals/month-goals';
 import { HighlightChange, MonthGrid } from '../month-grid/month-grid';
 import { ReminderModal } from '../reminder-modal/reminder-modal';
+import { CategoryManager } from '../category-manager/category-manager';
+import { SearchPanel } from '../search-panel/search-panel';
 import { ThemePicker } from '../theme-picker/theme-picker';
+import { UndoToast } from '../undo-toast/undo-toast';
 import { YearView } from '../year-view/year-view';
 
 type View = 'month' | 'year';
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [MonthGrid, MonthGoals, DayPanel, YearView, ThemePicker, ReminderModal],
+  imports: [
+    MonthGrid,
+    MonthGoals,
+    DayPanel,
+    YearView,
+    ThemePicker,
+    ReminderModal,
+    CategoryManager,
+    SearchPanel,
+    UndoToast,
+  ],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.scss',
   host: {
     '(document:keydown.arrowleft)': 'onArrow($event, -1)',
     '(document:keydown.arrowright)': 'onArrow($event, 1)',
+    '(document:keydown)': 'onShortcut($event)',
   },
 })
 export class CalendarPage {
@@ -36,6 +50,8 @@ export class CalendarPage {
   protected readonly month = signal(new Date().getMonth());
   protected readonly selectedDate = signal<string | null>(null);
   protected readonly themesOpen = signal(false);
+  protected readonly categoriesOpen = signal(false);
+  protected readonly searchOpen = signal(false);
 
   protected readonly monthKey = computed(() => monthKeyOf(this.year(), this.month()));
   protected readonly title = computed(() =>
@@ -75,6 +91,30 @@ export class CalendarPage {
     this.month.set(now.getMonth());
   }
 
+  /** Desde la búsqueda: ir al mes de ese día y abrir su detalle. */
+  protected openDayFromSearch(date: string): void {
+    this.searchOpen.set(false);
+    this.goToMonth(date.slice(0, 7));
+    this.selectedDate.set(date);
+  }
+
+  protected goToMonth(monthKey: string): void {
+    const [y, m] = monthKey.split('-').map(Number);
+    this.searchOpen.set(false);
+    this.year.set(y);
+    this.month.set(m - 1);
+    this.view.set('month');
+  }
+
+  /** "/" o Ctrl+K abren el buscador. */
+  protected onShortcut(e: KeyboardEvent): void {
+    if (isTyping(e)) return;
+    if (e.key === '/' || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey))) {
+      e.preventDefault();
+      this.searchOpen.set(true);
+    }
+  }
+
   protected openMonth(index: number): void {
     this.month.set(index);
     this.view.set('month');
@@ -90,9 +130,18 @@ export class CalendarPage {
   }
 
   protected onArrow(e: Event, delta: number): void {
-    const target = e.target as HTMLElement | null;
-    const typing = target?.closest('input, textarea, select, [contenteditable]');
-    const overlayOpen = this.selectedDate() || this.themesOpen() || this.reminders.due().length;
+    const typing = isTyping(e);
+    const overlayOpen =
+      this.selectedDate() ||
+      this.themesOpen() ||
+      this.categoriesOpen() ||
+      this.searchOpen() ||
+      this.reminders.due().length;
     if (!typing && !overlayOpen) this.move(delta);
   }
+}
+
+/** ¿El usuario está escribiendo en un campo? (Entonces los atajos de teclado no aplican.) */
+function isTyping(e: Event): boolean {
+  return e.target instanceof Element && !!e.target.closest('input, textarea, select, [contenteditable]');
 }

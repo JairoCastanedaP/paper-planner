@@ -4,6 +4,8 @@ export interface Category {
   name: string;
   color: string;
   icon?: string;
+  /** El usuario eligió este color: los temas no lo reemplazan. */
+  customColor?: boolean;
 }
 
 export type RecurrenceType = 'none' | 'weekly' | 'monthly' | 'yearly';

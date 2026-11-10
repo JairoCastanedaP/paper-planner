@@ -20,9 +20,11 @@ interface GoalDraft {
   target: number | null;
   categoryId: string;
   match: string;
+  detail: string;
 }
 
-const emptyDraft = (): GoalDraft => ({ title: '', target: null, categoryId: '', match: '' });
+/** Qué hace el editor: crear un objetivo nuevo o editar uno existente. */
+type Editor = { mode: 'new' } | { mode: 'edit'; id: string };
 
 /** La franja de "NOTAS" del calendario: objetivos, contadores y total de pagos. */
 @Component({
@@ -37,6 +39,7 @@ export class MonthGoals {
 
   protected readonly store = inject(PlannerStore);
   private readonly injector = inject(Injector);
+  private readonly titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
   private readonly detailInput = viewChild<ElementRef<HTMLTextAreaElement>>('detailInput');
 
   protected readonly goals = computed(() =>
@@ -67,13 +70,12 @@ export class MonthGoals {
     return [...sums].map(([cur, total]) => `${total.toLocaleString('es-CO')} ${cur}`);
   });
 
-  protected readonly adding = signal(false);
-
-  /** Objetivo cuyo detalle se está editando. */
-  protected readonly editingId = signal<string | null>(null);
-  protected readonly editingGoal = computed(() => this.goals().find((g) => g.id === this.editingId()) ?? null);
-  protected detailDraft = '';
-  protected draft: GoalDraft = emptyDraft();
+  protected readonly editor = signal<Editor | null>(null);
+  protected readonly editingGoal = computed(() => {
+    const e = this.editor();
+    return e?.mode === 'edit' ? (this.goals().find((g) => g.id === e.id) ?? null) : null;
+  });
+  protected draft: GoalDraft = toDraft();
 
   protected progress(goal: MonthGoal): number {
     return goalProgress(goal, this.occurrences());
@@ -87,54 +89,69 @@ export class MonthGoals {
     return goal.categoryId ? (this.store.categoryMap().get(goal.categoryId)?.color ?? null) : null;
   }
 
+  protected isEditing(goal: MonthGoal): boolean {
+    const e = this.editor();
+    return e?.mode === 'edit' && e.id === goal.id;
+  }
+
   protected toggleDone(goal: MonthGoal): void {
     this.store.saveGoal({ ...goal, done: !goal.done });
   }
 
-  protected openDetail(goal: MonthGoal): void {
-    if (this.editingId() === goal.id) {
-      this.editingId.set(null);
+  /** Clic en el nombre: abre el editor (o lo cierra si ya estaba abierto). */
+  protected openEditor(goal: MonthGoal): void {
+    if (this.isEditing(goal)) {
+      this.editor.set(null);
       return;
     }
-    this.detailDraft = goal.detail ?? '';
-    this.adding.set(false);
-    this.editingId.set(goal.id);
-    // El editor aparece en el siguiente render; ahí se enfoca para escribir de una vez.
+    this.draft = toDraft(goal);
+    this.editor.set({ mode: 'edit', id: goal.id });
+    // Se enfoca el detalle: es lo que más se agrega después de crear el objetivo.
     afterNextRender(() => this.detailInput()?.nativeElement.focus(), { injector: this.injector });
   }
 
-  protected saveDetail(goal: MonthGoal): void {
-    this.store.saveGoal({ ...goal, detail: this.detailDraft.trim() || undefined });
-    this.editingId.set(null);
+  protected startAdding(): void {
+    this.draft = toDraft();
+    this.editor.set({ mode: 'new' });
+    afterNextRender(() => this.titleInput()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  protected save(): void {
+    const d = this.draft;
+    const title = d.title.trim();
+    if (!title) return;
+    const target = d.target && d.target > 0 ? Number(d.target) : undefined;
+    const editing = this.editingGoal();
+    this.store.saveGoal({
+      id: editing?.id ?? newId(),
+      month: editing?.month ?? this.month(),
+      title,
+      target,
+      categoryId: target ? d.categoryId || undefined : undefined,
+      match: target ? d.match.trim() || undefined : undefined,
+      detail: d.detail.trim() || undefined,
+      done: editing?.done ?? false,
+    });
+    this.editor.set(null);
   }
 
   protected remove(goal: MonthGoal): void {
-    if (confirm(`¿Eliminar el objetivo "${goal.title}"?`)) this.store.deleteGoal(goal.id);
+    // Sin confirmación: el aviso inferior permite deshacer.
+    if (this.isEditing(goal)) this.editor.set(null);
+    this.store.deleteGoal(goal.id);
   }
 
   protected copyPrevious(): void {
     this.store.copyGoals(this.previousMonth(), this.month());
   }
+}
 
-  protected startAdding(): void {
-    this.editingId.set(null);
-    this.draft = emptyDraft();
-    this.adding.set(true);
-  }
-
-  protected saveDraft(): void {
-    const title = this.draft.title.trim();
-    if (!title) return;
-    const target = this.draft.target && this.draft.target > 0 ? this.draft.target : undefined;
-    this.store.saveGoal({
-      id: newId(),
-      month: this.month(),
-      title,
-      target,
-      categoryId: target ? this.draft.categoryId || undefined : undefined,
-      match: target ? this.draft.match.trim() || undefined : undefined,
-      done: false,
-    });
-    this.adding.set(false);
-  }
+function toDraft(goal?: MonthGoal): GoalDraft {
+  return {
+    title: goal?.title ?? '',
+    target: goal?.target ?? null,
+    categoryId: goal?.categoryId ?? '',
+    match: goal?.match ?? '',
+    detail: goal?.detail ?? '',
+  };
 }
