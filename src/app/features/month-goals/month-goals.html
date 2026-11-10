@@ -10,7 +10,7 @@
 
   <ul class="goals">
     @for (goal of goals(); track goal.id) {
-      <li class="goal" [class.done]="goal.done" [class.editing]="editingId() === goal.id">
+      <li class="goal" [class.done]="goal.done" [class.editing]="isEditing(goal)">
         <input
           type="checkbox"
           class="box"
@@ -22,16 +22,16 @@
           <button
             type="button"
             class="goal-title"
-            (click)="openDetail(goal)"
+            (click)="openEditor(goal)"
             [attr.aria-describedby]="goal.detail ? 'goal-tip-' + goal.id : null"
-            [attr.aria-label]="goal.title + (goal.detail ? ' (tiene detalle; clic para editarlo)' : ' (clic para agregar detalle)')"
+            [attr.aria-label]="goal.title + ' (clic para editar)'"
           >
             {{ goal.title }}
             @if (goal.detail) {
               <span class="has-detail" aria-hidden="true">✎</span>
             }
           </button>
-          @if (goal.detail && editingId() !== goal.id) {
+          @if (goal.detail && !isEditing(goal)) {
             <span class="tip" role="tooltip" [id]="'goal-tip-' + goal.id">{{ goal.detail }}</span>
           }
         </span>
@@ -49,45 +49,55 @@
     }
   </ul>
 
-  @if (editingGoal(); as goal) {
-    <form class="detail-form" (ngSubmit)="saveDetail(goal)">
-      <label for="goal-detail">Detalle de <strong>{{ goal.title }}</strong></label>
-      <textarea
-        #detailInput
-        id="goal-detail"
-        name="detail"
-        rows="3"
-        [(ngModel)]="detailDraft"
-        placeholder="Pasos, entregables, enlaces… lo que no cabe en el título."
-      ></textarea>
-      <div class="detail-actions">
-        @if (goal.detail) {
-          <button type="button" class="danger" (click)="detailDraft = ''; saveDetail(goal)">Quitar detalle</button>
-        }
-        <button type="button" (click)="editingId.set(null)">Cancelar</button>
-        <button type="submit" class="primary">Guardar</button>
-      </div>
-    </form>
-  }
+  @if (editor(); as e) {
+    <form class="goal-editor" (ngSubmit)="save()" #form="ngForm">
+      <h3>{{ e.mode === 'new' ? 'Nuevo objetivo' : 'Editar objetivo' }}</h3>
 
-  @if (adding()) {
-    <form class="goal-form" (ngSubmit)="saveDraft()">
-      <input name="title" [(ngModel)]="draft.title" placeholder="Objetivo (p. ej. Leer dos libros)" required autofocus />
-      <input name="target" type="number" min="1" [(ngModel)]="draft.target" placeholder="Meta (opcional)" class="narrow" />
+      <div class="row">
+        <label class="grow">
+          Objetivo
+          <input #titleInput name="title" [(ngModel)]="draft.title" placeholder="p. ej. Leer dos libros" required />
+        </label>
+        <label class="narrow">
+          Meta (opcional)
+          <input name="target" type="number" min="1" [(ngModel)]="draft.target" placeholder="p. ej. 25" />
+        </label>
+      </div>
+
       @if (draft.target) {
-        <select name="categoryId" [(ngModel)]="draft.categoryId">
-          <option value="">Cualquier categoría</option>
-          @for (c of store.categories(); track c.id) {
-            <option [value]="c.id">{{ c.name }}</option>
-          }
-        </select>
-        <input name="match" [(ngModel)]="draft.match" placeholder="Título contiene… (opcional)" />
-      }
-      <button type="submit" class="primary">Agregar</button>
-      <button type="button" (click)="adding.set(false)">Cancelar</button>
-      @if (draft.target) {
+        <div class="row">
+          <label class="grow">
+            Cuenta actividades de
+            <select name="categoryId" [(ngModel)]="draft.categoryId">
+              <option value="">Cualquier categoría</option>
+              @for (c of store.categories(); track c.id) {
+                <option [value]="c.id">{{ c.name }}</option>
+              }
+            </select>
+          </label>
+          <label class="grow">
+            Cuyo título contenga (opcional)
+            <input name="match" [(ngModel)]="draft.match" placeholder="p. ej. IA" />
+          </label>
+        </div>
         <p class="help">El contador suma las actividades del mes que resaltes con el marcador y coincidan con la categoría y el texto.</p>
       }
+
+      <label>
+        Detalle (opcional)
+        <textarea
+          #detailInput
+          name="detail"
+          rows="3"
+          [(ngModel)]="draft.detail"
+          placeholder="Pasos, entregables, enlaces… se ve al pasar el cursor por el objetivo."
+        ></textarea>
+      </label>
+
+      <div class="editor-actions">
+        <button type="button" (click)="editor.set(null)">Cancelar</button>
+        <button type="submit" class="primary" [disabled]="form.invalid">{{ e.mode === 'new' ? 'Agregar' : 'Guardar' }}</button>
+      </div>
     </form>
   } @else {
     <div class="actions">

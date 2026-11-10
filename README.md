@@ -18,7 +18,13 @@ el lápiz de la tablet o el mouse.
 - **Notas del mes**: objetivos con casilla y **contadores automáticos**
   (p. ej. "Clases con IA 8/25" cuenta las actividades resaltadas que coinciden).
   Cada objetivo tiene su casilla: al marcarlo queda pintado con **resaltador verde**.
-  Un clic en el nombre permite escribir un **detalle**, que aparece como nota al pasar el cursor.
+  Un clic en el nombre abre el **editor del objetivo** (nombre, meta, qué cuenta y detalle);
+  el detalle aparece como nota al pasar el cursor.
+- **Categorías propias**: crear, renombrar, cambiar color o icono y eliminar (sus actividades pasan a otra
+  categoría). Un color elegido a mano se mantiene aunque cambies de tema.
+- **Deshacer**: al eliminar una actividad, un objetivo o una categoría aparece el aviso "Deshacer" durante 8 segundos.
+- **Buscar** (botón 🔍, tecla `/` o `Ctrl+K`): actividades, notas, categorías y objetivos, un año hacia atrás y
+  hacia adelante, con la última vez y la próxima vez de lo buscado.
 - **Compromisos económicos**: total del mes por moneda (USD / COP).
 - **PWA**: se instala en celular, tablet y computador, y funciona sin conexión.
 - **Vista anual**: los 12 meses con mini calendario (festivos, puntos por categoría, ⭐ importantes)
@@ -86,6 +92,9 @@ src/app/
     ├── calendar-page/    # pantalla principal: vista mes / año
     ├── year-view/        # los 12 meses del año
     ├── theme-picker/     # selector de colores
+    ├── category-manager/ # crear y editar categorías
+    ├── search-panel/     # buscador
+    ├── undo-toast/       # aviso "Deshacer"
     ├── reminder-modal/   # ventana de recordatorio
     ├── month-grid/       # la cuadrícula del mes
     ├── event-chip/       # una actividad + gesto de marcador

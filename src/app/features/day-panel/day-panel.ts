@@ -43,7 +43,8 @@ export class DayPanel {
 
   protected askDelete(o: Occurrence): void {
     if (o.event.recurrence.type === 'none') {
-      if (confirm(`¿Eliminar "${o.event.title}"?`)) this.store.deleteEvent(o.event.id);
+      // Sin confirmación: el aviso inferior permite deshacer.
+      this.store.deleteEvent(o.event.id);
     } else {
       this.confirmingDelete.set(o.key);
     }

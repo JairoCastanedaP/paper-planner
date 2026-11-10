@@ -1,0 +1,86 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<section class="dialog" role="dialog" aria-modal="true" aria-label="Buscar">
+  <div class="search-box">
+    <span aria-hidden="true">🔍</span>
+    <input
+      #queryInput
+      type="search"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+      placeholder="Buscar actividades, notas u objetivos…"
+      aria-label="Buscar"
+    />
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+  </div>
+
+  @if (!active()) {
+    <p class="hint">Escribe al menos 2 letras. Busca en títulos, notas, categorías y objetivos, un año hacia atrás y hacia adelante.</p>
+  } @else if (empty()) {
+    <p class="hint">No hay resultados para "{{ query() }}".</p>
+  } @else {
+    @if (past().length || upcoming().length) {
+      <div class="summary">
+        @if (past()[0]; as last) {
+          <button type="button" (click)="openDay(last.date)">
+            <small>Última vez</small>
+            <strong>{{ when(last) }}</strong>
+          </button>
+        }
+        @if (upcoming()[0]; as next) {
+          <button type="button" (click)="openDay(next.date)">
+            <small>Próxima</small>
+            <strong>{{ when(next) }}</strong>
+          </button>
+        }
+      </div>
+    }
+
+    @if (upcoming().length) {
+      <h3>Próximas</h3>
+      <ul class="results">
+        @for (o of upcoming(); track o.key) {
+          <li>
+            <button type="button" [style.--cat]="color(o)" (click)="openDay(o.date)">
+              <span class="title">{{ icon(o) }} {{ o.event.title }}</span>
+              <span class="date">{{ when(o) }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (past().length) {
+      <h3>Pasadas</h3>
+      <ul class="results">
+        @for (o of past(); track o.key) {
+          <li>
+            <button type="button" [style.--cat]="color(o)" [class.done]="o.highlighted" (click)="openDay(o.date)">
+              <span class="title">{{ icon(o) }} {{ o.event.title }}</span>
+              <span class="date">
+                {{ when(o) }}
+                @if (o.highlighted) {
+                  · <span class="check">✓ resaltada</span>
+                }
+              </span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (goals().length) {
+      <h3>Objetivos</h3>
+      <ul class="results">
+        @for (r of goals(); track r.goal.id) {
+          <li>
+            <button type="button" (click)="monthSelected.emit(r.goal.month)">
+              <span class="title">{{ r.goal.done ? '✅' : '🎯' }} {{ r.goal.title }}</span>
+              <span class="date">{{ r.monthLabel }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

@@ -1,0 +1,153 @@
+.backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  background: rgb(0 0 0 / 40%);
+}
+
+.dialog {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  overflow-y: auto;
+  width: min(540px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 18px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  transform: translate(-50%, -50%);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h2 {
+  margin: 0;
+  color: var(--red);
+  font-family: var(--display);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+
+.close {
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.hint {
+  margin: 4px 0 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 8px;
+    border-left: 6px solid var(--cat);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--cat) 14%, var(--card));
+  }
+}
+
+.fields {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color {
+  width: 42px;
+  height: 38px;
+  flex-shrink: 0;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.icon {
+  width: 52px;
+  flex-shrink: 0;
+  text-align: center;
+
+  &::placeholder {
+    font-size: 0.72rem;
+  }
+}
+
+.name {
+  min-width: 0;
+  flex: 1;
+}
+
+.delete {
+  flex-shrink: 0;
+  padding: 6px 10px;
+}
+
+.link {
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--red);
+  font-size: 0.8rem;
+
+  &:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline;
+  }
+}
+
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.88rem;
+
+  > span:first-child {
+    flex-basis: 100%;
+  }
+
+  select {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 6px;
+
+  button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+.new {
+  padding-top: 12px;
+  border-top: 1px dashed var(--soft-line);
+}

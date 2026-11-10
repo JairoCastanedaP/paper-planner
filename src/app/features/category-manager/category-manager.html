@@ -1,0 +1,80 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<section class="dialog" role="dialog" aria-modal="true" aria-labelledby="categories-title">
+  <header>
+    <h2 id="categories-title">Categorías</h2>
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+  </header>
+
+  <p class="hint">Los cambios se guardan solos. El color que elijas se mantiene aunque cambies de tema.</p>
+
+  <ul class="list">
+    @for (row of rows(); track row.category.id) {
+      <li [style.--cat]="row.category.color">
+        <div class="fields">
+          <input
+            type="color"
+            class="color"
+            [value]="row.category.color"
+            (input)="setColor(row.raw, $any($event.target).value)"
+            [attr.aria-label]="'Color de ' + row.category.name"
+          />
+          <input
+            class="icon"
+            [value]="row.raw.icon ?? ''"
+            (change)="setIcon(row.raw, $any($event.target).value)"
+            placeholder="ícono"
+            maxlength="4"
+            [attr.aria-label]="'Icono de ' + row.category.name"
+          />
+          <input
+            class="name"
+            [value]="row.raw.name"
+            (change)="rename(row.raw, $any($event.target).value)"
+            [attr.aria-label]="'Nombre de ' + row.category.name"
+          />
+          <button
+            type="button"
+            class="delete"
+            (click)="askDelete(row.category)"
+            [disabled]="rows().length === 1"
+            [attr.aria-label]="'Eliminar ' + row.category.name"
+          >🗑</button>
+        </div>
+
+        @if (row.raw.customColor && row.themeHasColor) {
+          <button type="button" class="link" (click)="useThemeColor(row.raw)">Usar el color del tema</button>
+        }
+
+        @if (pending(); as p) {
+          @if (p.id === row.category.id) {
+            <div class="confirm" role="alert">
+              <span>"{{ row.category.name }}" tiene {{ usageText(p) }}. ¿A qué categoría pasan?</span>
+              <select [(ngModel)]="p.moveTo" name="moveTo" aria-label="Mover a la categoría">
+                @for (other of rows(); track other.category.id) {
+                  @if (other.category.id !== p.id) {
+                    <option [value]="other.category.id">{{ other.category.icon ?? '' }} {{ other.category.name }}</option>
+                  }
+                }
+              </select>
+              <span class="confirm-actions">
+                <button type="button" (click)="pending.set(null)">Cancelar</button>
+                <button type="button" class="primary" (click)="confirmDelete()">Mover y eliminar</button>
+              </span>
+            </div>
+          }
+        }
+      </li>
+    }
+  </ul>
+
+  <form class="new" (ngSubmit)="add()">
+    <h3>Nueva categoría</h3>
+    <div class="fields">
+      <input type="color" class="color" name="newColor" [(ngModel)]="newColor" aria-label="Color de la nueva categoría" />
+      <input class="icon" name="newIcon" [(ngModel)]="newIcon" placeholder="ícono" maxlength="4" aria-label="Icono de la nueva categoría" />
+      <input class="name" name="newName" [(ngModel)]="newName" placeholder="p. ej. Salud" aria-label="Nombre de la nueva categoría" required />
+      <button type="submit" class="primary" [disabled]="!newName.trim()">Agregar</button>
+    </div>
+  </form>
+</section>
