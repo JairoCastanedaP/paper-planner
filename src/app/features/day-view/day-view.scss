@@ -1,0 +1,129 @@
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+
+  &.with-image {
+    min-height: 200px;
+    background:
+      linear-gradient(transparent 30%, color-mix(in srgb, var(--paper) 90%, transparent)),
+      var(--bg) center / cover;
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--soft-line);
+  border-radius: 999px;
+  background: var(--card);
+  font-weight: 600;
+
+  &.holiday {
+    border-color: transparent;
+    background: var(--sunday);
+    color: var(--red);
+  }
+
+  &.today-badge {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .emoji {
+    font-size: 1.6rem;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.agenda,
+.detail {
+  padding: 12px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+}
+
+h3 {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.all-day,
+.hours li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.all-day {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line);
+}
+
+.hours {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    min-height: 38px;
+    padding: 4px 0;
+    border-top: 1px solid var(--soft-line);
+
+    &.now {
+      border-top: 2px solid var(--red);
+
+      .hour-label {
+        color: var(--red);
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.hour-label {
+  padding-top: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,111 @@
+@switch (mode().kind) {
+  @case ('list') {
+    @if (occurrences().length === 0) {
+      <p class="empty">No hay actividades este día.</p>
+    }
+
+    <ul class="list">
+      @for (o of occurrences(); track o.key) {
+        <li>
+          <app-event-chip [occurrence]="o" size="large" (highlightChange)="setHighlight(o, $event)" />
+          @if (describe(o.event); as repeat) {
+            <p class="meta">↻ {{ repeat }}</p>
+          }
+          @if (o.event.notes) {
+            <p class="notes">{{ o.event.notes }}</p>
+          }
+
+          @if (confirmingDelete() === o.key) {
+            <div class="confirm">
+              <span>Esta actividad se repite. ¿Qué quieres eliminar?</span>
+              <button type="button" (click)="deleteOne(o)">Solo este día</button>
+              <button type="button" class="danger" (click)="deleteSeries(o)">Toda la serie</button>
+              <button type="button" (click)="confirmingDelete.set(null)">Cancelar</button>
+            </div>
+          } @else {
+            <div class="actions">
+              <button type="button" (click)="setHighlight(o, !o.highlighted)">
+                {{ o.highlighted ? 'Quitar resaltado' : '🖍 Resaltar' }}
+              </button>
+              <button type="button" (click)="mode.set({ kind: 'edit', event: o.event })">Editar</button>
+              <button type="button" class="danger" (click)="askDelete(o)">Eliminar</button>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+
+    <button type="button" class="primary add" (click)="mode.set({ kind: 'new' })">+ Agregar actividad</button>
+
+    <details class="customize">
+      <summary>🎨 Personalizar este día</summary>
+
+      <section>
+        <h4>Imagen de fondo</h4>
+        @if (image(); as img) {
+          <img class="preview" [src]="img" alt="Imagen de fondo del día" />
+        }
+        <div class="row">
+          <label class="file-button">
+            {{ loadingImage() ? 'Procesando…' : image() ? 'Cambiar imagen' : 'Elegir imagen' }}
+            <input type="file" accept="image/*" (change)="onImageSelected($event)" [disabled]="loadingImage()" />
+          </label>
+          @if (image()) {
+            <button type="button" class="danger" (click)="removeImage()">Quitar</button>
+          }
+        </div>
+        @if (imageError()) {
+          <p class="error" role="alert">{{ imageError() }}</p>
+        }
+        <p class="help">La imagen se reduce para ocupar poco espacio y se ve en el mes y en la vista del día.</p>
+      </section>
+
+      <section>
+        <h4>Día especial</h4>
+        @for (d of specialDays(); track d.id) {
+          <div class="special">
+            <span class="emoji">{{ d.emoji }}</span>
+            <span class="name">{{ d.name }}</span>
+            @if (d.yearly) {
+              <small>cada año</small>
+            }
+            <button type="button" class="icon-btn" (click)="removeSpecialDay(d.id)" [attr.aria-label]="'Quitar ' + d.name">×</button>
+          </div>
+        }
+        <form class="special-form" (ngSubmit)="addSpecialDay()">
+          <div class="emojis" role="radiogroup" aria-label="Emoji">
+            @for (e of emojiSuggestions; track e) {
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="special.emoji === e"
+                [class.on]="special.emoji === e"
+                (click)="special.emoji = e"
+              >{{ e }}</button>
+            }
+            <input name="emoji" [(ngModel)]="special.emoji" maxlength="4" class="emoji-input" aria-label="Otro emoji" />
+          </div>
+          <div class="row">
+            <input name="specialName" [(ngModel)]="special.name" placeholder="p. ej. Aniversario" class="grow" aria-label="Nombre del día especial" />
+            <label class="check">
+              <input type="checkbox" name="yearly" [(ngModel)]="special.yearly" />
+              Cada año
+            </label>
+            <button type="submit" [disabled]="!special.name.trim()">Agregar</button>
+          </div>
+        </form>
+      </section>
+    </details>
+  }
+  @case ('new') {
+    <app-event-form [date]="date()" (saved)="save($event)" (cancelled)="mode.set({ kind: 'list' })" />
+  }
+  @case ('edit') {
+    @if (mode(); as m) {
+      @if (m.kind === 'edit') {
+        <p class="meta">Los cambios aplican a todas las repeticiones.</p>
+        <app-event-form [event]="m.event" [date]="date()" (saved)="save($event)" (cancelled)="mode.set({ kind: 'list' })" />
+      }
+    }
+  }
+}

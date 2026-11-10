@@ -7,6 +7,14 @@ el lápiz de la tablet o el mouse.
 ## Funcionalidades
 
 - **Vista mensual** de domingo a sábado, con el día de hoy marcado.
+  Al bajar, el encabezado (mes, búsqueda, vistas y filtro) y la fila de días quedan fijos arriba.
+- **Vista del día**: agenda por horas, actividades de todo el día y el detalle completo; se navega día a día.
+- **Imagen de fondo por día**: se reduce automáticamente (~50–150 KB) y se ve en el mes, el panel y la vista del día.
+- **Días conmemorativos**: 🎃 Halloween, 🕯️ Día de las Velitas, 🎄 Nochebuena, 💐 Día de la Madre, entre otros,
+  más **días especiales propios** con su emoji (una vez o cada año).
+- **Filtro por categoría**: ver solo ciertas categorías en el mes, el año o el día, con el conteo de actividades
+  y cuántas se resaltaron.
+- **Guía de bienvenida**: un recorrido la primera vez que entra cada usuario (se puede omitir y repetir con ❔ Guía).
 - **Festivos de Colombia** calculados para cualquier año (Ley Emiliani y fechas según la Pascua):
   el día se pinta como domingo y muestra el motivo (p. ej. "Independencia de Cartagena").
 - **Categorías con color**: Académico (naranja), Inglés (verde), Económico (rosado),
@@ -80,9 +88,12 @@ npm run preview:pwa  # http://localhost:8080
 src/app/
 ├── core/                 # modelo, fechas, repeticiones, estado y almacenamiento
 │   ├── auth.ts           # sesión temporal y guards de rutas
+│   ├── commemorations.ts # fechas conmemorativas
+│   ├── images.ts         # compresión de imágenes de fondo
 │   ├── models.ts
 │   ├── reminders.ts      # recordatorios de actividades muy importantes
 │   ├── themes.ts         # temas de color
+│   ├── tour.ts           # pasos de la guía
 │   ├── planner-store.ts  # estado único con signals; se guarda solo
 │   ├── planner-storage.ts# localStorage hoy, Firebase después
 │   ├── recurrence.ts
@@ -91,6 +102,10 @@ src/app/
     ├── auth/             # login y registro
     ├── calendar-page/    # pantalla principal: vista mes / año
     ├── year-view/        # los 12 meses del año
+    ├── day-view/         # agenda de un día
+    ├── day-detail/       # actividades y personalización de un día
+    ├── filter-bar/       # filtro por categoría
+    ├── tour-overlay/     # guía de bienvenida
     ├── theme-picker/     # selector de colores
     ├── category-manager/ # crear y editar categorías
     ├── search-panel/     # buscador

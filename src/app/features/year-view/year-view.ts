@@ -42,6 +42,8 @@ const MAX_NOTES = 5;
 export class YearView {
   readonly year = input.required<number>();
   readonly today = input.required<string>();
+  /** Filtro de categorías activo (vacío = todas). */
+  readonly filter = input<string[]>([]);
   readonly monthOpened = output<number>();
   readonly daySelected = output<string>();
 
@@ -55,13 +57,19 @@ export class YearView {
   private summarize(year: number, index: number, name: string): MonthSummary {
     const key = monthKeyOf(year, index);
     const colors = this.store.categoryMap();
+    const filter = this.filter();
+    const visible = (o: Occurrence) => !filter.length || filter.includes(o.event.categoryId);
+    /** Sin filtrar: los objetivos cuentan sus propias actividades. */
     const monthOccurrences: Occurrence[] = [];
+    const shown: Occurrence[] = [];
 
     const weeks = monthGrid(year, index).map((week) =>
       week.map((date): MiniDay => {
         const inMonth = date.startsWith(key);
-        const occurrences = inMonth ? this.store.occurrencesOn(date) : [];
-        monthOccurrences.push(...occurrences);
+        const all = inMonth ? this.store.occurrencesOn(date) : [];
+        monthOccurrences.push(...all);
+        const occurrences = all.filter(visible);
+        shown.push(...occurrences);
         const dots = [...new Set(occurrences.map((o) => colors.get(o.event.categoryId)?.color ?? '#bbb'))];
         return {
           date,
@@ -76,6 +84,11 @@ export class YearView {
 
     const notes: Note[] = [];
 
+    if (filter.length) {
+      const done = shown.filter((o) => o.highlighted).length;
+      notes.push({ icon: '🔎', text: `${shown.length} actividades · ${done} resaltadas` });
+    }
+
     for (const goal of this.store.goals().filter((g) => g.month === key)) {
       const count = goal.target ? ` ${goalProgress(goal, monthOccurrences)}/${goal.target}` : '';
       notes.push({
@@ -87,15 +100,15 @@ export class YearView {
     }
 
     const day = (o: Occurrence) => Number(o.date.slice(8));
-    for (const o of monthOccurrences.filter((o) => o.event.important)) {
+    for (const o of shown.filter((o) => o.event.important)) {
       notes.push({ icon: '⭐', text: `${day(o)} · ${o.event.title}`, color: colors.get(o.event.categoryId)?.color });
     }
-    for (const o of monthOccurrences.filter((o) => o.event.categoryId === 'birthday')) {
+    for (const o of shown.filter((o) => o.event.categoryId === 'birthday')) {
       notes.push({ icon: '👑', text: `${day(o)} · ${o.event.title}` });
     }
 
     const totals = new Map<string, number>();
-    for (const o of monthOccurrences) {
+    for (const o of shown) {
       if (!o.event.amount) continue;
       const cur = o.event.currency ?? 'USD';
       totals.set(cur, (totals.get(cur) ?? 0) + o.event.amount);

@@ -72,4 +72,18 @@ export interface PlannerData {
   /** Claves de ocurrencias resaltadas con el marcador. */
   highlights: Record<string, true>;
   goals: MonthGoal[];
+  /** Imagen de fondo por día ('YYYY-MM-DD' → data URL comprimida). */
+  dayImages?: Record<string, string>;
+  /** Días especiales creados por el usuario. */
+  specialDays?: SpecialDay[];
+}
+
+/** Día conmemorativo propio (p. ej. un aniversario), con su emoji. */
+export interface SpecialDay {
+  id: string;
+  date: string;
+  emoji: string;
+  name: string;
+  /** Se repite cada año en la misma fecha. */
+  yearly: boolean;
 }

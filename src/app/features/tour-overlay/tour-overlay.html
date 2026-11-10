@@ -1,0 +1,36 @@
+@if (tour.step(); as step) {
+  @if (box(); as b) {
+    <div
+      class="spotlight"
+      [style.top.px]="b.top"
+      [style.left.px]="b.left"
+      [style.width.px]="b.width"
+      [style.height.px]="b.height"
+    ></div>
+  } @else {
+    <div class="dim"></div>
+  }
+
+  <section
+    class="card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tour-title"
+    aria-describedby="tour-text"
+    [style]="cardStyle()"
+  >
+    <p class="count">{{ (tour.index() ?? 0) + 1 }} de {{ tour.steps.length }}</p>
+    <h2 id="tour-title">{{ step.title }}</h2>
+    <p id="tour-text">{{ step.text }}</p>
+    <div class="buttons">
+      @if (!isLast()) {
+        <button type="button" class="skip" (click)="tour.finish()">Omitir guía</button>
+      }
+      <span class="spacer"></span>
+      @if (tour.index()) {
+        <button type="button" (click)="tour.previous()">Anterior</button>
+      }
+      <button type="button" class="primary" (click)="tour.next()">{{ isLast() ? 'Terminar' : 'Siguiente' }}</button>
+    </div>
+  </section>
+}

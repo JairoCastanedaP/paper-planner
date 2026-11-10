@@ -7,7 +7,8 @@ import { PlannerData } from './models';
  */
 export abstract class PlannerStorage {
   abstract load(): PlannerData | null;
-  abstract save(data: PlannerData): void;
+  /** Devuelve false si no se pudo guardar (p. ej. almacenamiento lleno). */
+  abstract save(data: PlannerData): boolean;
 }
 
 @Injectable()
@@ -25,11 +26,14 @@ export class LocalPlannerStorage extends PlannerStorage {
     }
   }
 
-  save(data: PlannerData): void {
+  save(data: PlannerData): boolean {
     try {
       localStorage.setItem(this.key, JSON.stringify(data));
+      return true;
     } catch {
       // Almacenamiento bloqueado o lleno: la app sigue funcionando en memoria.
+      return false;
     }
   }
+
 }
