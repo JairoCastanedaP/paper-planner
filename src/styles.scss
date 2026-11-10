@@ -1,0 +1,93 @@
+:root {
+  --paper: #fbf8f1;
+  --card: #fffdf8;
+  --ink: #1d1b19;
+  --muted: #6b645b;
+  --line: #2a2622;
+  --soft-line: #d9d2c5;
+  --red: #c8102e;
+  --sunday: #f8e4e7;
+  --out: #f1ede4;
+  --hover: #fff6d6;
+  --english: #8ce563;
+
+  --hand: 'Patrick Hand', 'Comic Sans MS', cursive;
+  --display: 'Oswald', 'Arial Narrow', sans-serif;
+  --ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ui);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  padding: 8px 14px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--hover);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &.primary {
+    border-color: var(--red);
+    background: var(--red);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #a50d26;
+    }
+  }
+
+  &.danger {
+    border-color: var(--red);
+    color: var(--red);
+  }
+}
+
+input,
+select,
+textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--soft-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+
+  &:focus {
+    border-color: var(--line);
+    outline: 2px solid color-mix(in srgb, var(--red) 35%, transparent);
+  }
+}
+
+textarea {
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  resize: vertical;
+}

@@ -1,0 +1,85 @@
+<form (ngSubmit)="submit()" #form="ngForm">
+  <h3>{{ isEdit() ? 'Editar actividad' : 'Nueva actividad' }}</h3>
+
+  <label>
+    Título
+    <input name="title" [(ngModel)]="draft.title" required autofocus placeholder="p. ej. Reunión de equipo" />
+  </label>
+
+  <fieldset class="categories">
+    <legend>Categoría</legend>
+    @for (c of store.categories(); track c.id) {
+      <label class="cat" [style.--cat]="c.color" [class.selected]="draft.categoryId === c.id">
+        <input type="radio" name="categoryId" [value]="c.id" [(ngModel)]="draft.categoryId" (ngModelChange)="onCategoryChange()" />
+        {{ c.icon ?? '' }} {{ c.name }}
+      </label>
+    }
+  </fieldset>
+
+  <div class="row">
+    <label>
+      {{ draft.recurrence === 'none' ? 'Fecha' : 'Desde' }}
+      <input type="date" name="date" [(ngModel)]="draft.date" required />
+    </label>
+    <label>
+      Hora (opcional)
+      <input type="time" name="time" [(ngModel)]="draft.time" />
+    </label>
+  </div>
+
+  <div class="row">
+    <label>
+      Se repite
+      <select name="recurrence" [(ngModel)]="draft.recurrence">
+        <option value="none">No se repite</option>
+        <option value="weekly">Cada semana</option>
+        <option value="monthly">Cada mes</option>
+        <option value="yearly">Cada año</option>
+      </select>
+    </label>
+    @if (draft.recurrence !== 'none') {
+      <label>
+        Hasta (opcional)
+        <input type="date" name="until" [(ngModel)]="draft.until" [min]="draft.date" />
+      </label>
+    }
+  </div>
+
+  @if (draft.recurrence === 'weekly') {
+    <div class="weekdays" role="group" aria-label="Días de la semana">
+      @for (initial of initials; track $index) {
+        <button
+          type="button"
+          [class.on]="draft.weekdays[$index]"
+          [attr.aria-pressed]="draft.weekdays[$index]"
+          [attr.aria-label]="weekdayNames[$index]"
+          (click)="toggleWeekday($index)"
+        >{{ initial }}</button>
+      }
+    </div>
+  }
+
+  <div class="row">
+    <label>
+      Valor (opcional)
+      <input type="number" name="amount" min="0" step="any" [(ngModel)]="draft.amount" placeholder="0" />
+    </label>
+    <label>
+      Moneda
+      <select name="currency" [(ngModel)]="draft.currency">
+        <option value="USD">USD</option>
+        <option value="COP">COP</option>
+      </select>
+    </label>
+  </div>
+
+  <label>
+    Notas
+    <textarea name="notes" rows="4" [(ngModel)]="draft.notes" placeholder="Todo lo que no cabía en la hoja…"></textarea>
+  </label>
+
+  <div class="buttons">
+    <button type="button" (click)="cancelled.emit()">Cancelar</button>
+    <button type="submit" class="primary" [disabled]="form.invalid">Guardar</button>
+  </div>
+</form>
