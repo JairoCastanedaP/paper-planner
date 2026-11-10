@@ -265,7 +265,8 @@ export class CalendarPage {
 
   protected logout(): void {
     this.auth.logout();
-    this.router.navigate(['/login']);
+    // Al cerrar sesión se vuelve a la pantalla de bienvenida.
+    this.router.navigate(['/']);
   }
 
   /** "/" o Ctrl+K abren el buscador. */

@@ -41,6 +41,8 @@ el lápiz de la tablet o el mouse.
   3 h o 1 día antes. Se puede posponer 10 minutos o marcar como visto.
 - **Temas de color**: Estándar (los colores del calendario de papel), Pastel, Océano, Bosque y Nocturno.
   El tema se guarda en cada dispositivo.
+- **Pantalla de bienvenida** (`/`): presenta la app y lleva a iniciar sesión o crear cuenta. Al cerrar sesión se vuelve a ella;
+  con sesión iniciada, `/` lleva directo al calendario (`/calendario`).
 - **Inicio de sesión** y **cerrar sesión**. Por ahora hay una cuenta temporal (`admin` / `admin`) validada
   en el navegador: es solo una puerta de entrada, no protege los datos. El **registro** es visual y aún
   no crea cuentas; ambos se conectarán con Firebase Auth.
@@ -99,6 +101,7 @@ src/app/
 │   ├── recurrence.ts
 │   └── seed-data.ts      # datos del primer uso (solo categorías)
 └── features/
+    ├── landing/          # pantalla de bienvenida
     ├── auth/             # login y registro
     ├── calendar-page/    # pantalla principal: vista mes / año
     ├── year-view/        # los 12 meses del año

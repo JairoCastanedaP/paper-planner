@@ -18,8 +18,13 @@ export class LoginPage {
   protected readonly error = signal('');
 
   protected submit(): void {
+    // Se valida al enviar (y no deshabilitando el botón) para que funcione también con autocompletar.
+    if (!this.username.trim() || !this.password) {
+      this.error.set('Escribe tu usuario y tu contraseña.');
+      return;
+    }
     if (this.auth.login(this.username, this.password)) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/calendario']);
     } else {
       this.error.set('Usuario o contraseña incorrectos.');
       this.password = '';
