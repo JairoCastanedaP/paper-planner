@@ -172,6 +172,7 @@ export class ThemeService {
       const theme = this.theme();
       const root = document.documentElement;
       for (const [name, value] of Object.entries(theme.tokens)) root.style.setProperty(name, value);
+      root.style.setProperty('--done', theme.categoryColors['english'] ?? '#8ce563');
       root.style.colorScheme = theme.dark ? 'dark' : 'light';
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.tokens['--red']);
       try {

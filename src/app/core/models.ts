@@ -59,6 +59,8 @@ export interface MonthGoal {
   /** …cuyo título contenga este texto (sin distinguir mayúsculas). */
   match?: string;
   done: boolean;
+  /** Detalle opcional: se ve al pasar el cursor por el nombre y se edita con un clic. */
+  detail?: string;
 }
 
 export interface PlannerData {

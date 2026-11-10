@@ -17,6 +17,8 @@ el lápiz de la tablet o el mouse.
   Se puede eliminar un solo día o toda la serie.
 - **Notas del mes**: objetivos con casilla y **contadores automáticos**
   (p. ej. "Clases con IA 8/25" cuenta las actividades resaltadas que coinciden).
+  Cada objetivo tiene su casilla: al marcarlo queda pintado con **resaltador verde**.
+  Un clic en el nombre permite escribir un **detalle**, que aparece como nota al pasar el cursor.
 - **Compromisos económicos**: total del mes por moneda (USD / COP).
 - **PWA**: se instala en celular, tablet y computador, y funciona sin conexión.
 - **Vista anual**: los 12 meses con mini calendario (festivos, puntos por categoría, ⭐ importantes)
