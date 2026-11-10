@@ -1,0 +1,204 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--soft-line);
+}
+
+.meta {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.notes {
+  margin: 6px 0 0;
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  white-space: pre-wrap;
+}
+
+.actions,
+.confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+
+  button {
+    padding: 4px 10px;
+    font-size: 0.82rem;
+  }
+}
+
+.confirm span {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+}
+
+.add {
+  align-self: flex-start;
+}
+
+.customize {
+  border: 2px dashed var(--soft-line);
+  border-radius: 6px;
+
+  summary {
+    padding: 10px 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 12px 12px;
+  }
+
+  h4 {
+    margin: 4px 0 0;
+    font-family: var(--display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+}
+
+.preview {
+  width: 100%;
+  max-height: 160px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.grow {
+  min-width: 0;
+  flex: 1 1 160px;
+}
+
+.file-button {
+  padding: 6px 12px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  font-weight: 600;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--red);
+  }
+}
+
+.error {
+  margin: 0;
+  color: var(--red);
+  font-size: 0.85rem;
+}
+
+.help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.special {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--sunday);
+
+  .emoji {
+    font-size: 1.4rem;
+  }
+
+  .name {
+    flex: 1;
+    font-family: var(--hand);
+    font-size: 1.15rem;
+  }
+
+  small {
+    color: var(--muted);
+  }
+}
+
+.icon-btn {
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.special-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emojis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-color: var(--soft-line);
+    font-size: 1.15rem;
+
+    &.on {
+      border-color: var(--red);
+      background: var(--sunday);
+    }
+  }
+}
+
+.emoji-input {
+  width: 56px;
+  text-align: center;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+}

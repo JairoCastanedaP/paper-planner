@@ -1,12 +1,5 @@
 <section class="notes" aria-labelledby="goals-title">
-  <div class="header">
-    <h2 id="goals-title">Notas del mes</h2>
-    <div class="legend" aria-label="Categorías">
-      @for (c of store.categories(); track c.id) {
-        <span class="tag" [style.--cat]="c.color">{{ c.icon ?? '' }} {{ c.name }}</span>
-      }
-    </div>
-  </div>
+  <h2 id="goals-title">Notas del mes</h2>
 
   <ul class="goals">
     @for (goal of goals(); track goal.id) {

@@ -1,6 +1,7 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { newId } from './ids';
-import { Category, MonthGoal, Occurrence, PlannerData, PlannerEvent } from './models';
+import { Commemoration, builtInCommemorationsOn } from './commemorations';
+import { Category, MonthGoal, Occurrence, PlannerData, PlannerEvent, SpecialDay } from './models';
 import { PlannerStorage } from './planner-storage';
 import { ThemeService } from './themes';
 import { compareOccurrences, occurrenceKey, occursOn } from './recurrence';
@@ -39,8 +40,11 @@ export class PlannerStore {
   readonly events = computed(() => this.state().events);
   readonly goals = computed(() => this.state().goals);
 
+  /** true si el último guardado falló (normalmente: almacenamiento del navegador lleno). */
+  readonly saveFailed = signal(false);
+
   constructor() {
-    effect(() => this.storage.save(this.state()));
+    effect(() => this.saveFailed.set(!this.storage.save(this.state())));
   }
 
   /** Aplica un cambio. Con `undoMessage` se puede deshacer; cualquier otro cambio cierra esa opción. */
@@ -169,6 +173,49 @@ export class PlannerStore {
         goals: s.goals.map((g) => (g.categoryId === id ? { ...g, categoryId: moveTo } : g)),
       }),
       `Se eliminó la categoría "${name}"`,
+    );
+  }
+
+  // ── Personalización de días ──────────────────────────────
+
+  dayImage(date: string): string | undefined {
+    return this.state().dayImages?.[date];
+  }
+
+  setDayImage(date: string, image: string | null): void {
+    this.commit(
+      (s) => {
+        const dayImages = { ...(s.dayImages ?? {}) };
+        if (image) dayImages[date] = image;
+        else delete dayImages[date];
+        return { ...s, dayImages };
+      },
+      image ? undefined : 'Se quitó la imagen de fondo',
+    );
+  }
+
+  /** Días especiales propios que aplican a esa fecha (exacta o cada año). */
+  customSpecialDaysOn(date: string): SpecialDay[] {
+    return (this.state().specialDays ?? []).filter((d) =>
+      d.yearly ? d.date.slice(5) === date.slice(5) && date >= d.date : d.date === date,
+    );
+  }
+
+  /** Lo que se conmemora ese día: fechas incluidas en la app y días especiales propios. */
+  commemorationsOn(date: string): Commemoration[] {
+    const custom = this.customSpecialDaysOn(date).map(({ id, emoji, name }) => ({ id, emoji, name }));
+    return [...builtInCommemorationsOn(date), ...custom];
+  }
+
+  saveSpecialDay(day: SpecialDay): void {
+    this.commit((s) => ({ ...s, specialDays: upsert(s.specialDays ?? [], day) }));
+  }
+
+  deleteSpecialDay(id: string): void {
+    const name = this.state().specialDays?.find((d) => d.id === id)?.name ?? 'Día especial';
+    this.commit(
+      (s) => ({ ...s, specialDays: (s.specialDays ?? []).filter((d) => d.id !== id) }),
+      `Se eliminó "${name}"`,
     );
   }
 

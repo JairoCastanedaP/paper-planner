@@ -1,5 +1,6 @@
 .grid {
-  overflow: hidden;
+  // 'clip' (y no 'hidden') para que la fila de días de la semana pueda quedar fija al bajar.
+  overflow: clip;
   border: 2px solid var(--line);
   border-radius: 4px;
   background: var(--card);
@@ -12,6 +13,9 @@
 }
 
 .head {
+  position: sticky;
+  z-index: 2;
+  top: var(--sticky-h, 0px);
   background: var(--line);
   color: var(--on-line);
   font-family: var(--display);
@@ -62,6 +66,17 @@
     background-color: var(--sunday);
   }
 
+  &.with-image {
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--card) 62%, transparent),
+        color-mix(in srgb, var(--card) 62%, transparent)
+      ),
+      var(--bg);
+    background-position: center;
+    background-size: cover;
+  }
+
   &.out {
     background-color: var(--out);
 
@@ -96,11 +111,33 @@
 }
 
 .day-head {
+  position: relative;
   display: flex;
   min-width: 0;
   align-items: center;
   gap: 4px;
 }
+
+// Dibujo conmemorativo (🎃, 🕯️…) en la esquina, como una calcomanía en la hoja.
+.specials {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: flex;
+  font-size: 1.5rem;
+  line-height: 1;
+  pointer-events: auto;
+}
+
+.special {
+  display: inline-block;
+  filter: drop-shadow(1px 1px 0 rgb(0 0 0 / 20%));
+}
+
+.day-head.has-special {
+  padding-right: 1.9rem;
+}
+
 
 // Motivo del festivo, como la nota impresa bajo el número en el calendario de papel.
 .holiday-name {
@@ -160,6 +197,12 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
+  }
+
+  .specials {
+    top: -1px;
+    right: -1px;
+    font-size: 0.9rem;
   }
 
   .holiday-name {

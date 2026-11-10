@@ -5,6 +5,22 @@
   padding: 24px 16px;
 }
 
+.auth {
+  align-content: center;
+  gap: 12px;
+}
+
+.back {
+  width: min(420px, 100%);
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--red);
+  }
+}
+
 .card {
   width: min(420px, 100%);
   padding: 28px 24px;

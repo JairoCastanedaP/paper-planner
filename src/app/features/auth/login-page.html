@@ -1,10 +1,11 @@
 <main class="auth">
+  <a class="back" routerLink="/">← Volver al inicio</a>
   <section class="card">
     <p class="kicker">Paper Planner</p>
     <h1>Iniciar sesión</h1>
     <p class="lead">Tu calendario de papel, ahora en todos tus dispositivos.</p>
 
-    <form (ngSubmit)="submit()" #form="ngForm">
+    <form (ngSubmit)="submit()">
       <label>
         Usuario
         <input name="username" [(ngModel)]="username" autocomplete="username" required autofocus />
@@ -18,7 +19,7 @@
         <p class="error" role="alert">{{ error() }}</p>
       }
 
-      <button type="submit" class="primary" [disabled]="form.invalid">Entrar</button>
+      <button type="submit" class="primary">Entrar</button>
     </form>
 
     <p class="switch">¿No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>

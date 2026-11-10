@@ -1,0 +1,83 @@
+.dim {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+}
+
+// El "agujero" de luz: un recuadro con una sombra enorme que oscurece todo lo demás.
+.spotlight {
+  position: fixed;
+  z-index: 50;
+  border: 3px solid var(--red);
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgb(0 0 0 / 55%);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.card {
+  position: fixed;
+  z-index: 51;
+  padding: 16px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--line);
+  animation: pop 0.2s ease-out;
+}
+
+.count {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+h2 {
+  margin: 4px 0 6px;
+  color: var(--red);
+  font-family: var(--display);
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.88rem;
+  }
+}
+
+.spacer {
+  flex: 1;
+}
+
+.skip {
+  padding-left: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  text-decoration: underline;
+
+  &:hover:not(:disabled) {
+    background: none;
+    color: var(--ink);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}

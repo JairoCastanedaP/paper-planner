@@ -1,62 +1,91 @@
 <main class="page">
-  <div class="toolbar">
-    <div class="segmented" role="tablist" aria-label="Vista">
-      <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="view.set('month')">Mes</button>
-      <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="view.set('year')">Año</button>
+  <div class="sticky" #sticky [class.compact]="compact()">
+    <div class="toolbar">
+      <div class="segmented" role="tablist" aria-label="Vista" data-tour="views">
+        <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="setView('month')">Mes</button>
+        <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="setView('year')">Año</button>
+        <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
+      </div>
+      <div class="account">
+        <button type="button" class="ghost" (click)="searchOpen.set(true)" title="Buscar ( / )" data-tour="search">🔍 Buscar</button>
+        <span class="group" data-tour="customize">
+          <button type="button" class="ghost" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
+          <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
+        </span>
+        <button type="button" class="ghost" (click)="startTour()" title="Ver la guía de uso" data-tour="help">❔ Guía</button>
+        <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user() }}</span>
+        <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
+      </div>
     </div>
-    <div class="account">
-      <button type="button" class="ghost" (click)="searchOpen.set(true)" title="Buscar ( / )">🔍 Buscar</button>
-      <button type="button" class="ghost" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
-      <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
-      <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user() }}</span>
-      <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
-    </div>
+
+    <header class="top">
+      <div class="title">
+        <p class="kicker">{{ kicker() }}</p>
+        <h1>{{ title() }}</h1>
+      </div>
+      <nav class="nav" [attr.aria-label]="'Cambiar de ' + periodName()" data-tour="nav">
+        <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="'Anterior (' + periodName() + ')'">‹</button>
+        <button type="button" (click)="goToday()">Hoy</button>
+        <button type="button" class="round" (click)="move(1)" [attr.aria-label]="'Siguiente (' + periodName() + ')'">›</button>
+      </nav>
+    </header>
+
+    <app-filter-bar
+      class="filters"
+      data-tour="filter"
+      [selected]="filter()"
+      [summary]="filterSummary()"
+      (selectedChange)="filter.set($event)"
+    />
   </div>
 
-  <header class="top">
-    <div class="title">
-      <p class="kicker">Paper Planner {{ view() === 'month' ? year() : '· Vista anual' }}</p>
-      <h1>{{ title() }}</h1>
-    </div>
-    <nav class="nav" [attr.aria-label]="view() === 'month' ? 'Cambiar de mes' : 'Cambiar de año'">
-      <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="view() === 'month' ? 'Mes anterior' : 'Año anterior'">‹</button>
-      <button type="button" (click)="goToday()">Hoy</button>
-      <button type="button" class="round" (click)="move(1)" [attr.aria-label]="view() === 'month' ? 'Mes siguiente' : 'Año siguiente'">›</button>
-    </nav>
-  </header>
-
-  @if (view() === 'month') {
-    <app-month-goals [month]="monthKey()" [occurrences]="monthOccurrences()" />
-
-    <app-month-grid
-      [weeks]="weeks()"
-      [month]="monthKey()"
-      [today]="today()"
-      [occurrencesByDay]="occurrencesByDay()"
-      (daySelected)="selectedDate.set($event)"
-      (highlightChange)="onHighlight($event)"
-    />
-
-    <p class="hint">
-      🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
-      (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
-    </p>
-  } @else {
-    <app-year-view
-      [year]="year()"
-      [today]="today()"
-      (monthOpened)="openMonth($event)"
-      (daySelected)="selectedDate.set($event)"
-    />
-
-    <p class="hint">
-      🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
-      Toca el nombre de un mes para abrirlo o un día para ver su detalle.
+  @if (store.saveFailed()) {
+    <p class="storage-alert" role="alert">
+      ⚠️ No se pudieron guardar los últimos cambios: el almacenamiento del navegador está lleno.
+      Quita algunas imágenes de fondo para liberar espacio.
     </p>
   }
 
+  @switch (view()) {
+    @case ('month') {
+      <app-month-goals data-tour="goals" [month]="monthKey()" [occurrences]="monthOccurrences()" />
+
+      <app-month-grid
+        data-tour="grid"
+        [weeks]="weeks()"
+        [month]="monthKey()"
+        [today]="today()"
+        [occurrencesByDay]="visibleByDay()"
+        (daySelected)="selectedDate.set($event)"
+        (highlightChange)="onHighlight($event)"
+      />
+
+      <p class="hint">
+        🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
+        (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
+      </p>
+    }
+    @case ('year') {
+      <app-year-view
+        [year]="year()"
+        [today]="today()"
+        [filter]="filter()"
+        (monthOpened)="openMonth($event)"
+        (daySelected)="selectedDate.set($event)"
+      />
+
+      <p class="hint">
+        🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
+        Toca el nombre de un mes para abrirlo o un día para ver su detalle.
+      </p>
+    }
+    @case ('day') {
+      <app-day-view [date]="day()" [today]="today()" [filter]="filter()" (highlightChange)="onHighlight($event)" />
+    }
+  }
+
   @if (selectedDate(); as date) {
-    <app-day-panel [date]="date" (closed)="selectedDate.set(null)" />
+    <app-day-panel [date]="date" (closed)="selectedDate.set(null)" (expanded)="openDayView($event)" />
   }
 
   @if (themesOpen()) {
@@ -77,4 +106,5 @@
 
   <app-reminder-modal />
   <app-undo-toast />
+  <app-tour-overlay />
 </main>

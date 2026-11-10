@@ -1,0 +1,53 @@
+@if (image() || holiday() || commemorations().length || isToday()) {
+  <section class="hero" [class.with-image]="image()" [style.--bg]="image() ? 'url(' + image() + ')' : null">
+    <div class="badges">
+      @if (isToday()) {
+        <span class="badge today-badge">Hoy</span>
+      }
+      @if (holiday(); as name) {
+        <span class="badge holiday">Festivo · {{ name }}</span>
+      }
+      @for (c of commemorations(); track c.name) {
+        <span class="badge special">
+          <span class="emoji" [attr.data-emoji]="c.emoji">{{ c.emoji }}</span>
+          {{ c.name }}
+        </span>
+      }
+    </div>
+  </section>
+}
+
+<div class="columns">
+  <section class="agenda" aria-label="Agenda del día">
+    <h3>Agenda</h3>
+
+    @if (allDay().length) {
+      <div class="all-day">
+        <span class="hour-label">Todo el día</span>
+        <div class="items">
+          @for (o of allDay(); track o.key) {
+            <app-event-chip [occurrence]="o" size="large" (highlightChange)="highlightChange.emit({ key: o.key, on: $event })" />
+          }
+        </div>
+      </div>
+    }
+
+    <ol class="hours">
+      @for (row of hours(); track row.hour) {
+        <li [class.now]="row.isNow" [class.busy]="row.items.length">
+          <span class="hour-label">{{ row.label }}</span>
+          <div class="items">
+            @for (o of row.items; track o.key) {
+              <app-event-chip [occurrence]="o" size="large" (highlightChange)="highlightChange.emit({ key: o.key, on: $event })" />
+            }
+          </div>
+        </li>
+      }
+    </ol>
+  </section>
+
+  <section class="detail" aria-label="Detalle del día">
+    <h3>Detalle</h3>
+    <app-day-detail [date]="date()" />
+  </section>
+</div>

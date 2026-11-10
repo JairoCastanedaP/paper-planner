@@ -1,0 +1,67 @@
+<div class="landing">
+  <header class="nav">
+    <span class="logo">Paper Planner</span>
+    <a class="nav-link" routerLink="/login">Iniciar sesión</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="copy">
+        <p class="kicker">Planner {{ year }}</p>
+        <h1>Tu calendario de papel, <span class="marker">ahora digital</span></h1>
+        <p class="lead">
+          Anota tus compromisos del día a día, mira todo el mes de un vistazo y resalta lo que vas
+          cumpliendo, como siempre lo has hecho en la hoja. Sin quedarte sin espacio.
+        </p>
+        <div class="cta">
+          <a class="button primary" routerLink="/login">Iniciar sesión</a>
+          <a class="button" routerLink="/registro">Crear cuenta</a>
+        </div>
+      </div>
+
+      <div class="sheet" aria-hidden="true">
+        <div class="sheet-title">
+          <span>Noviembre</span>
+          <small>Notas: terminar el curso</small>
+        </div>
+        <div class="sheet-head">
+          @for (d of ['D', 'L', 'M', 'M', 'J', 'V', 'S']; track $index) {
+            <span>{{ d }}</span>
+          }
+        </div>
+        @for (week of preview; track $index) {
+          <div class="sheet-week">
+            @for (day of week; track day.n) {
+              <div class="sheet-day" [class.sunday]="day.sunday" [class.today]="day.today">
+                <span class="n">{{ day.n }}</span>
+                @for (chip of day.chips ?? []; track $index) {
+                  <span class="chip" [class.hl]="chip.hl" [attr.data-cat]="chip.c">{{ chip.t }}</span>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="features" aria-labelledby="features-title">
+      <h2 id="features-title">Todo lo que tenía tu hoja, y más</h2>
+      <ul>
+        @for (f of features; track f.title) {
+          <li>
+            <span class="icon" aria-hidden="true">{{ f.icon }}</span>
+            <h3>{{ f.title }}</h3>
+            <p>{{ f.text }}</p>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="closing">
+      <h2>¿Listo para empezar tu mes?</h2>
+      <a class="button primary" routerLink="/login">Probar Paper Planner</a>
+    </section>
+  </main>
+
+  <footer>Paper Planner · Hecho para organizar el día a día</footer>
+</div>

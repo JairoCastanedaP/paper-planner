@@ -13,6 +13,8 @@
       @for (day of week; track day) {
         @let occurrences = occurrencesByDay().get(day) ?? [];
         @let holiday = holidayOn(day);
+        @let image = inMonth(day) ? store.dayImage(day) : undefined;
+        @let specials = store.commemorationsOn(day);
         <div
           class="cell"
           role="gridcell"
@@ -21,14 +23,23 @@
           [class.today]="day === today()"
           [class.sunday]="$first"
           [class.holiday]="holiday"
+          [class.with-image]="image"
+          [style.--bg]="image ? 'url(' + image + ')' : null"
           [attr.aria-label]="holiday ? day + ', festivo: ' + holiday : day"
           (click)="daySelected.emit(day)"
           (keydown.enter)="daySelected.emit(day)"
         >
-          <div class="day-head">
+          <div class="day-head" [class.has-special]="specials.length">
             <span class="num">{{ dayNumber(day) }}</span>
             @if (holiday) {
               <span class="holiday-name" [attr.title]="holiday">{{ holiday }}</span>
+            }
+            @if (specials.length) {
+              <span class="specials" [attr.title]="namesOf(specials)" [attr.aria-label]="namesOf(specials)">
+                @for (s of specials.slice(0, 2); track s.name) {
+                  <span class="special" [attr.data-emoji]="s.emoji">{{ s.emoji }}</span>
+                }
+              </span>
             }
           </div>
           <div class="chips">

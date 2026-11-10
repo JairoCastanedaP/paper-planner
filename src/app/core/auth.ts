@@ -50,6 +50,6 @@ function readSession(): string | null {
 export const authGuard: CanActivateFn = () =>
   inject(AuthService).isLoggedIn() || inject(Router).createUrlTree(['/login']);
 
-/** Login y registro solo sin sesión; con sesión se va al calendario. */
+/** Bienvenida, login y registro solo sin sesión; con sesión se va al calendario. */
 export const guestGuard: CanActivateFn = () =>
-  !inject(AuthService).isLoggedIn() || inject(Router).createUrlTree(['/']);
+  !inject(AuthService).isLoggedIn() || inject(Router).createUrlTree(['/calendario']);
