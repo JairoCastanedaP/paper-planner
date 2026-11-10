@@ -20,7 +20,7 @@ export interface UndoEntry {
 export class PlannerStore {
   private readonly storage = inject(PlannerStorage);
   private readonly theme = inject(ThemeService);
-  private readonly state = signal<PlannerData>(this.storage.load() ?? createSeedData());
+  private readonly state = signal<PlannerData>(initialData(this.storage.load()));
   private undoSeq = 0;
 
   /** Disponible solo hasta el siguiente cambio: deshacer restaura el estado anterior completo. */
@@ -61,12 +61,13 @@ export class PlannerStore {
 
   /** Borra los datos de ejemplo y deja el calendario en blanco (se puede deshacer). */
   clearDemo(): void {
-    this.commit(() => createEmptyData(), 'Se borraron los datos de ejemplo');
+    // demo: false = el usuario eligió empezar en blanco (no se vuelven a cargar los ejemplos).
+    this.commit(() => ({ ...createEmptyData(), demo: false }), 'Se borraron los datos de ejemplo');
   }
 
   /** Conserva los datos de ejemplo como propios y oculta el aviso. */
   keepDemo(): void {
-    this.commit((s) => ({ ...s, demo: undefined }));
+    this.commit((s) => ({ ...s, demo: false }));
   }
 
   undoLast(): void {
@@ -236,6 +237,21 @@ export class PlannerStore {
   rawCategory(id: string): Category | undefined {
     return this.state().categories.find((c) => c.id === id);
   }
+}
+
+/**
+ * Datos con los que arranca la app. Un calendario vacío que nadie tocó (lo guardaban
+ * las versiones anteriores a los datos de ejemplo) se reemplaza por los datos de ejemplo.
+ */
+function initialData(stored: PlannerData | null): PlannerData {
+  if (!stored) return createSeedData();
+  const untouched =
+    stored.demo === undefined &&
+    stored.events.length === 0 &&
+    stored.goals.length === 0 &&
+    !stored.specialDays?.length &&
+    !Object.keys(stored.dayImages ?? {}).length;
+  return untouched ? createSeedData() : stored;
 }
 
 function upsert<T extends { id: string }>(list: T[], item: T): T[] {
