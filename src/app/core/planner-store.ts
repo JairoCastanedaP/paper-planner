@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { newId } from './ids';
+import { createEmptyData } from './categories';
 import { Commemoration, builtInCommemorationsOn } from './commemorations';
 import { Category, MonthGoal, Occurrence, PlannerData, PlannerEvent, SpecialDay } from './models';
 import { PlannerStorage } from './planner-storage';
@@ -39,6 +40,8 @@ export class PlannerStore {
   readonly categoryMap = computed(() => new Map(this.categories().map((c) => [c.id, c])));
   readonly events = computed(() => this.state().events);
   readonly goals = computed(() => this.state().goals);
+  /** Se están viendo los datos de ejemplo. */
+  readonly isDemo = computed(() => !!this.state().demo);
 
   /** true si el último guardado falló (normalmente: almacenamiento del navegador lleno). */
   readonly saveFailed = signal(false);
@@ -54,6 +57,16 @@ export class PlannerStore {
     if (next === previous) return;
     this.state.set(next);
     this.undo.set(undoMessage ? { id: ++this.undoSeq, message: undoMessage, previous } : null);
+  }
+
+  /** Borra los datos de ejemplo y deja el calendario en blanco (se puede deshacer). */
+  clearDemo(): void {
+    this.commit(() => createEmptyData(), 'Se borraron los datos de ejemplo');
+  }
+
+  /** Conserva los datos de ejemplo como propios y oculta el aviso. */
+  keepDemo(): void {
+    this.commit((s) => ({ ...s, demo: undefined }));
   }
 
   undoLast(): void {

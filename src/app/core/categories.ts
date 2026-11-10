@@ -1,4 +1,4 @@
-import { Category } from './models';
+import { Category, PlannerData } from './models';
 
 /** Las mismas categorías y colores del calendario de papel. */
 export const DEFAULT_CATEGORIES: Category[] = [
@@ -8,3 +8,8 @@ export const DEFAULT_CATEGORIES: Category[] = [
   { id: 'birthday', name: 'Cumpleaños', color: '#f5c542', icon: '👑' },
   { id: 'project', name: 'Proyecto', color: '#6cb4ff' },
 ];
+
+/** Un calendario vacío: solo las categorías. */
+export function createEmptyData(): PlannerData {
+  return { version: 1, categories: DEFAULT_CATEGORIES, events: [], highlights: {}, goals: [] };
+}
