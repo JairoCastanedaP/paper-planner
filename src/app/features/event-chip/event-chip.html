@@ -7,6 +7,9 @@
   @if (category()?.icon; as icon) {
     <span class="icon">{{ icon }}</span>
   }
+  @if (occurrence().event.important) {
+    <span class="star" aria-label="Muy importante">⭐</span>
+  }
   @if (time()) {
     <span class="time">{{ time() }}</span>
   }

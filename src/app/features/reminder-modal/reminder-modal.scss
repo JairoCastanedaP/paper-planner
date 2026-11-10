@@ -1,0 +1,110 @@
+.backdrop {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  background: rgb(0 0 0 / 50%);
+}
+
+.dialog {
+  position: fixed;
+  z-index: 31;
+  top: 50%;
+  left: 50%;
+  overflow-y: auto;
+  width: min(460px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 3px solid var(--red);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 8px 8px 0 var(--red);
+  transform: translate(-50%, -50%);
+  animation: pop 0.25s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.bell {
+  margin: 0;
+  font-size: 2.2rem;
+  text-align: center;
+  animation: ring 0.8s ease-in-out 2;
+}
+
+h2 {
+  margin: 4px 0 14px;
+  color: var(--red);
+  font-family: var(--display);
+  font-size: 1.35rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-left: 6px solid var(--cat);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--cat) 18%, var(--card));
+}
+
+strong {
+  font-family: var(--hand);
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.when {
+  font-weight: 700;
+}
+
+.notes {
+  color: var(--muted);
+  font-family: var(--hand);
+  font-size: 1.05rem;
+  white-space: pre-wrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+.all {
+  width: 100%;
+  margin-top: 14px;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.95);
+  }
+}
+
+@keyframes ring {
+  25% {
+    transform: rotate(-15deg);
+  }
+
+  75% {
+    transform: rotate(15deg);
+  }
+}

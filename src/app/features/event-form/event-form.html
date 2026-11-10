@@ -73,6 +73,23 @@
     </label>
   </div>
 
+  <div class="important" [class.on]="draft.important">
+    <label class="toggle">
+      <input type="checkbox" name="important" [(ngModel)]="draft.important" />
+      ⭐ Muy importante
+    </label>
+    @if (draft.important) {
+      <label>
+        Recordarme
+        <select name="reminderMinutes" [(ngModel)]="draft.reminderMinutes">
+          @for (o of reminderOptions; track o.value) {
+            <option [ngValue]="o.value">{{ o.label }}</option>
+          }
+        </select>
+      </label>
+    }
+  </div>
+
   <label>
     Notas
     <textarea name="notes" rows="4" [(ngModel)]="draft.notes" placeholder="Todo lo que no cabía en la hoja…"></textarea>

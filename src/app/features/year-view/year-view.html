@@ -1,0 +1,56 @@
+<div class="year">
+  @for (m of months(); track m.index) {
+    <article class="month" [class.current]="isCurrent(m.index)">
+      <button type="button" class="month-title" (click)="monthOpened.emit(m.index)" [attr.aria-label]="'Abrir ' + m.name">
+        {{ m.name }}
+        <span class="open" aria-hidden="true">›</span>
+      </button>
+
+      <div class="mini" role="grid" [attr.aria-label]="m.name">
+        @for (initial of initials; track $index) {
+          <span class="initial" [class.sun]="$first" role="columnheader">{{ initial }}</span>
+        }
+        @for (week of m.weeks; track week[0].date) {
+          @for (d of week; track d.date) {
+            @if (d.inMonth) {
+              <button
+                type="button"
+                class="day"
+                role="gridcell"
+                [class.sun]="$first"
+                [class.holiday]="d.holiday"
+                [class.today]="d.date === today()"
+                [attr.title]="d.holiday ?? null"
+                [attr.aria-label]="d.date + (d.holiday ? ', festivo: ' + d.holiday : '')"
+                (click)="daySelected.emit(d.date)"
+              >
+                <span class="num">{{ d.num }}</span>
+                @if (d.important) {
+                  <span class="star" aria-hidden="true">★</span>
+                }
+                <span class="dots" aria-hidden="true">
+                  @for (color of d.dots; track color) {
+                    <span class="dot" [style.background]="color"></span>
+                  }
+                </span>
+              </button>
+            } @else {
+              <span class="day empty" role="gridcell"></span>
+            }
+          }
+        }
+      </div>
+
+      <ul class="notes">
+        @for (note of m.notes; track $index) {
+          <li [style.--note]="note.color ?? null"><span class="icon">{{ note.icon }}</span>{{ note.text }}</li>
+        } @empty {
+          <li class="none">Sin notas</li>
+        }
+        @if (m.hidden) {
+          <li class="more">+{{ m.hidden }} más</li>
+        }
+      </ul>
+    </article>
+  }
+</div>

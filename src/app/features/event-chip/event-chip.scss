@@ -18,6 +18,10 @@
   touch-action: pan-y;
 }
 
+:host(.highlighted) {
+  color: var(--ink-on-highlight);
+}
+
 :host(.large) {
   padding: 6px 10px;
   font-size: 1.15rem;
@@ -32,7 +36,7 @@
   left: -4px;
   background: var(--cat);
   opacity: 0.85;
-  mix-blend-mode: multiply;
+  mix-blend-mode: var(--ink-blend);
   border-radius: 4px 12px 5px 14px / 7px 4px 9px 5px;
   transform: skewX(-10deg);
   pointer-events: none;
@@ -57,6 +61,11 @@
 
 .icon {
   margin-right: 2px;
+}
+
+.star {
+  margin-right: 2px;
+  font-size: 0.85em;
 }
 
 .time {

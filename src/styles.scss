@@ -9,7 +9,12 @@
   --sunday: #f8e4e7;
   --out: #f1ede4;
   --hover: #fff6d6;
-  --english: #8ce563;
+  --red-hover: #a50d26;
+  --on-line: #ffffff;
+  --on-accent: #ffffff;
+  --input-bg: #ffffff;
+  --ink-blend: multiply;
+  --ink-on-highlight: var(--ink);
 
   --hand: 'Patrick Hand', 'Comic Sans MS', cursive;
   --display: 'Oswald', 'Arial Narrow', sans-serif;
@@ -56,10 +61,10 @@ button {
   &.primary {
     border-color: var(--red);
     background: var(--red);
-    color: #fff;
+    color: var(--on-accent);
 
     &:hover:not(:disabled) {
-      background: #a50d26;
+      background: var(--red-hover);
     }
   }
 
@@ -75,7 +80,7 @@ textarea {
   padding: 8px 10px;
   border: 1px solid var(--soft-line);
   border-radius: 6px;
-  background: #fff;
+  background: var(--input-bg);
   color: var(--ink);
   font: inherit;
   font-size: 1rem;

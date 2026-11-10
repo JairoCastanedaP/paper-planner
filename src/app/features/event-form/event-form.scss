@@ -89,8 +89,39 @@ label {
 
     &.on {
       background: var(--line);
-      color: #fff;
+      color: var(--on-line);
     }
+  }
+}
+
+.important {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px;
+  border: 2px solid var(--soft-line);
+  border-radius: 6px;
+
+  &.on {
+    border-color: var(--red);
+    background: color-mix(in srgb, var(--red) 8%, transparent);
+  }
+}
+
+.toggle {
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--red);
   }
 }
 
