@@ -47,6 +47,10 @@ el lápiz de la tablet o el mouse.
   en el navegador: es solo una puerta de entrada, no protege los datos. El **registro** es visual y aún
   no crea cuentas; ambos se conectarán con Firebase Auth.
 
+**Datos de ejemplo:** el primer uso arranca con un calendario de demostración (rutina de gimnasio, clases,
+pagos, cumpleaños y objetivos como "10 días de gimnasio: 4/10"), calculado a partir de la fecha actual.
+Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
+
 Los datos se guardan por ahora en el navegador (`localStorage`). La sincronización entre dispositivos
 llegará con Firebase.
 
@@ -68,7 +72,7 @@ Con `start:lan`, la consola muestra una dirección `Network: http://192.168.x.x:
 
 ### Datos propios en local
 
-El repositorio no incluye datos personales: el primer uso arranca solo con las categorías.
+El repositorio no incluye datos personales: el primer uso arranca con datos de ejemplo genéricos.
 Para desarrollar con datos propios, crea `src/app/core/seed-data.local.ts` (ignorado por git)
 exportando `createSeedData()` igual que [`seed-data.ts`](src/app/core/seed-data.ts), y levanta:
 
@@ -91,6 +95,7 @@ src/app/
 ├── core/                 # modelo, fechas, repeticiones, estado y almacenamiento
 │   ├── auth.ts           # sesión temporal y guards de rutas
 │   ├── commemorations.ts # fechas conmemorativas
+│   ├── demo-data.ts      # calendario de ejemplo del primer uso
 │   ├── images.ts         # compresión de imágenes de fondo
 │   ├── models.ts
 │   ├── reminders.ts      # recordatorios de actividades muy importantes
@@ -99,7 +104,7 @@ src/app/
 │   ├── planner-store.ts  # estado único con signals; se guarda solo
 │   ├── planner-storage.ts# localStorage hoy, Firebase después
 │   ├── recurrence.ts
-│   └── seed-data.ts      # datos del primer uso (solo categorías)
+│   └── seed-data.ts      # datos del primer uso (los de ejemplo)
 └── features/
     ├── landing/          # pantalla de bienvenida
     ├── auth/             # login y registro
