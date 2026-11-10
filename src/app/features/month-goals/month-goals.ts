@@ -1,4 +1,14 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { pad } from '../../core/dates';
 import { newId } from '../../core/ids';
@@ -26,6 +36,8 @@ export class MonthGoals {
   readonly occurrences = input.required<Occurrence[]>();
 
   protected readonly store = inject(PlannerStore);
+  private readonly injector = inject(Injector);
+  private readonly detailInput = viewChild<ElementRef<HTMLTextAreaElement>>('detailInput');
 
   protected readonly goals = computed(() =>
     this.store.goals().filter((g) => g.month === this.month()),
@@ -56,6 +68,11 @@ export class MonthGoals {
   });
 
   protected readonly adding = signal(false);
+
+  /** Objetivo cuyo detalle se está editando. */
+  protected readonly editingId = signal<string | null>(null);
+  protected readonly editingGoal = computed(() => this.goals().find((g) => g.id === this.editingId()) ?? null);
+  protected detailDraft = '';
   protected draft: GoalDraft = emptyDraft();
 
   protected progress(goal: MonthGoal): number {
@@ -74,6 +91,23 @@ export class MonthGoals {
     this.store.saveGoal({ ...goal, done: !goal.done });
   }
 
+  protected openDetail(goal: MonthGoal): void {
+    if (this.editingId() === goal.id) {
+      this.editingId.set(null);
+      return;
+    }
+    this.detailDraft = goal.detail ?? '';
+    this.adding.set(false);
+    this.editingId.set(goal.id);
+    // El editor aparece en el siguiente render; ahí se enfoca para escribir de una vez.
+    afterNextRender(() => this.detailInput()?.nativeElement.focus(), { injector: this.injector });
+  }
+
+  protected saveDetail(goal: MonthGoal): void {
+    this.store.saveGoal({ ...goal, detail: this.detailDraft.trim() || undefined });
+    this.editingId.set(null);
+  }
+
   protected remove(goal: MonthGoal): void {
     if (confirm(`¿Eliminar el objetivo "${goal.title}"?`)) this.store.deleteGoal(goal.id);
   }
@@ -83,6 +117,7 @@ export class MonthGoals {
   }
 
   protected startAdding(): void {
+    this.editingId.set(null);
     this.draft = emptyDraft();
     this.adding.set(true);
   }

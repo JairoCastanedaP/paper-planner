@@ -43,7 +43,9 @@
 
       <ul class="notes">
         @for (note of m.notes; track $index) {
-          <li [style.--note]="note.color ?? null"><span class="icon">{{ note.icon }}</span>{{ note.text }}</li>
+          <li [style.--note]="note.color ?? null" [class.done]="note.done" [attr.title]="note.detail ?? null">
+            <span class="icon">{{ note.icon }}</span><span class="text">{{ note.text }}</span>
+          </li>
         } @empty {
           <li class="none">Sin notas</li>
         }

@@ -18,6 +18,8 @@ interface Note {
   icon: string;
   text: string;
   color?: string;
+  detail?: string;
+  done?: boolean;
 }
 
 interface MonthSummary {
@@ -75,12 +77,13 @@ export class YearView {
     const notes: Note[] = [];
 
     for (const goal of this.store.goals().filter((g) => g.month === key)) {
-      const status = goal.target
-        ? ` ${goalProgress(goal, monthOccurrences)}/${goal.target}`
-        : goal.done
-          ? ' ✓'
-          : '';
-      notes.push({ icon: '🎯', text: goal.title.toUpperCase() + status });
+      const count = goal.target ? ` ${goalProgress(goal, monthOccurrences)}/${goal.target}` : '';
+      notes.push({
+        icon: goal.done ? '✅' : '🎯',
+        text: goal.title.toUpperCase() + count,
+        detail: goal.detail,
+        done: goal.done,
+      });
     }
 
     const day = (o: Occurrence) => Number(o.date.slice(8));

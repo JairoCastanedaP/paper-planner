@@ -10,18 +10,36 @@
 
   <ul class="goals">
     @for (goal of goals(); track goal.id) {
-      <li class="goal" [class.done]="goal.done">
+      <li class="goal" [class.done]="goal.done" [class.editing]="editingId() === goal.id">
+        <input
+          type="checkbox"
+          class="box"
+          [checked]="goal.done"
+          (change)="toggleDone(goal)"
+          [attr.aria-label]="(goal.done ? 'Marcar como pendiente: ' : 'Marcar como realizado: ') + goal.title"
+        />
+        <span class="name">
+          <button
+            type="button"
+            class="goal-title"
+            (click)="openDetail(goal)"
+            [attr.aria-describedby]="goal.detail ? 'goal-tip-' + goal.id : null"
+            [attr.aria-label]="goal.title + (goal.detail ? ' (tiene detalle; clic para editarlo)' : ' (clic para agregar detalle)')"
+          >
+            {{ goal.title }}
+            @if (goal.detail) {
+              <span class="has-detail" aria-hidden="true">✎</span>
+            }
+          </button>
+          @if (goal.detail && editingId() !== goal.id) {
+            <span class="tip" role="tooltip" [id]="'goal-tip-' + goal.id">{{ goal.detail }}</span>
+          }
+        </span>
         @if (goal.target) {
-          <span class="goal-title">{{ goal.title }}</span>
           <span class="bar" role="progressbar" [attr.aria-valuenow]="progress(goal)" aria-valuemin="0" [attr.aria-valuemax]="goal.target">
             <span class="fill" [style.width.%]="percent(goal)" [style.--fill]="goalColor(goal)"></span>
           </span>
           <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
-        } @else {
-          <label class="check">
-            <input type="checkbox" [checked]="goal.done" (change)="toggleDone(goal)" />
-            <span class="goal-title">{{ goal.title }}</span>
-          </label>
         }
         <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="'Eliminar ' + goal.title">×</button>
       </li>
@@ -30,6 +48,27 @@
       <li class="goal money">💸 Compromisos económicos: <strong>{{ totals().join(' · ') }}</strong></li>
     }
   </ul>
+
+  @if (editingGoal(); as goal) {
+    <form class="detail-form" (ngSubmit)="saveDetail(goal)">
+      <label for="goal-detail">Detalle de <strong>{{ goal.title }}</strong></label>
+      <textarea
+        #detailInput
+        id="goal-detail"
+        name="detail"
+        rows="3"
+        [(ngModel)]="detailDraft"
+        placeholder="Pasos, entregables, enlaces… lo que no cabe en el título."
+      ></textarea>
+      <div class="detail-actions">
+        @if (goal.detail) {
+          <button type="button" class="danger" (click)="detailDraft = ''; saveDetail(goal)">Quitar detalle</button>
+        }
+        <button type="button" (click)="editingId.set(null)">Cancelar</button>
+        <button type="submit" class="primary">Guardar</button>
+      </div>
+    </form>
+  }
 
   @if (adding()) {
     <form class="goal-form" (ngSubmit)="saveDraft()">

@@ -52,11 +52,6 @@ h2 {
   gap: 10px;
   font-family: var(--hand);
 
-  &.done .goal-title {
-    color: var(--muted);
-    text-decoration: line-through;
-  }
-
   &.money {
     flex-basis: 100%;
     font-family: var(--ui);
@@ -64,24 +59,153 @@ h2 {
   }
 }
 
-// Lo más importante del mes: en mayúsculas y grande, como escrito a mano en la hoja.
-.goal-title {
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
-  letter-spacing: 0.02em;
-  line-height: 1.15;
-  text-transform: uppercase;
+// Casilla para marcar el objetivo como realizado.
+.box {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--red);
+  cursor: pointer;
 }
 
-.check {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.name {
+  position: relative;
+  min-width: 0;
+}
+
+// Lo más importante del mes: en mayúsculas y grande, como escrito a mano en la hoja.
+// Es un botón: un clic abre el editor del detalle.
+.goal-title {
+  position: relative;
+  z-index: 0;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-family: var(--hand);
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  text-align: left;
+  text-transform: uppercase;
   cursor: pointer;
 
-  input {
-    width: 22px;
-    height: 22px;
-    accent-color: var(--red);
+  &:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline dotted var(--muted);
+    text-underline-offset: 4px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+
+  // Trazo de resaltador verde cuando el objetivo está realizado.
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 6% -6px 2% -6px;
+    border-radius: 4px 12px 5px 14px / 7px 4px 9px 5px;
+    background: var(--done);
+    content: '';
+    mix-blend-mode: var(--ink-blend);
+    opacity: 0;
+    transform: skewX(-10deg);
+    clip-path: inset(0 100% 0 0);
+    transition:
+      clip-path 0.4s cubic-bezier(0.3, 0.7, 0.4, 1),
+      opacity 0.2s;
+  }
+
+  .done & {
+    color: var(--ink-on-highlight);
+
+    &::before {
+      opacity: 0.85;
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .editing & {
+    text-decoration: underline solid var(--red);
+    text-underline-offset: 4px;
+  }
+}
+
+.has-detail {
+  margin-left: 4px;
+  color: var(--muted);
+  font-size: 0.7em;
+  vertical-align: super;
+}
+
+// Nota con el detalle: aparece mientras el cursor (o el foco) está sobre el nombre.
+.tip {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 8px);
+  left: 0;
+  width: max-content;
+  max-width: min(340px, 80vw);
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-radius: 4px 4px 4px 0;
+  background: #fff8b8;
+  box-shadow: 3px 3px 0 var(--line);
+  color: #1d1b19;
+  font-family: var(--hand);
+  font-size: 1.1rem;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px) rotate(-0.6deg);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  visibility: hidden;
+
+  .name:hover &,
+  .name:focus-within & {
+    opacity: 1;
+    transform: translateY(0) rotate(-0.6deg);
+    visibility: visible;
+  }
+}
+
+.detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 2px dashed var(--soft-line);
+  border-radius: 6px;
+
+  label {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  strong {
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
 }
 
@@ -157,9 +281,11 @@ h2 {
     width: 100%;
   }
 
-  .goal-title {
+  .name {
     flex: 1;
-    min-width: 0;
+  }
+
+  .goal-title {
     font-size: 1.15rem;
   }
 
