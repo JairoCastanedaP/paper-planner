@@ -67,7 +67,10 @@ export interface MonthGoal {
 
 export interface PlannerData {
   version: 1;
-  /** Son los datos de ejemplo del primer uso (se muestra un aviso para borrarlos). */
+  /**
+   * true: son los datos de ejemplo (se muestra el aviso).
+   * false: el usuario ya decidió (conservarlos o empezar en blanco).
+   */
   demo?: boolean;
   categories: Category[];
   events: PlannerEvent[];
