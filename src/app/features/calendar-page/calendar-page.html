@@ -1,0 +1,65 @@
+<main class="page">
+  <div class="toolbar">
+    <div class="segmented" role="tablist" aria-label="Vista">
+      <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="view.set('month')">Mes</button>
+      <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="view.set('year')">Año</button>
+    </div>
+    <div class="account">
+      <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
+      <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user() }}</span>
+      <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <header class="top">
+    <div class="title">
+      <p class="kicker">Paper Planner {{ view() === 'month' ? year() : '· Vista anual' }}</p>
+      <h1>{{ title() }}</h1>
+    </div>
+    <nav class="nav" [attr.aria-label]="view() === 'month' ? 'Cambiar de mes' : 'Cambiar de año'">
+      <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="view() === 'month' ? 'Mes anterior' : 'Año anterior'">‹</button>
+      <button type="button" (click)="goToday()">Hoy</button>
+      <button type="button" class="round" (click)="move(1)" [attr.aria-label]="view() === 'month' ? 'Mes siguiente' : 'Año siguiente'">›</button>
+    </nav>
+  </header>
+
+  @if (view() === 'month') {
+    <app-month-goals [month]="monthKey()" [occurrences]="monthOccurrences()" />
+
+    <app-month-grid
+      [weeks]="weeks()"
+      [month]="monthKey()"
+      [today]="today()"
+      [occurrencesByDay]="occurrencesByDay()"
+      (daySelected)="selectedDate.set($event)"
+      (highlightChange)="onHighlight($event)"
+    />
+
+    <p class="hint">
+      🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
+      (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
+    </p>
+  } @else {
+    <app-year-view
+      [year]="year()"
+      [today]="today()"
+      (monthOpened)="openMonth($event)"
+      (daySelected)="selectedDate.set($event)"
+    />
+
+    <p class="hint">
+      🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
+      Toca el nombre de un mes para abrirlo o un día para ver su detalle.
+    </p>
+  }
+
+  @if (selectedDate(); as date) {
+    <app-day-panel [date]="date" (closed)="selectedDate.set(null)" />
+  }
+
+  @if (themesOpen()) {
+    <app-theme-picker (closed)="themesOpen.set(false)" />
+  }
+
+  <app-reminder-modal />
+</main>

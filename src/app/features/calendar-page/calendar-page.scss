@@ -4,6 +4,56 @@
   padding: 16px 16px 32px;
 }
 
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.segmented {
+  display: inline-flex;
+  overflow: hidden;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+
+  button {
+    border: 0;
+    border-radius: 0;
+    padding: 6px 18px;
+
+    & + button {
+      border-left: 2px solid var(--line);
+    }
+
+    &.active {
+      background: var(--line);
+      color: var(--on-line);
+    }
+  }
+}
+
+.account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ghost {
+  padding: 6px 10px;
+  border-color: var(--soft-line);
+  font-size: 0.88rem;
+}
+
+.user {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
 .top {
   display: flex;
   flex-wrap: wrap;

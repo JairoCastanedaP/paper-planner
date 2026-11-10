@@ -19,6 +19,15 @@ el lápiz de la tablet o el mouse.
   (p. ej. "Clases con IA 8/25" cuenta las actividades resaltadas que coinciden).
 - **Compromisos económicos**: total del mes por moneda (USD / COP).
 - **PWA**: se instala en celular, tablet y computador, y funciona sin conexión.
+- **Vista anual**: los 12 meses con mini calendario (festivos, puntos por categoría, ⭐ importantes)
+  y lo más relevante de cada mes: objetivos, actividades muy importantes, cumpleaños y total económico.
+- **Actividades muy importantes** (⭐) con **recordatorio en ventana modal**: en el momento, 15 min, 1 h,
+  3 h o 1 día antes. Se puede posponer 10 minutos o marcar como visto.
+- **Temas de color**: Estándar (los colores del calendario de papel), Pastel, Océano, Bosque y Nocturno.
+  El tema se guarda en cada dispositivo.
+- **Inicio de sesión** y **cerrar sesión**. Por ahora hay una cuenta temporal (`admin` / `admin`) validada
+  en el navegador: es solo una puerta de entrada, no protege los datos. El **registro** es visual y aún
+  no crea cuentas; ambos se conectarán con Firebase Auth.
 
 Los datos se guardan por ahora en el navegador (`localStorage`). La sincronización entre dispositivos
 llegará con Firebase.
@@ -62,12 +71,20 @@ npm run preview:pwa  # http://localhost:8080
 ```
 src/app/
 ├── core/                 # modelo, fechas, repeticiones, estado y almacenamiento
+│   ├── auth.ts           # sesión temporal y guards de rutas
 │   ├── models.ts
+│   ├── reminders.ts      # recordatorios de actividades muy importantes
+│   ├── themes.ts         # temas de color
 │   ├── planner-store.ts  # estado único con signals; se guarda solo
 │   ├── planner-storage.ts# localStorage hoy, Firebase después
 │   ├── recurrence.ts
 │   └── seed-data.ts      # datos del primer uso (solo categorías)
 └── features/
+    ├── auth/             # login y registro
+    ├── calendar-page/    # pantalla principal: vista mes / año
+    ├── year-view/        # los 12 meses del año
+    ├── theme-picker/     # selector de colores
+    ├── reminder-modal/   # ventana de recordatorio
     ├── month-grid/       # la cuadrícula del mes
     ├── event-chip/       # una actividad + gesto de marcador
     ├── month-goals/      # notas, objetivos y totales del mes

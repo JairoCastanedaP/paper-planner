@@ -14,7 +14,7 @@
         @if (goal.target) {
           <span class="goal-title">{{ goal.title }}</span>
           <span class="bar" role="progressbar" [attr.aria-valuenow]="progress(goal)" aria-valuemin="0" [attr.aria-valuemax]="goal.target">
-            <span class="fill" [style.width.%]="percent(goal)"></span>
+            <span class="fill" [style.width.%]="percent(goal)" [style.--fill]="goalColor(goal)"></span>
           </span>
           <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
         } @else {

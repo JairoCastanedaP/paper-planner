@@ -1,0 +1,40 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<section class="dialog" role="dialog" aria-modal="true" aria-labelledby="theme-title">
+  <header>
+    <h2 id="theme-title">Colores del calendario</h2>
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+  </header>
+
+  <div class="options" role="radiogroup" aria-labelledby="theme-title">
+    @for (t of themes.themes; track t.id) {
+      <button
+        type="button"
+        class="option"
+        role="radio"
+        [attr.aria-checked]="themes.themeId() === t.id"
+        [class.selected]="themes.themeId() === t.id"
+        (click)="themes.select(t.id)"
+      >
+        <span class="preview" [style.background]="t.tokens['--paper']" [style.border-color]="t.tokens['--line']">
+          <span class="bar" [style.background]="t.tokens['--line']"></span>
+          <span class="accent" [style.color]="t.tokens['--red']">Aa</span>
+          <span class="swatches">
+            @for (id of swatchOrder; track id) {
+              <span class="swatch" [style.background]="t.categoryColors[id]"></span>
+            }
+          </span>
+        </span>
+        <span class="text">
+          <strong>{{ t.name }}</strong>
+          <small>{{ t.description }}</small>
+        </span>
+        @if (themes.themeId() === t.id) {
+          <span class="check" aria-hidden="true">✓</span>
+        }
+      </button>
+    }
+  </div>
+
+  <p class="hint">El tema se guarda en este dispositivo.</p>
+</section>

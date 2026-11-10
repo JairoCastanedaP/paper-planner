@@ -97,7 +97,7 @@ h2 {
 .fill {
   display: block;
   height: 100%;
-  background: var(--english);
+  background: var(--fill, var(--red));
   transition: width 0.3s;
 }
 

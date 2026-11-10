@@ -2,6 +2,7 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { newId } from './ids';
 import { MonthGoal, Occurrence, PlannerData, PlannerEvent } from './models';
 import { PlannerStorage } from './planner-storage';
+import { ThemeService } from './themes';
 import { compareOccurrences, occurrenceKey, occursOn } from './recurrence';
 import { createSeedData } from './seed-data';
 
@@ -9,9 +10,14 @@ import { createSeedData } from './seed-data';
 @Injectable({ providedIn: 'root' })
 export class PlannerStore {
   private readonly storage = inject(PlannerStorage);
+  private readonly theme = inject(ThemeService);
   private readonly state = signal<PlannerData>(this.storage.load() ?? createSeedData());
 
-  readonly categories = computed(() => this.state().categories);
+  /** Categorías con el color del tema elegido (si el tema define uno). */
+  readonly categories = computed(() => {
+    const colors = this.theme.theme().categoryColors;
+    return this.state().categories.map((c) => ({ ...c, color: colors[c.id] ?? c.color }));
+  });
   readonly categoryMap = computed(() => new Map(this.categories().map((c) => [c.id, c])));
   readonly events = computed(() => this.state().events);
   readonly goals = computed(() => this.state().goals);

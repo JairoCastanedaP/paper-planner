@@ -1,0 +1,29 @@
+@if (reminders.due(); as due) {
+  @if (due.length) {
+    <div class="backdrop"></div>
+    <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="reminder-title">
+      <p class="bell" aria-hidden="true">⏰</p>
+      <h2 id="reminder-title">{{ due.length === 1 ? 'Se acerca algo importante' : 'Se acercan ' + due.length + ' actividades importantes' }}</h2>
+
+      <ul>
+        @for (r of due; track r.occurrence.key) {
+          <li [style.--cat]="color(r)">
+            <strong>⭐ {{ r.occurrence.event.title }}</strong>
+            <span class="when">{{ when(r) }}</span>
+            @if (r.occurrence.event.notes) {
+              <span class="notes">{{ r.occurrence.event.notes }}</span>
+            }
+            <span class="actions">
+              <button type="button" (click)="reminders.snooze(r.occurrence.key, 10)">Recordar en 10 min</button>
+              <button type="button" class="primary" (click)="reminders.dismiss(r.occurrence.key)">Entendido</button>
+            </span>
+          </li>
+        }
+      </ul>
+
+      @if (due.length > 1) {
+        <button type="button" class="all" (click)="reminders.dismissAll()">Marcar todas como vistas</button>
+      }
+    </section>
+  }
+}

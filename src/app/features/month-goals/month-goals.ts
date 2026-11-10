@@ -66,6 +66,10 @@ export class MonthGoals {
     return goal.target ? Math.min(100, (this.progress(goal) / goal.target) * 100) : 0;
   }
 
+  protected goalColor(goal: MonthGoal): string | null {
+    return goal.categoryId ? (this.store.categoryMap().get(goal.categoryId)?.color ?? null) : null;
+  }
+
   protected toggleDone(goal: MonthGoal): void {
     this.store.saveGoal({ ...goal, done: !goal.done });
   }

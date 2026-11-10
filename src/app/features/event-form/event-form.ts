@@ -4,6 +4,7 @@ import { WEEKDAY_INITIALS, WEEKDAYS, fromKey } from '../../core/dates';
 import { newId } from '../../core/ids';
 import { Currency, PlannerEvent, RecurrenceType } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
+import { DEFAULT_REMINDER_MINUTES } from '../../core/reminders';
 
 interface Draft {
   title: string;
@@ -16,6 +17,8 @@ interface Draft {
   recurrence: RecurrenceType;
   weekdays: boolean[];
   until: string;
+  important: boolean;
+  reminderMinutes: number;
 }
 
 @Component({
@@ -34,6 +37,13 @@ export class EventForm implements OnInit {
   protected readonly store = inject(PlannerStore);
   protected readonly initials = WEEKDAY_INITIALS;
   protected readonly weekdayNames = WEEKDAYS;
+  protected readonly reminderOptions = [
+    { value: 0, label: 'En el momento' },
+    { value: 15, label: '15 minutos antes' },
+    { value: 60, label: '1 hora antes' },
+    { value: 180, label: '3 horas antes' },
+    { value: 1440, label: '1 día antes' },
+  ];
   protected readonly isEdit = computed(() => this.event() !== null);
   protected draft!: Draft;
 
@@ -55,6 +65,8 @@ export class EventForm implements OnInit {
       recurrence: ev?.recurrence.type ?? 'none',
       weekdays,
       until: ev?.recurrence.until ?? '',
+      important: ev?.important ?? false,
+      reminderMinutes: ev?.reminderMinutes ?? DEFAULT_REMINDER_MINUTES,
     };
   }
 
@@ -92,6 +104,8 @@ export class EventForm implements OnInit {
         weekdays: d.recurrence === 'weekly' ? weekdays : undefined,
         until: d.recurrence !== 'none' && d.until ? d.until : undefined,
       },
+      important: d.important || undefined,
+      reminderMinutes: d.important ? Number(d.reminderMinutes) : undefined,
       exceptions: prev?.exceptions,
     });
   }

@@ -13,7 +13,7 @@
 
 .head {
   background: var(--line);
-  color: #fff;
+  color: var(--on-line);
   font-family: var(--display);
   font-size: 0.85rem;
   letter-spacing: 0.06em;
@@ -91,7 +91,7 @@
   .today & {
     border-radius: 50%;
     background: var(--red);
-    color: #fff;
+    color: var(--on-accent);
   }
 }
 

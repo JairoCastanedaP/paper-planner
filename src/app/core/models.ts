@@ -29,6 +29,10 @@ export interface PlannerEvent {
   amount?: number;
   currency?: Currency;
   recurrence: Recurrence;
+  /** "Muy importante": aparece destacada y genera un recordatorio. */
+  important?: boolean;
+  /** Minutos de anticipación del recordatorio (0 = en el momento, 1440 = un día antes). */
+  reminderMinutes?: number;
   /** Días de la serie que se eliminaron individualmente. */
   exceptions?: string[];
 }
