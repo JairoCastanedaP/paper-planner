@@ -1,0 +1,177 @@
+.notes {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cat) 55%, transparent);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.goals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 28px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--hand);
+
+  &.done .goal-title {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+
+  &.money {
+    flex-basis: 100%;
+    font-family: var(--ui);
+    font-size: 0.9rem;
+  }
+}
+
+// Lo más importante del mes: en mayúsculas y grande, como escrito a mano en la hoja.
+.goal-title {
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+
+  input {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--red);
+  }
+}
+
+.bar {
+  overflow: hidden;
+  width: 130px;
+  height: 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  background: var(--english);
+  transition: width 0.3s;
+}
+
+.count {
+  font-family: var(--ui);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.icon-btn {
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+
+  &:hover {
+    color: var(--red);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--red);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.goal-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+
+  input,
+  select {
+    min-width: 0;
+    flex: 1 1 200px;
+  }
+
+  .narrow {
+    flex: 0 1 140px;
+  }
+}
+
+@media (max-width: 640px) {
+  .goal {
+    width: 100%;
+  }
+
+  .goal-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 1.15rem;
+  }
+
+  .bar {
+    width: 64px;
+    flex-shrink: 0;
+  }
+}
+
+.help {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}

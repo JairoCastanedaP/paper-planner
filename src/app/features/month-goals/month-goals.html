@@ -1,0 +1,61 @@
+<section class="notes" aria-labelledby="goals-title">
+  <div class="header">
+    <h2 id="goals-title">Notas del mes</h2>
+    <div class="legend" aria-label="Categorías">
+      @for (c of store.categories(); track c.id) {
+        <span class="tag" [style.--cat]="c.color">{{ c.icon ?? '' }} {{ c.name }}</span>
+      }
+    </div>
+  </div>
+
+  <ul class="goals">
+    @for (goal of goals(); track goal.id) {
+      <li class="goal" [class.done]="goal.done">
+        @if (goal.target) {
+          <span class="goal-title">{{ goal.title }}</span>
+          <span class="bar" role="progressbar" [attr.aria-valuenow]="progress(goal)" aria-valuemin="0" [attr.aria-valuemax]="goal.target">
+            <span class="fill" [style.width.%]="percent(goal)"></span>
+          </span>
+          <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
+        } @else {
+          <label class="check">
+            <input type="checkbox" [checked]="goal.done" (change)="toggleDone(goal)" />
+            <span class="goal-title">{{ goal.title }}</span>
+          </label>
+        }
+        <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="'Eliminar ' + goal.title">×</button>
+      </li>
+    }
+    @if (totals().length) {
+      <li class="goal money">💸 Compromisos económicos: <strong>{{ totals().join(' · ') }}</strong></li>
+    }
+  </ul>
+
+  @if (adding()) {
+    <form class="goal-form" (ngSubmit)="saveDraft()">
+      <input name="title" [(ngModel)]="draft.title" placeholder="Objetivo (p. ej. Leer dos libros)" required autofocus />
+      <input name="target" type="number" min="1" [(ngModel)]="draft.target" placeholder="Meta (opcional)" class="narrow" />
+      @if (draft.target) {
+        <select name="categoryId" [(ngModel)]="draft.categoryId">
+          <option value="">Cualquier categoría</option>
+          @for (c of store.categories(); track c.id) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+        <input name="match" [(ngModel)]="draft.match" placeholder="Título contiene… (opcional)" />
+      }
+      <button type="submit" class="primary">Agregar</button>
+      <button type="button" (click)="adding.set(false)">Cancelar</button>
+      @if (draft.target) {
+        <p class="help">El contador suma las actividades del mes que resaltes con el marcador y coincidan con la categoría y el texto.</p>
+      }
+    </form>
+  } @else {
+    <div class="actions">
+      <button type="button" class="link" (click)="startAdding()">+ Objetivo</button>
+      @if (canCopyPrevious()) {
+        <button type="button" class="link" (click)="copyPrevious()">Copiar objetivos del mes anterior</button>
+      }
+    </div>
+  }
+</section>

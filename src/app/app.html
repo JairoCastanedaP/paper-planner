@@ -1,0 +1,33 @@
+<main class="page">
+  <header class="top">
+    <div class="title">
+      <p class="kicker">Paper Planner {{ year() }}</p>
+      <h1>{{ monthName() }}</h1>
+    </div>
+    <nav class="nav" aria-label="Cambiar de mes">
+      <button type="button" class="round" (click)="move(-1)" aria-label="Mes anterior">‹</button>
+      <button type="button" (click)="goToday()">Hoy</button>
+      <button type="button" class="round" (click)="move(1)" aria-label="Mes siguiente">›</button>
+    </nav>
+  </header>
+
+  <app-month-goals [month]="monthKey()" [occurrences]="monthOccurrences()" />
+
+  <app-month-grid
+    [weeks]="weeks()"
+    [month]="monthKey()"
+    [today]="today()"
+    [occurrencesByDay]="occurrencesByDay()"
+    (daySelected)="selectedDate.set($event)"
+    (highlightChange)="onHighlight($event)"
+  />
+
+  <p class="hint">
+    🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
+    (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
+  </p>
+
+  @if (selectedDate(); as date) {
+    <app-day-panel [date]="date" (closed)="selectedDate.set(null)" />
+  }
+</main>

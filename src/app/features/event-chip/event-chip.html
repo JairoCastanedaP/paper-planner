@@ -1,0 +1,17 @@
+<span
+  class="ink"
+  [class.live]="painting()"
+  [style.width]="'calc(' + paint() * 100 + '% + ' + (paint() > 0 ? 8 : 0) + 'px)'"
+></span>
+<span class="label">
+  @if (category()?.icon; as icon) {
+    <span class="icon">{{ icon }}</span>
+  }
+  @if (time()) {
+    <span class="time">{{ time() }}</span>
+  }
+  <span class="title">{{ occurrence().event.title }}</span>
+  @if (amount()) {
+    <span class="amount">{{ amount() }}</span>
+  }
+</span>

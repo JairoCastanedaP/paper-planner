@@ -1,0 +1,49 @@
+<div class="grid" role="grid" aria-label="Calendario del mes">
+  <div class="head" role="row">
+    @for (name of weekdays; track $index) {
+      <div class="weekday" role="columnheader">
+        <span class="long">{{ name }}</span>
+        <span class="short">{{ name.slice(0, 3) }}</span>
+      </div>
+    }
+  </div>
+
+  @for (week of weeks(); track week[0]) {
+    <div class="week" role="row">
+      @for (day of week; track day) {
+        @let occurrences = occurrencesByDay().get(day) ?? [];
+        @let holiday = holidayOn(day);
+        <div
+          class="cell"
+          role="gridcell"
+          tabindex="0"
+          [class.out]="!inMonth(day)"
+          [class.today]="day === today()"
+          [class.sunday]="$first"
+          [class.holiday]="holiday"
+          [attr.aria-label]="holiday ? day + ', festivo: ' + holiday : day"
+          (click)="daySelected.emit(day)"
+          (keydown.enter)="daySelected.emit(day)"
+        >
+          <div class="day-head">
+            <span class="num">{{ dayNumber(day) }}</span>
+            @if (holiday) {
+              <span class="holiday-name" [attr.title]="holiday">{{ holiday }}</span>
+            }
+          </div>
+          <div class="chips">
+            @for (o of occurrences.slice(0, maxVisible); track o.key) {
+              <app-event-chip
+                [occurrence]="o"
+                (highlightChange)="highlightChange.emit({ key: o.key, on: $event })"
+              />
+            }
+            @if (occurrences.length > maxVisible) {
+              <span class="more">+{{ occurrences.length - maxVisible }} más</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

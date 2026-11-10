@@ -1,0 +1,65 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<aside class="panel" role="dialog" aria-modal="true" [attr.aria-label]="title()">
+  <header>
+    <div>
+      <h2>{{ title() }}</h2>
+      @if (holiday(); as name) {
+        <p class="holiday">Festivo · {{ name }}</p>
+      }
+    </div>
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+  </header>
+
+  @switch (mode().kind) {
+    @case ('list') {
+      @if (occurrences().length === 0) {
+        <p class="empty">No hay actividades este día.</p>
+      }
+
+      <ul class="list">
+        @for (o of occurrences(); track o.key) {
+          <li>
+            <app-event-chip [occurrence]="o" size="large" (highlightChange)="setHighlight(o, $event)" />
+            @if (describe(o.event); as repeat) {
+              <p class="meta">↻ {{ repeat }}</p>
+            }
+            @if (o.event.notes) {
+              <p class="notes">{{ o.event.notes }}</p>
+            }
+
+            @if (confirmingDelete() === o.key) {
+              <div class="confirm">
+                <span>Esta actividad se repite. ¿Qué quieres eliminar?</span>
+                <button type="button" (click)="deleteOne(o)">Solo este día</button>
+                <button type="button" class="danger" (click)="deleteSeries(o)">Toda la serie</button>
+                <button type="button" (click)="confirmingDelete.set(null)">Cancelar</button>
+              </div>
+            } @else {
+              <div class="actions">
+                <button type="button" (click)="setHighlight(o, !o.highlighted)">
+                  {{ o.highlighted ? 'Quitar resaltado' : '🖍 Resaltar' }}
+                </button>
+                <button type="button" (click)="mode.set({ kind: 'edit', event: o.event })">Editar</button>
+                <button type="button" class="danger" (click)="askDelete(o)">Eliminar</button>
+              </div>
+            }
+          </li>
+        }
+      </ul>
+
+      <button type="button" class="primary add" (click)="mode.set({ kind: 'new' })">+ Agregar actividad</button>
+    }
+    @case ('new') {
+      <app-event-form [date]="date()" (saved)="save($event)" (cancelled)="mode.set({ kind: 'list' })" />
+    }
+    @case ('edit') {
+      @if (mode(); as m) {
+        @if (m.kind === 'edit') {
+          <p class="meta">Los cambios aplican a todas las repeticiones.</p>
+          <app-event-form [event]="m.event" [date]="date()" (saved)="save($event)" (cancelled)="mode.set({ kind: 'list' })" />
+        }
+      }
+    }
+  }
+</aside>

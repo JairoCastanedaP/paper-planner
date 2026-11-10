@@ -1,0 +1,101 @@
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 2px dashed var(--soft-line);
+  border-radius: 6px;
+  background: var(--card);
+}
+
+h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+}
+
+label {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+.cat {
+  flex: 0 0 auto;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 10px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cat) 30%, transparent);
+  color: var(--ink);
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.selected {
+    border-color: var(--line);
+    background: var(--cat);
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--red);
+  }
+}
+
+.weekdays {
+  display: flex;
+  gap: 6px;
+
+  button {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: var(--card);
+    font-weight: 700;
+
+    &.on {
+      background: var(--line);
+      color: #fff;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
