@@ -114,3 +114,28 @@ a {
   text-align: center;
   text-decoration: none;
 }
+
+// Botón con apariencia de enlace ("¿Olvidaste tu contraseña?", "Ver la demo").
+button.link {
+  align-self: flex-end;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--red);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: underline;
+
+  &:hover:not(:disabled) {
+    background: none;
+    color: var(--ink);
+  }
+}
+
+.demo {
+  margin-top: 8px;
+
+  button.link {
+    font-size: inherit;
+  }
+}

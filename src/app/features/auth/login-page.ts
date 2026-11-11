@@ -13,21 +13,46 @@ export class LoginPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  protected username = '';
+  protected email = '';
   protected password = '';
   protected readonly error = signal('');
+  protected readonly info = signal('');
+  protected readonly busy = signal(false);
 
-  protected submit(): void {
+  protected async submit(): Promise<void> {
     // Se valida al enviar (y no deshabilitando el botón) para que funcione también con autocompletar.
-    if (!this.username.trim() || !this.password) {
-      this.error.set('Escribe tu usuario y tu contraseña.');
+    this.info.set('');
+    if (!this.email.trim() || !this.password) {
+      this.error.set('Escribe tu correo y tu contraseña.');
       return;
     }
-    if (this.auth.login(this.username, this.password)) {
-      this.router.navigate(['/calendario']);
-    } else {
-      this.error.set('Usuario o contraseña incorrectos.');
+    this.busy.set(true);
+    const error = await this.auth.login(this.email, this.password);
+    this.busy.set(false);
+    if (error) {
+      this.error.set(error);
       this.password = '';
+    } else {
+      this.router.navigate(['/calendario']);
     }
+  }
+
+  protected async forgot(): Promise<void> {
+    this.error.set('');
+    this.info.set('');
+    if (!this.email.trim()) {
+      this.error.set('Escribe tu correo y vuelve a pulsar "¿Olvidaste tu contraseña?".');
+      return;
+    }
+    this.busy.set(true);
+    const error = await this.auth.resetPassword(this.email);
+    this.busy.set(false);
+    if (error) this.error.set(error);
+    else this.info.set(`Si existe una cuenta con ${this.email.trim()}, te enviamos un correo para cambiar la contraseña.`);
+  }
+
+  protected demo(): void {
+    this.auth.enterAsGuest();
+    this.router.navigate(['/calendario']);
   }
 }

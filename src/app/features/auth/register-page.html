@@ -4,41 +4,36 @@
     <p class="kicker">Paper Planner</p>
     <h1>Crear cuenta</h1>
 
-    @if (sent()) {
-      <p class="notice" role="status">
-        El registro de usuarios todavía no está disponible. Muy pronto podrás crear tu cuenta;
-        mientras tanto, inicia sesión con la cuenta existente.
-      </p>
-      <a class="button-link" routerLink="/login">Volver a iniciar sesión</a>
-    } @else {
-      <p class="lead">Organiza tu mes como en papel, con marcador de colores.</p>
+    <p class="lead">Organiza tu mes como en papel, con marcador de colores.</p>
 
-      <form (ngSubmit)="submit()" #form="ngForm">
-        <label>
-          Nombre
-          <input name="name" [(ngModel)]="name" autocomplete="name" required autofocus />
-        </label>
-        <label>
-          Correo electrónico
-          <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required email />
-        </label>
-        <label>
-          Contraseña
-          <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="6" />
-        </label>
-        <label>
-          Confirmar contraseña
-          <input name="confirm" type="password" [(ngModel)]="confirm" autocomplete="new-password" required />
-        </label>
+    <form (ngSubmit)="submit()" #form="ngForm">
+      <label>
+        Nombre
+        <input name="name" [(ngModel)]="name" autocomplete="name" required autofocus />
+      </label>
+      <label>
+        Correo electrónico
+        <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required email />
+      </label>
+      <label>
+        Contraseña
+        <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="6" />
+      </label>
+      <label>
+        Confirmar contraseña
+        <input name="confirm" type="password" [(ngModel)]="confirm" autocomplete="new-password" required />
+      </label>
 
-        @if (mismatch) {
-          <p class="error" role="alert">Las contraseñas no coinciden.</p>
-        }
+      @if (mismatch) {
+        <p class="error" role="alert">Las contraseñas no coinciden.</p>
+      }
+      @if (error()) {
+        <p class="error" role="alert">{{ error() }}</p>
+      }
 
-        <button type="submit" class="primary" [disabled]="form.invalid || mismatch">Crear cuenta</button>
-      </form>
+      <button type="submit" class="primary" [disabled]="form.invalid || mismatch || busy()">{{ busy() ? 'Creando…' : 'Crear cuenta' }}</button>
+    </form>
 
-      <p class="switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
-    }
+    <p class="switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
   </section>
 </main>
