@@ -15,8 +15,8 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     target: 'views',
-    title: 'Mes, año o día',
-    text: 'Cambia entre la vista del mes, la del año completo con lo más importante de cada mes, y la agenda de un día.',
+    title: 'Día, mes o año',
+    text: 'Cambia entre la agenda de un día, la vista del mes y la del año completo con lo más importante de cada mes.',
   },
   {
     target: 'nav',

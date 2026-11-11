@@ -13,9 +13,9 @@
 
       <div class="tools">
         <div class="segmented" role="tablist" aria-label="Vista" data-tour="views">
+          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
           <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="setView('month')">Mes</button>
           <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="setView('year')">Año</button>
-          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
         </div>
         <button type="button" class="icon" (click)="searchOpen.set(true)" title="Buscar ( / )" aria-label="Buscar" data-tour="search">🔍</button>
         <div class="menu-wrap">

@@ -1,8 +1,10 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   Injector,
   afterNextRender,
+  afterRenderEffect,
   computed,
   inject,
   input,
@@ -41,6 +43,7 @@ export class MonthGoals {
   private readonly injector = inject(Injector);
   private readonly titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
   private readonly detailInput = viewChild<ElementRef<HTMLTextAreaElement>>('detailInput');
+  private readonly list = viewChild<ElementRef<HTMLUListElement>>('list');
 
   protected readonly goals = computed(() =>
     this.store.goals().filter((g) => g.month === this.month()),
@@ -76,6 +79,50 @@ export class MonthGoals {
     return e?.mode === 'edit' ? (this.goals().find((g) => g.id === e.id) ?? null) : null;
   });
   protected draft: GoalDraft = toDraft();
+
+  constructor() {
+    // Reacomoda al cambiar los objetivos (o su progreso) y cuando cambia el ancho de la franja.
+    afterRenderEffect(() => {
+      this.goals();
+      this.occurrences();
+      this.pack();
+    });
+    const observer = new ResizeObserver(() => this.pack());
+    afterRenderEffect(() => {
+      const el = this.list()?.nativeElement;
+      observer.disconnect();
+      if (el) observer.observe(el);
+    });
+    inject(DestroyRef).onDestroy(() => observer.disconnect());
+  }
+
+  /**
+   * Acomoda los objetivos por ancho para llenar cada línea antes de empezar otra
+   * ("primero el que quepa", del más ancho al más angosto). Solo cambia el `order` visual;
+   * el orden en el que se leen y recorren con el teclado sigue siendo el original.
+   */
+  private pack(): void {
+    const ul = this.list()?.nativeElement;
+    if (!ul) return;
+    const items = [...ul.children] as HTMLElement[];
+    const available = ul.clientWidth;
+    const gap = parseFloat(getComputedStyle(ul).columnGap) || 0;
+    const sized = items
+      .map((el) => ({ el, width: el.getBoundingClientRect().width }))
+      .sort((a, b) => b.width - a.width);
+    const rows: { left: number; items: HTMLElement[] }[] = [];
+    for (const { el, width } of sized) {
+      const row = rows.find((r) => r.left >= width + gap);
+      if (row) {
+        row.left -= width + gap;
+        row.items.push(el);
+      } else {
+        rows.push({ left: available - width, items: [el] });
+      }
+    }
+    let order = 0;
+    for (const row of rows) for (const el of row.items) el.style.order = String(order++);
+  }
 
   protected progress(goal: MonthGoal): number {
     return goalProgress(goal, this.occurrences());
