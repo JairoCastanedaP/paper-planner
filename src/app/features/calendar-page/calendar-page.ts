@@ -13,7 +13,7 @@ import { hasCurrentConsent } from '../../core/account';
 import { AuthService } from '../../core/auth';
 import { MONTHS, WEEKDAYS, fromKey, monthGrid, monthKeyOf, toKey, todayKey } from '../../core/dates';
 import { Occurrence } from '../../core/models';
-import { PlannerStore } from '../../core/planner-store';
+import { PlannerStore, goalProgress } from '../../core/planner-store';
 import { ReminderService } from '../../core/reminders';
 import { TourService } from '../../core/tour';
 import { AccountDialog } from '../account-dialog/account-dialog';
@@ -58,6 +58,8 @@ type View = 'month' | 'year' | 'day';
     '(document:keydown.arrowright)': 'onArrow($event, 1)',
     '(document:keydown)': 'onShortcut($event)',
     '(window:scroll)': 'onScroll()',
+    '(document:click)': 'menuOpen.set(false)',
+    '(document:keydown.escape)': 'menuOpen.set(false)',
   },
 })
 export class CalendarPage {
@@ -77,6 +79,7 @@ export class CalendarPage {
   protected readonly selectedDate = signal<string | null>(null);
   protected readonly themesOpen = signal(false);
   protected readonly accountOpen = signal(false);
+  protected readonly menuOpen = signal(false);
   /** La cuenta aún no aceptó la versión vigente de la política y los términos. */
   protected readonly needsConsent = signal(false);
   protected readonly categoriesOpen = signal(false);
@@ -196,6 +199,27 @@ export class CalendarPage {
       destroyRef.onDestroy(() => observer.disconnect());
       this.tour.startIfFirstTime();
     });
+  }
+
+  /** Objetivos del mes en una línea, para el encabezado compacto. */
+  protected readonly goalStrip = computed(() => {
+    const month = this.monthKey();
+    const occurrences = this.monthOccurrences();
+    return this.store
+      .goals()
+      .filter((g) => g.month === month)
+      .map((g) => ({
+        id: g.id,
+        title: g.title,
+        done: g.done,
+        count: g.target ? `${goalProgress(g, occurrences)}/${g.target}` : '',
+      }));
+  });
+
+  protected toggleMenu(e: Event): void {
+    // Sin esto, el clic llegaría al documento y cerraría el menú de inmediato.
+    e.stopPropagation();
+    this.menuOpen.update((open) => !open);
   }
 
   protected onScroll(): void {

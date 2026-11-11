@@ -44,14 +44,13 @@ export const TOUR_STEPS: TourStep[] = [
     text: 'Encuentra cualquier actividad u objetivo y cuándo fue la última vez. Atajo: tecla "/".',
   },
   {
-    target: 'customize',
+    target: 'menu',
     title: 'Hazlo tuyo',
-    text: 'Crea tus propias categorías y elige la combinación de colores que más te guste.',
+    text: 'En este menú creas tus categorías, eliges los colores, administras tu cuenta y puedes volver a ver esta guía.',
   },
   {
-    target: 'help',
     title: '¡Listo!',
-    text: 'Puedes volver a ver esta guía cuando quieras desde este botón.',
+    text: 'Ya puedes organizar tu mes. Al bajar, el encabezado se compacta y tus objetivos siguen a la vista.',
   },
 ];
 
