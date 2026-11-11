@@ -17,6 +17,8 @@ export class RegisterPage {
   protected email = '';
   protected password = '';
   protected confirm = '';
+  /** Autorización de tratamiento de datos: casilla sin marcar por defecto (Ley 1581). */
+  protected accepted = false;
   protected readonly error = signal('');
   protected readonly busy = signal(false);
 
@@ -25,11 +27,22 @@ export class RegisterPage {
   }
 
   protected async submit(): Promise<void> {
-    if (this.mismatch) return;
+    if (this.mismatch || !this.accepted) return;
     this.busy.set(true);
     const error = await this.auth.register(this.name, this.email, this.password);
+    if (error) {
+      this.busy.set(false);
+      this.error.set(error);
+      return;
+    }
+    // Prueba de la autorización. Si falla, el calendario la vuelve a pedir al entrar.
+    const uid = this.auth.user()?.uid;
+    if (uid) {
+      await import('../../core/account')
+        .then((m) => m.saveConsent(uid))
+        .catch((e) => console.error(e));
+    }
     this.busy.set(false);
-    if (error) this.error.set(error);
-    else this.router.navigate(['/verificar']);
+    this.router.navigate(['/verificar']);
   }
 }

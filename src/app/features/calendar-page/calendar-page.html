@@ -13,7 +13,7 @@
           <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
         </span>
         <button type="button" class="ghost" (click)="startTour()" title="Ver la guía de uso" data-tour="help">❔ Guía</button>
-        <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user()?.name }}</span>
+        <button type="button" class="ghost user" (click)="accountOpen.set(true)" title="Mi cuenta: tus datos y documentos">👤 {{ auth.user()?.name }}</button>
         <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
       </div>
     </div>
@@ -120,6 +120,14 @@
 
   @if (selectedDate(); as date) {
     <app-day-panel [date]="date" (closed)="selectedDate.set(null)" (expanded)="openDayView($event)" />
+  }
+
+  @if (accountOpen()) {
+    <app-account-dialog (closed)="accountOpen.set(false)" />
+  }
+
+  @if (needsConsent()) {
+    <app-consent-dialog (accepted)="needsConsent.set(false)" (declined)="logout()" />
   }
 
   @if (themesOpen()) {

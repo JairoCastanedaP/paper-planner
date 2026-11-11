@@ -24,6 +24,16 @@
         <input name="confirm" type="password" [(ngModel)]="confirm" autocomplete="new-password" required />
       </label>
 
+      <label class="consent">
+        <input type="checkbox" name="accepted" [(ngModel)]="accepted" required />
+        <span>
+          Acepto los <a routerLink="/terminos" target="_blank">Términos y Condiciones</a> y autorizo el
+          tratamiento de mis datos según la
+          <a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos</a>, incluidos los
+          datos sensibles que decida registrar y su almacenamiento en servidores fuera de Colombia.
+        </span>
+      </label>
+
       @if (mismatch) {
         <p class="error" role="alert">Las contraseñas no coinciden.</p>
       }

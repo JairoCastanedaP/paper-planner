@@ -5,6 +5,9 @@
   </header>
 
   <main>
+    @if (accountDeleted) {
+      <p class="deleted" role="status">✅ Tu cuenta y todos tus datos fueron eliminados.</p>
+    }
     <section class="hero">
       <div class="copy">
         <p class="kicker">Planner {{ year }}</p>
@@ -63,5 +66,8 @@
     </section>
   </main>
 
-  <footer>Paper Planner · Hecho para organizar el día a día</footer>
+  <footer>
+    Paper Planner · Hecho para organizar el día a día ·
+    <a routerLink="/privacidad">Política de datos</a> · <a routerLink="/terminos">Términos</a>
+  </footer>
 </div>

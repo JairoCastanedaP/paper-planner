@@ -170,6 +170,20 @@ export class PlannerStore {
     await Promise.race([this.saveNow(), new Promise((r) => setTimeout(r, 3000))]);
   }
 
+  /** Todo el calendario tal como está (para descargarlo). */
+  snapshot(): PlannerData {
+    return this.state();
+  }
+
+  /** Deja de escuchar y de guardar (antes de eliminar la cuenta). */
+  detach(): void {
+    this.stopWatching?.();
+    this.stopWatching = undefined;
+    clearTimeout(this.pendingSave);
+    this.pendingSave = undefined;
+    this.uid = null;
+  }
+
   /** Sube a la cuenta el calendario que había en este navegador. */
   importBrowserCalendar(): void {
     const data = this.importable();

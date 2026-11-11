@@ -1,0 +1,67 @@
+<main class="legal">
+  <a class="back" routerLink="/">← Volver al inicio</a>
+  <article class="card">
+    <p class="kicker">Paper Planner</p>
+    <h1>Términos y Condiciones de uso</h1>
+    <p class="meta">Vigentes desde el {{ effectiveDate }} · Versión {{ version }}</p>
+
+    <h2>1. Qué es Paper Planner</h2>
+    <p>
+      Paper Planner es un calendario digital para organizar actividades, objetivos y compromisos. Lo
+      ofrece {{ responsible.name }} ({{ responsible.city }}). Al crear una cuenta o usar la app aceptas
+      estos términos.
+    </p>
+
+    <h2>2. Estado del servicio</h2>
+    <p>
+      Paper Planner está en etapa de <strong>demostración</strong>. Se ofrece de forma gratuita y "tal cual",
+      sin garantía de disponibilidad continua. Puede tener fallas, cambiar o dejar de prestarse. Te
+      recomendamos descargar periódicamente tus datos tocando <strong>tu nombre (👤)</strong> arriba a la derecha (<strong>Mi cuenta</strong>).
+    </p>
+
+    <h2>3. Tu cuenta</h2>
+    <ul>
+      <li>Debes registrarte con un correo propio y verificarlo.</li>
+      <li>Eres responsable de mantener tu contraseña en secreto y de lo que se haga con tu cuenta.</li>
+      <li>Puedes eliminar tu cuenta cuando quieras desde la app.</li>
+    </ul>
+
+    <h2>4. Uso aceptable</h2>
+    <p>No está permitido:</p>
+    <ul>
+      <li>Usar el servicio para fines ilegales o para almacenar contenido ilícito.</li>
+      <li>Intentar acceder a cuentas o datos de otras personas.</li>
+      <li>Sobrecargar, atacar o interferir con el funcionamiento del servicio.</li>
+      <li>Usar programas automáticos para crear cuentas o enviar datos.</li>
+    </ul>
+    <p>Las cuentas que incumplan estas reglas pueden ser suspendidas o eliminadas.</p>
+
+    <h2>5. Tu contenido</h2>
+    <p>
+      Lo que registras en tu calendario es tuyo. Solo lo usamos para prestarte el servicio, según la
+      <a routerLink="/privacidad">Política de Tratamiento de Datos Personales</a>.
+    </p>
+
+    <h2>6. Responsabilidad</h2>
+    <p>
+      Paper Planner es una herramienta de apoyo. Los recordatorios dependen de que la app esté abierta y
+      del dispositivo, por lo que no deben ser tu único medio para cumplir compromisos importantes. En la
+      medida permitida por la ley, no respondemos por pérdidas derivadas de fallas del servicio, pérdida de
+      información o compromisos incumplidos.
+    </p>
+
+    <h2>7. Cambios</h2>
+    <p>
+      Podemos actualizar estos términos. Si el cambio es importante, te pediremos aceptarlos de nuevo en la
+      app.
+    </p>
+
+    <h2>8. Ley aplicable y contacto</h2>
+    <p>
+      Estos términos se rigen por las leyes de la República de Colombia. Para cualquier inquietud escribe a
+      <a [href]="'mailto:' + responsible.email">{{ responsible.email }}</a>.
+    </p>
+
+    <p class="links"><a routerLink="/privacidad">Ver la Política de Tratamiento de Datos Personales</a></p>
+  </article>
+</main>

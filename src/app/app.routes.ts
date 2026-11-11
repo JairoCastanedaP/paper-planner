@@ -4,6 +4,8 @@ import { LoginPage } from './features/auth/login-page';
 import { RegisterPage } from './features/auth/register-page';
 import { VerifyPage } from './features/auth/verify-page';
 import { LandingPage } from './features/landing/landing-page';
+import { PrivacyPage } from './features/legal/privacy-page';
+import { TermsPage } from './features/legal/terms-page';
 
 export const routes: Routes = [
   // Bienvenida: solo sin sesión (con sesión se va directo al calendario).
@@ -18,5 +20,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Paper Planner',
   },
+  // Documentos legales: públicos, con o sin sesión.
+  { path: 'privacidad', component: PrivacyPage, title: 'Política de datos · Paper Planner' },
+  { path: 'terminos', component: TermsPage, title: 'Términos y condiciones · Paper Planner' },
   { path: '**', redirectTo: '' },
 ];

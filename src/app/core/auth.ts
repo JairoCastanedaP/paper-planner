@@ -149,7 +149,7 @@ function readGuest(): boolean {
 }
 
 /** Traduce los errores de Firebase Auth a mensajes para el usuario. */
-function authMessage(error: unknown): string {
+export function authMessage(error: unknown): string {
   const code = error instanceof FirebaseError ? error.code : '';
   switch (code) {
     case 'auth/invalid-credential':

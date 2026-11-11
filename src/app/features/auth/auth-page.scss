@@ -155,3 +155,24 @@ button.link {
 .switch button.link {
   font-size: inherit;
 }
+
+// Casilla de autorización en el registro.
+label.consent {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 400;
+  line-height: 1.4;
+
+  input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+  }
+
+  a {
+    font-weight: 600;
+  }
+}

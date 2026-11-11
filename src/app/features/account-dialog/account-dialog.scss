@@ -1,0 +1,125 @@
+.backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  background: rgb(0 0 0 / 40%);
+}
+
+.dialog {
+  position: fixed;
+  z-index: 21;
+  top: 50%;
+  left: 50%;
+  overflow-y: auto;
+  width: min(480px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 18px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  transform: translate(-50%, -50%);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h2 {
+  margin: 0;
+  color: var(--red);
+  font-family: var(--display);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+h3 {
+  margin: 18px 0 4px;
+  font-family: var(--display);
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.close {
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.info {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--card);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.help {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.docs {
+  margin: 0;
+  padding-left: 18px;
+
+  a {
+    color: var(--red);
+    font-weight: 600;
+  }
+}
+
+.danger-title {
+  color: var(--red);
+}
+
+button.danger {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--on-accent);
+
+  &:hover:not(:disabled) {
+    background: var(--red-hover);
+  }
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+.warning {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--red);
+  border-radius: 4px;
+  background: var(--sunday);
+  line-height: 1.45;
+}
+
+.error {
+  margin: 0;
+  color: var(--red);
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
