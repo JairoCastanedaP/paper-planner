@@ -69,6 +69,14 @@
   gap: 6px;
 }
 
+.loading {
+  margin: 48px 0;
+  color: var(--muted);
+  font-family: var(--hand);
+  font-size: 1.3rem;
+  text-align: center;
+}
+
 .storage-alert {
   margin: 0 0 12px;
   padding: 10px 14px;

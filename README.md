@@ -52,8 +52,17 @@ el lápiz de la tablet o el mouse.
 pagos, cumpleaños y objetivos como "10 días de gimnasio: 4/10"), calculado a partir de la fecha actual.
 Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
 
-Los datos se guardan por ahora en el navegador (`localStorage`). La sincronización entre dispositivos
-llegará con Firebase.
+**Dónde se guardan los datos:**
+
+- **Con cuenta:** en Cloud Firestore, bajo `users/{uid}` (`planner/data` con todo el calendario y
+  `dayImages/{fecha}` con cada imagen de fondo). Se sincroniza entre dispositivos y funciona sin internet:
+  Firestore guarda una copia en el dispositivo y sube los cambios al volver la conexión.
+- **Cuenta nueva:** arranca con los datos de ejemplo. Si en ese navegador había un calendario propio,
+  ofrece **subirlo a la cuenta**.
+- **Modo invitado:** en el navegador (`localStorage`).
+
+Las reglas de seguridad están en [`firestore.rules`](firestore.rules): cada cuenta solo lee y escribe sus
+propios datos. Se publican en la consola de Firebase → Firestore Database → Reglas.
 
 ## Stack
 
@@ -95,6 +104,7 @@ npm run preview:pwa  # http://localhost:8080
 src/app/
 ├── core/                 # modelo, fechas, repeticiones, estado y almacenamiento
 │   ├── firebase.ts       # configuración web del proyecto de Firebase
+│   ├── firestore.ts      # Firestore con copia local (se carga con el calendario)
 │   ├── auth.ts           # Firebase Auth, modo invitado y guards de rutas
 │   ├── commemorations.ts # fechas conmemorativas
 │   ├── demo-data.ts      # calendario de ejemplo del primer uso
@@ -104,7 +114,7 @@ src/app/
 │   ├── themes.ts         # temas de color
 │   ├── tour.ts           # pasos de la guía
 │   ├── planner-store.ts  # estado único con signals; se guarda solo
-│   ├── planner-storage.ts# localStorage hoy, Firebase después
+│   ├── planner-storage.ts# Firestore (con cuenta) y localStorage (invitado)
 │   ├── recurrence.ts
 │   └── seed-data.ts      # datos del primer uso (los de ejemplo)
 └── features/

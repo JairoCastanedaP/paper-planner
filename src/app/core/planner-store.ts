@@ -1,9 +1,11 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { AuthService } from './auth';
 import { newId } from './ids';
 import { createEmptyData } from './categories';
 import { Commemoration, builtInCommemorationsOn } from './commemorations';
 import { Category, MonthGoal, Occurrence, PlannerData, PlannerEvent, SpecialDay } from './models';
-import { PlannerStorage } from './planner-storage';
+import { CloudPlannerStorage, LocalPlannerStorage } from './planner-storage';
+import { createDemoData } from './demo-data';
 import { ThemeService } from './themes';
 import { compareOccurrences, occurrenceKey, occursOn } from './recurrence';
 import { createSeedData } from './seed-data';
@@ -15,13 +17,41 @@ export interface UndoEntry {
   previous: PlannerData;
 }
 
-/** Estado único de la app. Cada cambio se guarda automáticamente. */
+/** Espera antes de subir los cambios: agrupa varios seguidos (p. ej. un trazo del marcador). */
+const SAVE_DELAY = 500;
+
+/**
+ * Estado único de la app. Cada cambio se guarda automáticamente:
+ * con cuenta, en Firestore (sincronizado entre dispositivos); en modo invitado, en el navegador.
+ */
 @Injectable({ providedIn: 'root' })
 export class PlannerStore {
-  private readonly storage = inject(PlannerStorage);
+  private readonly auth = inject(AuthService);
+  private readonly local = inject(LocalPlannerStorage);
+  private readonly cloud = inject(CloudPlannerStorage);
   private readonly theme = inject(ThemeService);
-  private readonly state = signal<PlannerData>(initialData(this.storage.load()));
+  private readonly state = signal<PlannerData>(createEmptyData());
   private undoSeq = 0;
+
+  /** Cuenta cuyos datos se muestran: uid, 'guest' (invitado) o null (sin sesión). */
+  private readonly owner = computed(() => {
+    const user = this.auth.user();
+    return user ? (user.guest ? 'guest' : user.uid) : null;
+  });
+  /** uid de la cuenta en la nube (null en modo invitado). */
+  private uid: string | null = null;
+  /** Lo último que se guardó en la nube (para subir solo las imágenes que cambiaron). */
+  private saved: PlannerData | null = null;
+  private pendingSave: ReturnType<typeof setTimeout> | undefined;
+  private inFlight = 0;
+  private stopWatching: (() => void) | undefined;
+
+  /** true mientras llegan los datos de la cuenta. */
+  readonly loading = signal(true);
+  /** true si no se pudieron leer los datos de la cuenta. */
+  readonly loadFailed = signal(false);
+  /** Calendario guardado en este navegador que se puede subir a la cuenta nueva. */
+  readonly importable = signal<PlannerData | null>(null);
 
   /** Disponible solo hasta el siguiente cambio: deshacer restaura el estado anterior completo. */
   readonly undo = signal<UndoEntry | null>(null);
@@ -43,11 +73,112 @@ export class PlannerStore {
   /** Se están viendo los datos de ejemplo. */
   readonly isDemo = computed(() => !!this.state().demo);
 
-  /** true si el último guardado falló (normalmente: almacenamiento del navegador lleno). */
+  /** true si el último guardado falló. */
   readonly saveFailed = signal(false);
 
   constructor() {
-    effect(() => this.saveFailed.set(!this.storage.save(this.state())));
+    effect(() => {
+      const owner = this.owner();
+      untracked(() => this.open(owner));
+    });
+  }
+
+  /** Carga los datos de quien inició sesión (y deja de escuchar los de la cuenta anterior). */
+  private open(owner: string | null): void {
+    this.stopWatching?.();
+    this.stopWatching = undefined;
+    clearTimeout(this.pendingSave);
+    this.pendingSave = undefined;
+    this.uid = null;
+    this.saved = null;
+    this.undo.set(null);
+    this.importable.set(null);
+    this.saveFailed.set(false);
+    this.loadFailed.set(false);
+
+    if (owner === null) {
+      this.loading.set(true);
+      return;
+    }
+    if (owner === 'guest') {
+      this.state.set(initialData(this.local.load()));
+      this.loading.set(false);
+      return;
+    }
+
+    this.uid = owner;
+    this.loading.set(true);
+    this.stopWatching = this.cloud.watch(
+      owner,
+      (data) => {
+        // Mientras haya cambios propios sin confirmar, manda lo que hay en pantalla.
+        if (this.uid !== owner || this.pendingSave !== undefined || this.inFlight > 0) return;
+        if (data) {
+          this.saved = data;
+          this.state.set(data);
+          this.importable.set(null);
+        } else if (this.loading()) {
+          // Cuenta nueva: datos de ejemplo (no se guardan hasta el primer cambio).
+          this.state.set(createDemoData());
+          this.importable.set(browserCalendar(this.local.load()));
+        }
+        this.loading.set(false);
+      },
+      (error) => {
+        console.error(error);
+        this.loadFailed.set(true);
+        this.loading.set(false);
+      },
+    );
+  }
+
+  private persist(): void {
+    if (this.uid === null) {
+      this.saveFailed.set(!this.local.save(this.state()));
+      return;
+    }
+    clearTimeout(this.pendingSave);
+    this.pendingSave = setTimeout(() => this.saveNow(), SAVE_DELAY);
+  }
+
+  private saveNow(): Promise<void> {
+    clearTimeout(this.pendingSave);
+    this.pendingSave = undefined;
+    const uid = this.uid;
+    if (uid === null) return Promise.resolve();
+    const data = this.state();
+    const previous = this.saved;
+    this.saved = data;
+    this.inFlight++;
+    return this.cloud
+      .save(uid, data, previous)
+      .then(
+        () => this.saveFailed.set(false),
+        (error) => {
+          console.error(error);
+          this.saved = previous;
+          this.saveFailed.set(true);
+        },
+      )
+      .finally(() => this.inFlight--);
+  }
+
+  /** Sube ya los cambios pendientes (antes de cerrar sesión). Sin internet no espera más de 3 s. */
+  async flush(): Promise<void> {
+    if (this.pendingSave === undefined) return;
+    await Promise.race([this.saveNow(), new Promise((r) => setTimeout(r, 3000))]);
+  }
+
+  /** Sube a la cuenta el calendario que había en este navegador. */
+  importBrowserCalendar(): void {
+    const data = this.importable();
+    if (!data) return;
+    this.importable.set(null);
+    this.commit(() => ({ ...data, demo: false }), 'Se subió el calendario de este navegador');
+  }
+
+  dismissImport(): void {
+    this.importable.set(null);
   }
 
   /** Aplica un cambio. Con `undoMessage` se puede deshacer; cualquier otro cambio cierra esa opción. */
@@ -57,6 +188,7 @@ export class PlannerStore {
     if (next === previous) return;
     this.state.set(next);
     this.undo.set(undoMessage ? { id: ++this.undoSeq, message: undoMessage, previous } : null);
+    this.persist();
   }
 
   /** Borra los datos de ejemplo y deja el calendario en blanco (se puede deshacer). */
@@ -75,6 +207,7 @@ export class PlannerStore {
     if (!entry) return;
     this.state.set(entry.previous);
     this.undo.set(null);
+    this.persist();
   }
 
   dismissUndo(id: number): void {
@@ -252,6 +385,20 @@ function initialData(stored: PlannerData | null): PlannerData {
     !stored.specialDays?.length &&
     !Object.keys(stored.dayImages ?? {}).length;
   return untouched ? createSeedData() : stored;
+}
+
+/**
+ * El calendario guardado en el navegador, si tiene datos propios (no los de ejemplo).
+ * En `npm run start:local` incluye los datos personales de `seed-data.local.ts`.
+ */
+function browserCalendar(stored: PlannerData | null): PlannerData | null {
+  const data = initialData(stored);
+  const hasContent =
+    data.events.length > 0 ||
+    data.goals.length > 0 ||
+    !!data.specialDays?.length ||
+    Object.keys(data.dayImages ?? {}).length > 0;
+  return !data.demo && hasContent ? data : null;
 }
 
 function upsert<T extends { id: string }>(list: T[], item: T): T[] {

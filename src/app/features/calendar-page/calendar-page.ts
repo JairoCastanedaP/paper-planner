@@ -264,6 +264,7 @@ export class CalendarPage {
   }
 
   protected async logout(): Promise<void> {
+    await this.store.flush();
     await this.auth.logout();
     // Al cerrar sesión se vuelve a la pantalla de bienvenida.
     this.router.navigate(['/']);
