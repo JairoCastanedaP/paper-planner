@@ -14,6 +14,8 @@ import { AuthService } from '../../core/auth';
 import { MONTHS, WEEKDAYS, fromKey, monthGrid, monthKeyOf, toKey, todayKey } from '../../core/dates';
 import { Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
+import { PreferencesService } from '../../core/preferences';
+import { quoteOfMonth } from '../../core/quotes';
 import { ReminderService } from '../../core/reminders';
 import { TourService } from '../../core/tour';
 import { AccountDialog } from '../account-dialog/account-dialog';
@@ -80,6 +82,7 @@ export class CalendarPage {
   protected readonly themesOpen = signal(false);
   protected readonly accountOpen = signal(false);
   protected readonly menuOpen = signal(false);
+  protected readonly prefs = inject(PreferencesService);
   /** La cuenta aún no aceptó la versión vigente de la política y los términos. */
   protected readonly needsConsent = signal(false);
   protected readonly categoriesOpen = signal(false);
@@ -214,6 +217,12 @@ export class CalendarPage {
         done: g.done,
         count: g.target ? `${goalProgress(g, occurrences)}/${g.target}` : '',
       }));
+  });
+
+  /** Frase del mes que se está viendo (en la vista de día, la del mes de ese día). */
+  protected readonly quote = computed(() => {
+    const d = this.view() === 'day' ? fromKey(this.day()) : new Date(this.year(), this.month(), 1);
+    return quoteOfMonth(d.getFullYear(), d.getMonth());
   });
 
   protected toggleMenu(e: Event): void {

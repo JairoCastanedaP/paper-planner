@@ -1,4 +1,4 @@
-@if (image() || holiday() || commemorations().length || isToday()) {
+@if (image() || holiday() || commemorations().length || isToday() || moon()) {
   <section class="hero" [class.with-image]="image()" [style.--bg]="image() ? 'url(' + image() + ')' : null">
     <div class="badges">
       @if (isToday()) {
@@ -6,6 +6,12 @@
       }
       @if (holiday(); as name) {
         <span class="badge holiday">Festivo · {{ name }}</span>
+      }
+      @if (moon(); as m) {
+        <span class="badge special">
+          <span class="emoji">{{ m.emoji }}</span>
+          {{ m.name }} · {{ m.at.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' }) }}
+        </span>
       }
       @for (c of commemorations(); track c.name) {
         <span class="badge special">
