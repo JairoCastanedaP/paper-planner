@@ -17,6 +17,8 @@ interface MiniDay {
 interface Note {
   icon: string;
   text: string;
+  /** Progreso del objetivo (p. ej. "8/25"): va aparte para que nunca se corte. */
+  count?: string;
   color?: string;
   detail?: string;
   done?: boolean;
@@ -90,10 +92,10 @@ export class YearView {
     }
 
     for (const goal of this.store.goals().filter((g) => g.month === key)) {
-      const count = goal.target ? ` ${goalProgress(goal, monthOccurrences)}/${goal.target}` : '';
       notes.push({
         icon: goal.done ? '✅' : '🎯',
-        text: goal.title.toUpperCase() + count,
+        text: goal.title.toUpperCase(),
+        count: goal.target ? `${goalProgress(goal, monthOccurrences)}/${goal.target}` : undefined,
         detail: goal.detail,
         done: goal.done,
       });
