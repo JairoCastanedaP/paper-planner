@@ -26,6 +26,8 @@ export class LandingPage {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   protected readonly year = new Date().getFullYear();
+  /** Se llega aquí justo después de eliminar la cuenta. */
+  protected readonly accountDeleted = !!history.state?.accountDeleted;
 
   /** Entrar sin cuenta con los datos de ejemplo. */
   protected demo(): void {

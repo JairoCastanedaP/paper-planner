@@ -1,0 +1,57 @@
+<div class="backdrop" (click)="close()"></div>
+
+<section class="dialog" role="dialog" aria-modal="true" aria-labelledby="account-title">
+  <header>
+    <h2 id="account-title">Mi cuenta</h2>
+    <button type="button" class="close" (click)="close()" aria-label="Cerrar">×</button>
+  </header>
+
+  @if (auth.user(); as user) {
+    @if (user.guest) {
+      <p class="info">Estás usando la demo <strong>sin cuenta</strong>: los datos se guardan solo en este navegador.</p>
+    } @else {
+      <p class="info">
+        <strong>{{ user.name }}</strong><br />
+        {{ user.email }}
+      </p>
+    }
+  }
+
+  <h3>Tus datos</h3>
+  <p class="help">Descarga una copia de todo tu calendario (actividades, objetivos, resaltados e imágenes) en un archivo.</p>
+  <button type="button" (click)="download()">⬇️ Descargar mis datos</button>
+
+  <h3>Documentos</h3>
+  <ul class="docs">
+    <li><a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos Personales</a></li>
+    <li><a routerLink="/terminos" target="_blank">Términos y Condiciones</a></li>
+  </ul>
+
+  @if (!auth.user()?.guest) {
+    <h3 class="danger-title">Eliminar cuenta</h3>
+    @if (!confirmingDelete()) {
+      <p class="help">Borra tu cuenta y todo tu calendario de forma permanente.</p>
+      <button type="button" class="danger" (click)="confirmingDelete.set(true)">Eliminar mi cuenta</button>
+    } @else {
+      <form class="confirm" (ngSubmit)="remove()">
+        <p class="warning">
+          ⚠️ Esto borra <strong>para siempre</strong> tu cuenta y todo tu calendario. No se puede deshacer.
+          Si quieres conservar una copia, descarga tus datos antes.
+        </p>
+        <label>
+          Escribe tu contraseña para confirmar
+          <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
+        </label>
+        @if (error()) {
+          <p class="error" role="alert">{{ error() }}</p>
+        }
+        <div class="buttons">
+          <button type="button" (click)="confirmingDelete.set(false)" [disabled]="busy()">Cancelar</button>
+          <button type="submit" class="danger" [disabled]="busy()">
+            {{ busy() ? 'Eliminando…' : 'Eliminar definitivamente' }}
+          </button>
+        </div>
+      </form>
+    }
+  }
+</section>

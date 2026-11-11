@@ -20,15 +20,20 @@ service cloud.firestore {
       return request.resource.data;
     }
 
-    // Perfil: qué versión de la política y los términos aceptó y cuándo.
+    function isSignedInAs(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Perfil: prueba de la autorización (qué versión de la política y los términos aceptó y cuándo).
+    // Se puede escribir sin el correo verificado porque se guarda justo al registrarse.
     match /users/{uid} {
-      allow read, delete: if isOwner(uid);
-      allow create, update: if isOwner(uid)
-        && incoming().keys().hasOnly(['name', 'privacyVersion', 'termsVersion', 'acceptedAt'])
+      allow read: if isSignedInAs(uid);
+      allow delete: if isOwner(uid);
+      allow create, update: if isSignedInAs(uid)
+        && incoming().keys().hasOnly(['privacyVersion', 'termsVersion', 'acceptedAt'])
         && incoming().privacyVersion is string && incoming().privacyVersion.size() <= 20
         && incoming().termsVersion is string && incoming().termsVersion.size() <= 20
-        && incoming().acceptedAt == request.time
-        && (!('name' in incoming()) || (incoming().name is string && incoming().name.size() <= 100));
+        && incoming().acceptedAt == request.time;
 
       // Todo el calendario en un documento (menos las imágenes).
       match /planner/{docId} {

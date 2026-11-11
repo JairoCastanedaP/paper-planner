@@ -74,6 +74,16 @@ Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
 - **Al cerrar sesión** se borra la copia local de Firestore del navegador.
 - **Aviso de versión nueva**: la app instalada revisa si hay una versión publicada y ofrece "Actualizar".
 
+## Privacidad y datos personales (Ley 1581 de 2012)
+
+- **Política de Tratamiento de Datos** (`/privacidad`) y **Términos y Condiciones** (`/terminos`). Los datos
+  del responsable y las versiones vigentes están en [`src/app/core/legal.ts`](src/app/core/legal.ts).
+- **Autorización** en el registro (casilla sin marcar). Se guarda la prueba en `users/{uid}`: versiones
+  aceptadas y fecha del servidor. Si la política cambia (nueva versión en `legal.ts`), la app la vuelve a
+  pedir al entrar.
+- **Mi cuenta** (tocando el nombre): descargar todos los datos en `.json` y eliminar la cuenta con todo su
+  contenido (pide la contraseña).
+
 ## Stack
 
 - Angular 22 (componentes standalone, signals, sin zone.js)

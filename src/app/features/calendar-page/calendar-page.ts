@@ -9,13 +9,16 @@ import {
   viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { hasCurrentConsent } from '../../core/account';
 import { AuthService } from '../../core/auth';
 import { MONTHS, WEEKDAYS, fromKey, monthGrid, monthKeyOf, toKey, todayKey } from '../../core/dates';
 import { Occurrence } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
 import { ReminderService } from '../../core/reminders';
 import { TourService } from '../../core/tour';
+import { AccountDialog } from '../account-dialog/account-dialog';
 import { CategoryManager } from '../category-manager/category-manager';
+import { ConsentDialog } from '../consent-dialog/consent-dialog';
 import { DayPanel } from '../day-panel/day-panel';
 import { DayView } from '../day-view/day-view';
 import { FilterBar } from '../filter-bar/filter-bar';
@@ -45,6 +48,8 @@ type View = 'month' | 'year' | 'day';
     SearchPanel,
     UndoToast,
     TourOverlay,
+    AccountDialog,
+    ConsentDialog,
   ],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.scss',
@@ -71,6 +76,9 @@ export class CalendarPage {
   protected readonly day = signal(todayKey());
   protected readonly selectedDate = signal<string | null>(null);
   protected readonly themesOpen = signal(false);
+  protected readonly accountOpen = signal(false);
+  /** La cuenta aún no aceptó la versión vigente de la política y los términos. */
+  protected readonly needsConsent = signal(false);
   protected readonly categoriesOpen = signal(false);
   protected readonly searchOpen = signal(false);
   /** Categorías filtradas (vacío = todas). */
@@ -170,6 +178,13 @@ export class CalendarPage {
   });
 
   constructor() {
+    const user = this.auth.user();
+    if (user && !user.guest) {
+      // Sin conexión no se puede comprobar: se vuelve a revisar en la próxima visita.
+      hasCurrentConsent(user.uid)
+        .then((ok) => this.needsConsent.set(!ok))
+        .catch((e) => console.warn('No se pudo revisar la autorización', e));
+    }
     const destroyRef = inject(DestroyRef);
     // La altura del encabezado fijo la usa la fila de días de la semana para quedar justo debajo.
     afterNextRender(() => {
@@ -283,6 +298,8 @@ export class CalendarPage {
     const overlayOpen =
       this.selectedDate() ||
       this.themesOpen() ||
+      this.accountOpen() ||
+      this.needsConsent() ||
       this.categoriesOpen() ||
       this.searchOpen() ||
       this.tour.step() ||

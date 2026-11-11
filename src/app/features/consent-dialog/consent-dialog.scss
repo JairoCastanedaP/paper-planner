@@ -1,0 +1,62 @@
+.backdrop {
+  position: fixed;
+  z-index: 70;
+  inset: 0;
+  background: rgb(0 0 0 / 55%);
+}
+
+.dialog {
+  position: fixed;
+  z-index: 71;
+  top: 50%;
+  left: 50%;
+  overflow-y: auto;
+  width: min(480px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--line);
+  line-height: 1.5;
+  transform: translate(-50%, -50%);
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: var(--red);
+  font-family: var(--display);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0;
+
+  input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+  }
+
+  a {
+    color: var(--red);
+    font-weight: 600;
+  }
+}
+
+.error {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}

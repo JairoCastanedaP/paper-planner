@@ -1,0 +1,123 @@
+<main class="legal">
+  <a class="back" routerLink="/">← Volver al inicio</a>
+  <article class="card">
+    <p class="kicker">Paper Planner</p>
+    <h1>Política de Tratamiento de Datos Personales</h1>
+    <p class="meta">Vigente desde el {{ effectiveDate }} · Versión {{ version }}</p>
+
+    <p>
+      Esta política explica cómo se tratan los datos personales de quienes usan Paper Planner, en
+      cumplimiento de la Ley 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto 1074 de
+      2015) y demás normas colombianas sobre protección de datos personales (habeas data).
+    </p>
+
+    <h2>1. Responsable del tratamiento</h2>
+    <ul class="plain">
+      <li><strong>Nombre:</strong> {{ responsible.name }}</li>
+      <li><strong>Domicilio:</strong> {{ responsible.city }}</li>
+      <li><strong>Correo de contacto:</strong> <a [href]="'mailto:' + responsible.email">{{ responsible.email }}</a></li>
+    </ul>
+
+    <h2>2. Qué datos recogemos</h2>
+    <ul>
+      <li><strong>Datos de la cuenta:</strong> nombre, correo electrónico y contraseña. La contraseña la
+        gestiona Firebase Authentication (Google) y nunca la conocemos ni la almacenamos.</li>
+      <li><strong>Contenido de tu calendario:</strong> actividades, notas, objetivos, montos, categorías,
+        cumpleaños, días especiales e imágenes de fondo que tú mismo registres.</li>
+      <li><strong>Prueba de tu autorización:</strong> la versión de esta política y de los términos que
+        aceptaste, y la fecha.</li>
+      <li><strong>Datos técnicos mínimos</strong> que los proveedores registran para operar el servicio
+        (por ejemplo, la dirección IP en los registros de acceso de Google y Cloudflare).</li>
+    </ul>
+    <p>
+      No usamos herramientas de analítica, publicidad ni cookies de rastreo. La app guarda en tu
+      navegador solo lo necesario para funcionar (sesión, tema de colores, copia para usarla sin internet).
+    </p>
+
+    <h2>3. Datos sensibles</h2>
+    <p>
+      Tu calendario puede contener información que la ley considera sensible, como citas médicas o datos
+      de salud. <strong>No estás obligado a registrar datos sensibles</strong>: hacerlo es opcional. Si los
+      registras, autorizas su tratamiento únicamente para las finalidades de esta política.
+    </p>
+
+    <h2>4. Para qué usamos los datos</h2>
+    <ul>
+      <li>Crear y administrar tu cuenta e iniciar sesión.</li>
+      <li>Guardar tu calendario y sincronizarlo entre tus dispositivos.</li>
+      <li>Enviarte correos del servicio: verificación de la cuenta y recuperación de contraseña.</li>
+      <li>Atender tus consultas y reclamos, y cumplir obligaciones legales.</li>
+      <li>Proteger la seguridad del servicio.</li>
+    </ul>
+    <p>No vendemos ni compartimos tus datos con terceros para fines comerciales.</p>
+
+    <h2>5. Dónde se guardan y quién los procesa</h2>
+    <p>
+      Los datos se almacenan con <strong>Google Firebase</strong> (Authentication y Cloud Firestore) en
+      servidores ubicados en São Paulo, Brasil, y la aplicación se publica con <strong>Cloudflare</strong>.
+      Ambos actúan como encargados del tratamiento. Al aceptar esta política autorizas expresamente la
+      <strong>transferencia y transmisión internacional</strong> de tus datos a estos proveedores, que
+      aplican estándares de seguridad reconocidos.
+    </p>
+
+    <h2>6. Seguridad</h2>
+    <ul>
+      <li>Toda la información viaja cifrada (HTTPS) y se guarda cifrada en los servidores de Google.</li>
+      <li>Cada cuenta solo puede acceder a sus propios datos; el acceso exige verificar el correo.</li>
+      <li>Al cerrar sesión se borra la copia del calendario guardada en el navegador.</li>
+      <li>
+        El administrador del servicio podría acceder técnicamente a la información almacenada; solo lo hará
+        cuando sea necesario para soporte que tú solicites, por seguridad o por orden de autoridad competente.
+      </li>
+    </ul>
+
+    <h2>7. Tus derechos</h2>
+    <p>Como titular de los datos puedes:</p>
+    <ul>
+      <li>Conocer, actualizar y rectificar tus datos.</li>
+      <li>Pedir prueba de la autorización que otorgaste.</li>
+      <li>Saber qué uso se ha dado a tus datos.</li>
+      <li>Revocar la autorización y pedir la supresión de tus datos.</li>
+      <li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC) después de agotar el
+        trámite de consulta o reclamo con el responsable.</li>
+      <li>Acceder gratuitamente a tus datos.</li>
+    </ul>
+    <p>
+      Dentro de la app, tocando <strong>tu nombre (👤)</strong> arriba a la derecha (<strong>Mi cuenta</strong>), puedes <strong>descargar todos tus datos</strong>
+      y <strong>eliminar tu cuenta</strong> con todo su contenido en cualquier momento.
+    </p>
+
+    <h2>8. Cómo hacer consultas y reclamos</h2>
+    <p>
+      Escribe a <a [href]="'mailto:' + responsible.email">{{ responsible.email }}</a> indicando tu nombre, el
+      correo de tu cuenta, lo que solicitas y cómo quieres recibir la respuesta.
+    </p>
+    <ul>
+      <li><strong>Consultas:</strong> se responden en máximo 10 días hábiles, prorrogables por 5 días
+        hábiles más avisándote el motivo.</li>
+      <li><strong>Reclamos</strong> (corrección, actualización, supresión o incumplimiento): se responden en
+        máximo 15 días hábiles, prorrogables por 8 días hábiles más avisándote el motivo. Si el reclamo
+        está incompleto, te pediremos completarlo dentro de los 5 días siguientes.</li>
+    </ul>
+
+    <h2>9. Cuánto tiempo guardamos los datos</h2>
+    <p>
+      Mientras tu cuenta esté activa. Si eliminas la cuenta, se borran tu calendario y tu perfil de
+      inmediato; las copias técnicas de los proveedores se eliminan según sus propios plazos.
+    </p>
+
+    <h2>10. Menores de edad</h2>
+    <p>
+      El servicio está dirigido a mayores de 18 años. Los menores solo pueden usarlo con autorización de su
+      representante legal.
+    </p>
+
+    <h2>11. Cambios a esta política</h2>
+    <p>
+      Si la política cambia de forma importante, te lo informaremos en la app y te pediremos aceptar la
+      nueva versión antes de seguir usándola.
+    </p>
+
+    <p class="links"><a routerLink="/terminos">Ver los Términos y Condiciones</a></p>
+  </article>
+</main>
