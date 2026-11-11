@@ -17,7 +17,8 @@
       </label>
       <label>
         Contraseña
-        <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="6" />
+        <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="8" aria-describedby="password-hint" />
+        <small id="password-hint" class="hint">Mínimo 8 caracteres, con letras minúsculas y números.</small>
       </label>
       <label>
         Confirmar contraseña
