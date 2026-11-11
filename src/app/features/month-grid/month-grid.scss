@@ -40,7 +40,7 @@
 .cell {
   display: flex;
   min-width: 0;
-  min-height: 118px;
+  min-height: 92px;
   flex-direction: column;
   gap: 3px;
   padding: 4px;
@@ -118,6 +118,15 @@
   gap: 4px;
 }
 
+// Actividades a la derecha del número (cuando el día tiene más de dos).
+.beside {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
 // Fase de la luna junto al número del día.
 .moon {
   flex: none;
@@ -190,9 +199,14 @@
   }
 
   .cell {
-    min-height: 92px;
+    min-height: 84px;
     gap: 2px;
     padding: 2px;
+  }
+
+  // En el celular el número va arriba y las actividades debajo, a todo el ancho.
+  .beside {
+    width: 100%;
   }
 
   .num {

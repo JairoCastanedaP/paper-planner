@@ -8,6 +8,18 @@ import { PlannerStore } from '../../core/planner-store';
 import { PreferencesService } from '../../core/preferences';
 import { EventChip } from '../event-chip/event-chip';
 
+/** Cómo se reparten las actividades de un día: junto al número y debajo. */
+interface DayLayout {
+  beside: Occurrence[];
+  below: Occurrence[];
+  hidden: number;
+}
+
+/** Desde cuántas actividades se aprovecha el espacio junto al número. */
+const BESIDE_FROM = 3;
+/** Cuántas caben junto al número (apiladas a la altura del número). */
+const BESIDE_MAX = 2;
+
 export interface HighlightChange {
   key: string;
   on: boolean;
@@ -44,6 +56,23 @@ export class MonthGrid {
 
   protected moonLabel(phase: MoonPhase): string {
     return `${phase.name} · ${phase.at.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`;
+  }
+
+  /**
+   * Con más de dos actividades, las primeras (las ⭐ importantes antes) van a la derecha
+   * del número, que si no queda vacío; así cada día ocupa menos alto. Con festivo no,
+   * porque ese espacio lo usa el nombre del festivo.
+   */
+  protected layout(occurrences: Occurrence[], holiday: string | undefined): DayLayout {
+    if (occurrences.length < BESIDE_FROM || holiday) {
+      const below = occurrences.slice(0, this.maxVisible);
+      return { beside: [], below, hidden: occurrences.length - below.length };
+    }
+    const ranked = [...occurrences].sort((a, b) => Number(!!b.event.important) - Number(!!a.event.important));
+    const beside = ranked.slice(0, BESIDE_MAX);
+    const rest = occurrences.filter((o) => !beside.includes(o));
+    const below = rest.slice(0, this.maxVisible - 1);
+    return { beside, below, hidden: rest.length - below.length };
   }
 
   protected dayNumber(date: string): number {
