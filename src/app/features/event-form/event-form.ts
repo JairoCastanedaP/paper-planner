@@ -1,9 +1,10 @@
 import { Component, OnInit, computed, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { WEEKDAY_INITIALS, WEEKDAYS, fromKey } from '../../core/dates';
+import { MONTHS, WEEKDAY_INITIALS, WEEKDAYS, endOfMonthKey, fromKey } from '../../core/dates';
 import { newId } from '../../core/ids';
 import { Currency, PlannerEvent, RecurrenceType } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
+import { describeRecurrence } from '../../core/recurrence';
 import { DEFAULT_REMINDER_MINUTES } from '../../core/reminders';
 
 interface Draft {
@@ -16,6 +17,8 @@ interface Draft {
   currency: Currency;
   recurrence: RecurrenceType;
   weekdays: boolean[];
+  /** Hasta cuándo se repite: nunca termina, al final del mes de inicio o en una fecha. */
+  ends: 'never' | 'month' | 'date';
   until: string;
   important: boolean;
   reminderMinutes: number;
@@ -64,6 +67,7 @@ export class EventForm implements OnInit {
       currency: ev?.currency ?? 'USD',
       recurrence: ev?.recurrence.type ?? 'none',
       weekdays,
+      ends: !ev?.recurrence.until ? 'never' : ev.recurrence.until === endOfMonthKey(date) ? 'month' : 'date',
       until: ev?.recurrence.until ?? '',
       important: ev?.important ?? false,
       reminderMinutes: ev?.reminderMinutes ?? DEFAULT_REMINDER_MINUTES,
@@ -77,6 +81,34 @@ export class EventForm implements OnInit {
     }
   }
 
+  /** 'noviembre': el mes en que empieza la repetición. */
+  protected startMonth(): string {
+    return this.draft.date ? MONTHS[fromKey(this.draft.date).getMonth()].toLowerCase() : 'el mes';
+  }
+
+  /** Fecha final según la opción de "Termina" ('' = nunca). */
+  private untilKey(): string {
+    const d = this.draft;
+    if (d.recurrence === 'none' || !d.date) return '';
+    if (d.ends === 'month') return endOfMonthKey(d.date);
+    if (d.ends === 'date') return d.until;
+    return '';
+  }
+
+  /** Resumen en palabras, p. ej. "Cada lun, mié, vie, hasta el 30 de noviembre de 2026". */
+  protected repeatSummary(): string {
+    const d = this.draft;
+    if (!d.date) return '';
+    return describeRecurrence({
+      date: d.date,
+      recurrence: {
+        type: d.recurrence,
+        weekdays: d.weekdays.flatMap((on, i) => (on ? [i] : [])),
+        until: this.untilKey() || undefined,
+      },
+    } as PlannerEvent);
+  }
+
   protected toggleWeekday(i: number): void {
     this.draft.weekdays[i] = !this.draft.weekdays[i];
   }
@@ -88,6 +120,8 @@ export class EventForm implements OnInit {
 
     const weekdays = d.weekdays.flatMap((on, i) => (on ? [i] : []));
     if (d.recurrence === 'weekly' && weekdays.length === 0) return;
+    const until = this.untilKey();
+    if (d.recurrence !== 'none' && d.ends === 'date' && (!until || until < d.date)) return;
 
     const prev = this.event();
     this.saved.emit({
@@ -102,7 +136,7 @@ export class EventForm implements OnInit {
       recurrence: {
         type: d.recurrence,
         weekdays: d.recurrence === 'weekly' ? weekdays : undefined,
-        until: d.recurrence !== 'none' && d.until ? d.until : undefined,
+        until: until || undefined,
       },
       important: d.important || undefined,
       reminderMinutes: d.important ? Number(d.reminderMinutes) : undefined,

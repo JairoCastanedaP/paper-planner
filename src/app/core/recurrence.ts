@@ -1,4 +1,4 @@
-import { WEEKDAYS, fromKey } from './dates';
+import { WEEKDAYS, formatDate, fromKey } from './dates';
 import { Occurrence, PlannerEvent } from './models';
 
 export const occurrenceKey = (eventId: string, date: string) => `${eventId}@${date}`;
@@ -52,5 +52,5 @@ export function describeRecurrence(ev: PlannerEvent): string {
       text = 'Cada año';
       break;
   }
-  return r.until ? `${text} hasta ${r.until}` : text;
+  return r.until ? `${text}, hasta el ${formatDate(r.until)}` : text;
 }
