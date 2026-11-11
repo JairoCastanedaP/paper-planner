@@ -24,12 +24,20 @@ const firebaseConfig = {
  */
 const RECAPTCHA_SITE_KEY = '6LdbgRouAAAAAKS_AW3iQIWwM_4-lrLKpi9pNCYR';
 
+/**
+ * App Check apagado por ahora: en la tablet Android, reCAPTCHA no terminaba de cargar y el
+ * login quedaba esperando su token hasta fallar con "No hay conexión" (~30 s).
+ * Mientras App Check no esté en modo "Aplicar" en la consola, apagarlo no quita protección.
+ * Para volver a activarlo: true (y revisar que el login funcione en la tablet).
+ */
+const APP_CHECK_ENABLED = false;
+
 let app: FirebaseApp | undefined;
 
 export function firebaseApp(): FirebaseApp {
   if (!app) {
     app = initializeApp(firebaseConfig);
-    startAppCheck(app);
+    if (APP_CHECK_ENABLED) startAppCheck(app);
   }
   return app;
 }
