@@ -7,21 +7,28 @@
 
     <form (ngSubmit)="submit()">
       <label>
-        Usuario
-        <input name="username" [(ngModel)]="username" autocomplete="username" required autofocus />
+        Correo electrónico
+        <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required autofocus />
       </label>
       <label>
         Contraseña
         <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required />
       </label>
+      <button type="button" class="link" (click)="forgot()" [disabled]="busy()">¿Olvidaste tu contraseña?</button>
 
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
       }
+      @if (info()) {
+        <p class="notice" role="status">{{ info() }}</p>
+      }
 
-      <button type="submit" class="primary">Entrar</button>
+      <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Entrando…' : 'Entrar' }}</button>
     </form>
 
     <p class="switch">¿No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>
+    <p class="switch demo">
+      ¿Solo quieres conocerla? <button type="button" class="link" (click)="demo()">Ver la demo sin cuenta</button>
+    </p>
   </section>
 </main>

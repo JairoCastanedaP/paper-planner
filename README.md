@@ -43,9 +43,10 @@ el lápiz de la tablet o el mouse.
   El tema se guarda en cada dispositivo.
 - **Pantalla de bienvenida** (`/`): presenta la app y lleva a iniciar sesión o crear cuenta. Al cerrar sesión se vuelve a ella;
   con sesión iniciada, `/` lleva directo al calendario (`/calendario`).
-- **Inicio de sesión** y **cerrar sesión**. Por ahora hay una cuenta temporal (`admin` / `admin`) validada
-  en el navegador: es solo una puerta de entrada, no protege los datos. El **registro** es visual y aún
-  no crea cuentas; ambos se conectarán con Firebase Auth.
+- **Cuentas con Firebase Authentication**: registro, inicio y cierre de sesión con correo y contraseña,
+  y recuperación de contraseña por correo. La sesión se mantiene al recargar.
+- **Demo sin cuenta**: "Ver la demo sin cuenta" (en la bienvenida y en el login) entra como invitado con
+  los datos de ejemplo.
 
 **Datos de ejemplo:** el primer uso arranca con un calendario de demostración (rutina de gimnasio, clases,
 pagos, cumpleaños y objetivos como "10 días de gimnasio: 4/10"), calculado a partir de la fecha actual.
@@ -93,7 +94,8 @@ npm run preview:pwa  # http://localhost:8080
 ```
 src/app/
 ├── core/                 # modelo, fechas, repeticiones, estado y almacenamiento
-│   ├── auth.ts           # sesión temporal y guards de rutas
+│   ├── firebase.ts       # configuración web del proyecto de Firebase
+│   ├── auth.ts           # Firebase Auth, modo invitado y guards de rutas
 │   ├── commemorations.ts # fechas conmemorativas
 │   ├── demo-data.ts      # calendario de ejemplo del primer uso
 │   ├── images.ts         # compresión de imágenes de fondo

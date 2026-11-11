@@ -69,7 +69,7 @@ export class TourService {
   });
 
   private get key(): string {
-    return `paper-planner:tour-done:${this.auth.user() ?? 'anon'}`;
+    return `paper-planner:tour-done:${this.auth.user()?.uid ?? 'anon'}`;
   }
 
   /** Inicia la guía si este usuario todavía no la ha visto. */

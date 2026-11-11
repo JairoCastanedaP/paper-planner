@@ -263,8 +263,8 @@ export class CalendarPage {
     this.store.setHighlighted(change.key, change.on);
   }
 
-  protected logout(): void {
-    this.auth.logout();
+  protected async logout(): Promise<void> {
+    await this.auth.logout();
     // Al cerrar sesión se vuelve a la pantalla de bienvenida.
     this.router.navigate(['/']);
   }

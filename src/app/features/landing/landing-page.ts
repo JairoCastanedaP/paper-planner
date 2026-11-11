@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth';
 
 interface PreviewDay {
   n: number;
@@ -22,7 +23,15 @@ interface Feature {
   styleUrl: './landing-page.scss',
 })
 export class LandingPage {
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
   protected readonly year = new Date().getFullYear();
+
+  /** Entrar sin cuenta con los datos de ejemplo. */
+  protected demo(): void {
+    this.auth.enterAsGuest();
+    this.router.navigate(['/calendario']);
+  }
 
   protected readonly features: Feature[] = [
     {

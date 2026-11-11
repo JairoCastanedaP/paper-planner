@@ -13,7 +13,7 @@
           <button type="button" class="ghost" (click)="themesOpen.set(true)">🎨 Colores</button>
         </span>
         <button type="button" class="ghost" (click)="startTour()" title="Ver la guía de uso" data-tour="help">❔ Guía</button>
-        <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user() }}</span>
+        <span class="user" aria-label="Sesión iniciada">👤 {{ auth.user()?.name }}</span>
         <button type="button" class="ghost" (click)="logout()">Cerrar sesión</button>
       </div>
     </div>
