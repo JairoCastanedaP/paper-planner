@@ -161,7 +161,8 @@ export function authMessage(error: unknown): string {
     case 'auth/email-already-in-use':
       return 'Ya existe una cuenta con ese correo. Inicia sesión.';
     case 'auth/weak-password':
-      return 'La contraseña debe tener al menos 6 caracteres.';
+    case 'auth/password-does-not-meet-requirements':
+      return 'La contraseña debe tener mínimo 8 caracteres, con letras minúsculas y números.';
     case 'auth/too-many-requests':
       return 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.';
     case 'auth/network-request-failed':

@@ -72,6 +72,9 @@ Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
   Content-Security-Policy (sin scripts en línea), anti-clickjacking, HSTS, Referrer-Policy y
   Permissions-Policy. Por eso el build de producción no incrusta el CSS crítico (`inlineCritical: false`).
 - **Al cerrar sesión** se borra la copia local de Firestore del navegador.
+- **App Check con reCAPTCHA Enterprise**: cada petición a Auth y Firestore lleva un token que prueba
+  que viene de esta app. En desarrollo (`ng serve`) se usa un token de depuración: la consola del
+  navegador lo muestra y se registra en Firebase → App Check → Administrar tokens de depuración.
 - **Aviso de versión nueva**: la app instalada revisa si hay una versión publicada y ofrece "Actualizar".
 
 ## Privacidad y datos personales (Ley 1581 de 2012)
