@@ -107,6 +107,18 @@ export class CalendarPage {
     }
   });
 
+  /** Textos más largos posibles de cada vista: reservan el ancho del título. */
+  protected readonly longest = computed(() => {
+    switch (this.view()) {
+      case 'month':
+        return { kicker: `Paper Planner ${this.year()}`, title: 'Septiembre' };
+      case 'year':
+        return { kicker: 'Paper Planner · Vista anual', title: String(this.year()) };
+      case 'day':
+        return { kicker: `Septiembre ${fromKey(this.day()).getFullYear()} · Vista del día`, title: 'Miércoles 30' };
+    }
+  });
+
   protected readonly title = computed(() => {
     switch (this.view()) {
       case 'month':

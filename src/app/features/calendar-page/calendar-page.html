@@ -1,9 +1,17 @@
 <main class="page">
   <div class="sticky" #sticky [class.compact]="compact()">
     <header class="top">
+      <!-- El título reserva el ancho del texto más largo de la vista (texto invisible), así
+           las flechas no se mueven al pasar de "SEPTIEMBRE" a "MAYO". -->
       <div class="title">
-        <p class="kicker">{{ kicker() }}</p>
-        <h1>{{ title() }}</h1>
+        <p class="kicker sized">
+          <span>{{ kicker() }}</span>
+          <span class="sizer" aria-hidden="true">{{ longest().kicker }}</span>
+        </p>
+        <h1 class="sized">
+          <span>{{ title() }}</span>
+          <span class="sizer" aria-hidden="true">{{ longest().title }}</span>
+        </h1>
       </div>
       <nav class="nav" [attr.aria-label]="'Cambiar de ' + periodName()" data-tour="nav">
         <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="'Anterior (' + periodName() + ')'">‹</button>

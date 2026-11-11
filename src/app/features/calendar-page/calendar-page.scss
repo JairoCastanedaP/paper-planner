@@ -60,6 +60,20 @@
   min-width: 0;
 }
 
+// Texto visible y texto invisible más largo en la misma celda: el ancho es el del más largo.
+.sized {
+  display: grid;
+
+  > span {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+
+  .sizer {
+    visibility: hidden;
+  }
+}
+
 .kicker {
   margin: 0;
   color: var(--red);
