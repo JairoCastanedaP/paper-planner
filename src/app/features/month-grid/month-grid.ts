@@ -16,7 +16,7 @@ interface DayLayout {
 }
 
 /** Desde cuántas actividades se aprovecha el espacio junto al número. */
-const BESIDE_FROM = 3;
+const BESIDE_FROM = 1;
 /** Cuántas caben junto al número (apiladas a la altura del número). */
 const BESIDE_MAX = 2;
 
@@ -59,7 +59,7 @@ export class MonthGrid {
   }
 
   /**
-   * Con más de dos actividades, las primeras (las ⭐ importantes antes) van a la derecha
+   * Desde la primera actividad, las primeras (las ⭐ importantes antes) van a la derecha
    * del número, que si no queda vacío; así cada día ocupa menos alto. Con festivo no,
    * porque ese espacio lo usa el nombre del festivo.
    */
