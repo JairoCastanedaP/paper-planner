@@ -6,6 +6,14 @@
   background: var(--card);
 }
 
+// Título, total de pagos y acciones en una sola línea.
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+
 h2 {
   margin: 0;
   font-family: var(--display);
@@ -14,11 +22,16 @@ h2 {
   text-transform: uppercase;
 }
 
+.money {
+  font-size: 0.82rem;
+}
+
+// Los objetivos se acomodan por ancho (ver pack() en month-goals.ts) para llenar cada línea.
 .goals {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px 22px;
+  gap: 4px 22px;
   margin: 6px 0 0;
   padding: 0;
   list-style: none;
@@ -26,15 +39,10 @@ h2 {
 
 .goal {
   display: flex;
+  max-width: 100%;
   align-items: center;
   gap: 8px;
   font-family: var(--hand);
-
-  &.money {
-    flex-basis: 100%;
-    font-family: var(--ui);
-    font-size: 0.82rem;
-  }
 }
 
 // Casilla para marcar el objetivo como realizado.
@@ -193,7 +201,7 @@ h2 {
 .actions {
   display: flex;
   gap: 14px;
-  margin-top: 4px;
+  margin-left: auto;
 }
 
 .link {
@@ -205,6 +213,7 @@ h2 {
   font-weight: 600;
 }
 
+// En el celular, un objetivo por línea.
 @media (max-width: 640px) {
   .goal {
     width: 100%;

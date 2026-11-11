@@ -1,46 +1,58 @@
 <section class="notes" aria-labelledby="goals-title">
-  <h2 id="goals-title">Notas del mes</h2>
-
-  <ul class="goals">
-    @for (goal of goals(); track goal.id) {
-      <li class="goal" [class.done]="goal.done" [class.editing]="isEditing(goal)">
-        <input
-          type="checkbox"
-          class="box"
-          [checked]="goal.done"
-          (change)="toggleDone(goal)"
-          [attr.aria-label]="(goal.done ? 'Marcar como pendiente: ' : 'Marcar como realizado: ') + goal.title"
-        />
-        <span class="name">
-          <button
-            type="button"
-            class="goal-title"
-            (click)="openEditor(goal)"
-            [attr.aria-describedby]="goal.detail ? 'goal-tip-' + goal.id : null"
-            [attr.aria-label]="goal.title + ' (clic para editar)'"
-          >
-            {{ goal.title }}
-            @if (goal.detail) {
-              <span class="has-detail" aria-hidden="true">✎</span>
-            }
-          </button>
-          @if (goal.detail && !isEditing(goal)) {
-            <span class="tip" role="tooltip" [id]="'goal-tip-' + goal.id">{{ goal.detail }}</span>
-          }
-        </span>
-        @if (goal.target) {
-          <span class="bar" role="progressbar" [attr.aria-valuenow]="progress(goal)" aria-valuemin="0" [attr.aria-valuemax]="goal.target">
-            <span class="fill" [style.width.%]="percent(goal)" [style.--fill]="goalColor(goal)"></span>
-          </span>
-          <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
-        }
-        <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="'Eliminar ' + goal.title">×</button>
-      </li>
-    }
+  <div class="head">
+    <h2 id="goals-title">Notas del mes</h2>
     @if (totals().length) {
-      <li class="goal money">💸 Compromisos económicos: <strong>{{ totals().join(' · ') }}</strong></li>
+      <span class="money">💸 <strong>{{ totals().join(' · ') }}</strong></span>
     }
-  </ul>
+    @if (!editor()) {
+      <span class="actions">
+        <button type="button" class="link" (click)="startAdding()">+ Objetivo</button>
+        @if (canCopyPrevious()) {
+          <button type="button" class="link" (click)="copyPrevious()">Copiar los del mes anterior</button>
+        }
+      </span>
+    }
+  </div>
+
+  @if (goals().length) {
+    <ul class="goals" #list>
+      @for (goal of goals(); track goal.id) {
+        <li class="goal" [class.done]="goal.done" [class.editing]="isEditing(goal)" [attr.data-id]="goal.id">
+          <input
+            type="checkbox"
+            class="box"
+            [checked]="goal.done"
+            (change)="toggleDone(goal)"
+            [attr.aria-label]="(goal.done ? 'Marcar como pendiente: ' : 'Marcar como realizado: ') + goal.title"
+          />
+          <span class="name">
+            <button
+              type="button"
+              class="goal-title"
+              (click)="openEditor(goal)"
+              [attr.aria-describedby]="goal.detail ? 'goal-tip-' + goal.id : null"
+              [attr.aria-label]="goal.title + ' (clic para editar)'"
+            >
+              {{ goal.title }}
+              @if (goal.detail) {
+                <span class="has-detail" aria-hidden="true">✎</span>
+              }
+            </button>
+            @if (goal.detail && !isEditing(goal)) {
+              <span class="tip" role="tooltip" [id]="'goal-tip-' + goal.id">{{ goal.detail }}</span>
+            }
+          </span>
+          @if (goal.target) {
+            <span class="bar" role="progressbar" [attr.aria-valuenow]="progress(goal)" aria-valuemin="0" [attr.aria-valuemax]="goal.target">
+              <span class="fill" [style.width.%]="percent(goal)" [style.--fill]="goalColor(goal)"></span>
+            </span>
+            <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
+          }
+          <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="'Eliminar ' + goal.title">×</button>
+        </li>
+      }
+    </ul>
+  }
 
   @if (editor(); as e) {
     <form class="goal-editor" (ngSubmit)="save()" #form="ngForm">
@@ -92,12 +104,5 @@
         <button type="submit" class="primary" [disabled]="form.invalid">{{ e.mode === 'new' ? 'Agregar' : 'Guardar' }}</button>
       </div>
     </form>
-  } @else {
-    <div class="actions">
-      <button type="button" class="link" (click)="startAdding()">+ Objetivo</button>
-      @if (canCopyPrevious()) {
-        <button type="button" class="link" (click)="copyPrevious()">Copiar objetivos del mes anterior</button>
-      }
-    </div>
   }
 </section>

@@ -31,6 +31,9 @@
         >
           <div class="day-head" [class.has-special]="specials.length">
             <span class="num">{{ dayNumber(day) }}</span>
+            @if (moons()?.get(day); as moon) {
+              <span class="moon" [attr.title]="moonLabel(moon)" [attr.aria-label]="moonLabel(moon)">{{ moon.emoji }}</span>
+            }
             @if (holiday) {
               <span class="holiday-name" [attr.title]="holiday">{{ holiday }}</span>
             }

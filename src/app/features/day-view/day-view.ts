@@ -1,6 +1,8 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { pad } from '../../core/dates';
 import { holidayOn } from '../../core/holidays';
+import { moonPhasesBetween } from '../../core/moon';
+import { PreferencesService } from '../../core/preferences';
 import { Occurrence } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
 import { DayDetail } from '../day-detail/day-detail';
@@ -32,6 +34,11 @@ export class DayView {
 
   protected readonly holiday = computed(() => holidayOn(this.date()));
   protected readonly commemorations = computed(() => this.store.commemorationsOn(this.date()));
+  private readonly prefs = inject(PreferencesService);
+  /** Fase de la luna de ese día (si está activada en el menú). */
+  protected readonly moon = computed(() =>
+    this.prefs.showMoon() ? moonPhasesBetween(this.date(), this.date()).get(this.date()) : undefined,
+  );
   protected readonly image = computed(() => this.store.dayImage(this.date()));
 
   private readonly occurrences = computed(() => {

@@ -158,6 +158,74 @@ h1 {
   }
 }
 
+// Interruptor (p. ej. fases de la luna) dentro del menú.
+.menu .toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.switch {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--soft-line);
+  transition: background 0.2s;
+
+  &::after {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--card);
+    content: '';
+    transition: transform 0.2s;
+  }
+
+  &.on {
+    background: var(--done);
+
+    &::after {
+      transform: translateX(14px);
+    }
+  }
+}
+
+// Frase del mes en el espacio libre entre las flechas y las vistas.
+.quote {
+  min-width: 0;
+  flex: 1;
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-family: var(--hand);
+    font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+    line-height: 1.2;
+  }
+
+  cite {
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 700;
+
+    &::before {
+      content: '— ';
+    }
+  }
+
+  .compact & {
+    display: none;
+  }
+}
+
 .menu-user {
   overflow: hidden;
   margin: 2px 10px 6px;
@@ -281,6 +349,15 @@ h1 {
     padding: 0;
     border: 0;
     background: none;
+  }
+}
+
+// En pantallas medianas la frase pasa a su propia línea, debajo del título.
+@media (max-width: 900px) {
+  .quote {
+    order: 10;
+    flex-basis: 100%;
+    text-align: left;
   }
 }
 

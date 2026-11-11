@@ -118,6 +118,13 @@
   gap: 4px;
 }
 
+// Fase de la luna junto al número del día.
+.moon {
+  flex: none;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 // Dibujo conmemorativo (🎃, 🕯️…) en la esquina, como una calcomanía en la hoja.
 .specials {
   position: absolute;

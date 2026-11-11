@@ -5,7 +5,9 @@
   padding: 1px 5px;
   border-left: 3px solid var(--cat);
   border-radius: 3px;
-  background: color-mix(in srgb, var(--cat) 16%, transparent);
+  // Sin resaltar queda en blanco, con solo la línea de color: como en la hoja de papel,
+  // el color aparece únicamente cuando se marca con el resaltador.
+  background: transparent;
   color: var(--ink);
   font-family: var(--hand);
   font-size: 0.86rem;

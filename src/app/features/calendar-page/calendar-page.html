@@ -11,11 +11,19 @@
         <button type="button" class="round" (click)="move(1)" [attr.aria-label]="'Siguiente (' + periodName() + ')'">›</button>
       </nav>
 
+      <!-- Frase motivadora del mes, como en los calendarios de papel. -->
+      @if (view() !== 'year') {
+        <blockquote class="quote">
+          <p>“{{ quote().text }}”</p>
+          <cite>{{ quote().author }}</cite>
+        </blockquote>
+      }
+
       <div class="tools">
         <div class="segmented" role="tablist" aria-label="Vista" data-tour="views">
+          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
           <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="setView('month')">Mes</button>
           <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="setView('year')">Año</button>
-          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
         </div>
         <button type="button" class="icon" (click)="searchOpen.set(true)" title="Buscar ( / )" aria-label="Buscar" data-tour="search">🔍</button>
         <div class="menu-wrap">
@@ -35,6 +43,16 @@
               <button type="button" role="menuitem" (click)="accountOpen.set(true)">👤 Mi cuenta</button>
               <button type="button" role="menuitem" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
               <button type="button" role="menuitem" (click)="themesOpen.set(true)">🎨 Colores</button>
+              <button
+                type="button"
+                role="menuitemcheckbox"
+                class="toggle"
+                [attr.aria-checked]="prefs.showMoon()"
+                (click)="prefs.toggleMoon()"
+              >
+                🌙 Fases de la luna
+                <span class="switch" [class.on]="prefs.showMoon()" aria-hidden="true"></span>
+              </button>
               <button type="button" role="menuitem" (click)="startTour()">❔ Guía de uso</button>
               <button type="button" role="menuitem" class="logout" (click)="logout()">↩ Cerrar sesión</button>
             </div>
