@@ -41,12 +41,32 @@
 
   @if (store.saveFailed()) {
     <p class="storage-alert" role="alert">
-      ⚠️ No se pudieron guardar los últimos cambios: el almacenamiento del navegador está lleno.
-      Quita algunas imágenes de fondo para liberar espacio.
+      @if (auth.user()?.guest) {
+        ⚠️ No se pudieron guardar los últimos cambios: el almacenamiento del navegador está lleno.
+        Quita algunas imágenes de fondo para liberar espacio.
+      } @else {
+        ⚠️ No se pudieron guardar los últimos cambios en tu cuenta. Revisa tu conexión; si sigue
+        pasando, quita algunas imágenes de fondo.
+      }
+    </p>
+  }
+  @if (store.loadFailed()) {
+    <p class="storage-alert" role="alert">
+      ⚠️ No se pudo leer tu calendario de la nube. Recarga la página; si sigue pasando, cierra sesión y vuelve a entrar.
     </p>
   }
 
-  @if (store.isDemo()) {
+  @if (store.importable()) {
+    <aside class="demo-banner" role="note">
+      <span>📥 Encontramos un calendario guardado <strong>en este navegador</strong>. ¿Quieres subirlo a tu cuenta para verlo en todos tus dispositivos?</span>
+      <span class="demo-actions">
+        <button type="button" class="ghost" (click)="store.dismissImport()">No, gracias</button>
+        <button type="button" class="primary" (click)="store.importBrowserCalendar()">Subir a mi cuenta</button>
+      </span>
+    </aside>
+  }
+
+  @if (store.isDemo() && !store.loading() && !store.importable()) {
     <aside class="demo-banner" role="note">
       <span>👋 Estás viendo <strong>datos de ejemplo</strong> para conocer la app. Explóralos, resáltalos o edítalos con confianza.</span>
       <span class="demo-actions">
@@ -56,41 +76,45 @@
     </aside>
   }
 
-  @switch (view()) {
-    @case ('month') {
-      <app-month-goals data-tour="goals" [month]="monthKey()" [occurrences]="monthOccurrences()" />
+  @if (store.loading()) {
+    <p class="loading" role="status">⏳ Cargando tu calendario…</p>
+  } @else {
+    @switch (view()) {
+      @case ('month') {
+        <app-month-goals data-tour="goals" [month]="monthKey()" [occurrences]="monthOccurrences()" />
 
-      <app-month-grid
-        data-tour="grid"
-        [weeks]="weeks()"
-        [month]="monthKey()"
-        [today]="today()"
-        [occurrencesByDay]="visibleByDay()"
-        (daySelected)="selectedDate.set($event)"
-        (highlightChange)="onHighlight($event)"
-      />
+        <app-month-grid
+          data-tour="grid"
+          [weeks]="weeks()"
+          [month]="monthKey()"
+          [today]="today()"
+          [occurrencesByDay]="visibleByDay()"
+          (daySelected)="selectedDate.set($event)"
+          (highlightChange)="onHighlight($event)"
+        />
 
-      <p class="hint">
-        🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
-        (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
-      </p>
-    }
-    @case ('year') {
-      <app-year-view
-        [year]="year()"
-        [today]="today()"
-        [filter]="filter()"
-        (monthOpened)="openMonth($event)"
-        (daySelected)="selectedDate.set($event)"
-      />
+        <p class="hint">
+          🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
+          (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
+        </p>
+      }
+      @case ('year') {
+        <app-year-view
+          [year]="year()"
+          [today]="today()"
+          [filter]="filter()"
+          (monthOpened)="openMonth($event)"
+          (daySelected)="selectedDate.set($event)"
+        />
 
-      <p class="hint">
-        🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
-        Toca el nombre de un mes para abrirlo o un día para ver su detalle.
-      </p>
-    }
-    @case ('day') {
-      <app-day-view [date]="day()" [today]="today()" [filter]="filter()" (highlightChange)="onHighlight($event)" />
+        <p class="hint">
+          🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
+          Toca el nombre de un mes para abrirlo o un día para ver su detalle.
+        </p>
+      }
+      @case ('day') {
+        <app-day-view [date]="day()" [today]="today()" [filter]="filter()" (highlightChange)="onHighlight($event)" />
+      }
     }
   }
 

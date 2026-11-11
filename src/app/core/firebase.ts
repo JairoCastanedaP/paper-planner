@@ -27,3 +27,4 @@ export function firebaseAuth(): Auth {
   auth.languageCode = 'es';
   return auth;
 }
+
