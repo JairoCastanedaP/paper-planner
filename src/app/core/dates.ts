@@ -39,6 +39,18 @@ export function monthGrid(year: number, month: number): string[][] {
   return weeks;
 }
 
+/** Último día del mes de la fecha: '2026-11-10' → '2026-11-30'. */
+export function endOfMonthKey(key: string): string {
+  const d = fromKey(key);
+  return toKey(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+}
+
+/** '30 de noviembre de 2026' */
+export function formatDate(key: string): string {
+  const d = fromKey(key);
+  return `${d.getDate()} de ${MONTHS[d.getMonth()].toLowerCase()} de ${d.getFullYear()}`;
+}
+
 /** 'Martes 10 de noviembre de 2026' */
 export function formatLong(key: string): string {
   const d = fromKey(key);

@@ -39,8 +39,12 @@
     </label>
     @if (draft.recurrence !== 'none') {
       <label>
-        Hasta (opcional)
-        <input type="date" name="until" [(ngModel)]="draft.until" [min]="draft.date" />
+        Termina
+        <select name="ends" [(ngModel)]="draft.ends">
+          <option value="never">Nunca</option>
+          <option value="month">Fin de {{ startMonth() }}</option>
+          <option value="date">En una fecha…</option>
+        </select>
       </label>
     }
   </div>
@@ -57,6 +61,18 @@
         >{{ initial }}</button>
       }
     </div>
+  }
+
+  @if (draft.recurrence !== 'none') {
+    @if (draft.ends === 'date') {
+      <label>
+        Se repite hasta el
+        <input type="date" name="until" [(ngModel)]="draft.until" [min]="draft.date" required />
+      </label>
+    }
+    @if (repeatSummary(); as summary) {
+      <p class="repeat-summary">🔁 {{ summary }}</p>
+    }
   }
 
   <div class="row">
