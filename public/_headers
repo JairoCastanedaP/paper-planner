@@ -2,13 +2,13 @@
 # https://developers.cloudflare.com/pages/configuration/headers/
 #
 # Content-Security-Policy: de dónde puede cargar cosas la app.
-#   - scripts: solo los propios (sin scripts en línea).
+#   - scripts: solo los propios (sin scripts en línea) y reCAPTCHA (App Check).
 #   - estilos en línea: los usa Angular para los estilos de cada componente.
 #   - fuentes: Google Fonts.
-#   - conexiones: Firebase Auth (identitytoolkit, securetoken) y Firestore.
+#   - conexiones: Firebase Auth (identitytoolkit, securetoken), Firestore y App Check.
 #   - frame-ancestors 'none': nadie puede meter la app dentro de un iframe (clickjacking).
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src https://paper-planner-col.firebaseapp.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://content-firebaseappcheck.googleapis.com https://www.google.com/recaptcha/ https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src https://paper-planner-col.firebaseapp.com https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
