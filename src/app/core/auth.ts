@@ -3,6 +3,8 @@ import { CanActivateFn, Router } from '@angular/router';
 import { FirebaseError } from 'firebase/app';
 import {
   User,
+  applyActionCode,
+  confirmPasswordReset,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   sendEmailVerification,
@@ -10,6 +12,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
+  verifyPasswordResetCode,
 } from 'firebase/auth';
 import { firebaseAuth } from './firebase';
 
@@ -78,6 +81,38 @@ export class AuthService {
     } catch (e) {
       return authMessage(e);
     }
+  }
+
+  /**
+   * Revisa el código del enlace "cambiar contraseña" que llegó al correo.
+   * Devuelve el correo de la cuenta, o un mensaje de error.
+   */
+  async checkResetCode(code: string): Promise<{ email: string } | { error: string }> {
+    try {
+      return { email: await verifyPasswordResetCode(this.auth, code) };
+    } catch (e) {
+      return { error: authMessage(e) };
+    }
+  }
+
+  async confirmNewPassword(code: string, password: string): Promise<string | null> {
+    try {
+      await confirmPasswordReset(this.auth, code, password);
+      return null;
+    } catch (e) {
+      return authMessage(e);
+    }
+  }
+
+  /** Aplica el enlace de verificación de correo. Si hay sesión abierta, la actualiza. */
+  async applyVerification(code: string): Promise<string | null> {
+    try {
+      await applyActionCode(this.auth, code);
+    } catch (e) {
+      return authMessage(e);
+    }
+    await this.refreshVerification().catch(() => false);
+    return null;
   }
 
   /** Vuelve a enviar el correo con el enlace de verificación. */
@@ -167,6 +202,14 @@ export function authMessage(error: unknown): string {
       return 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.';
     case 'auth/network-request-failed':
       return 'No hay conexión a internet. Revisa tu red e inténtalo de nuevo.';
+    case 'auth/expired-action-code':
+      return 'El enlace venció. Pide uno nuevo.';
+    case 'auth/invalid-action-code':
+      return 'El enlace no es válido o ya se usó. Pide uno nuevo.';
+    case 'auth/user-disabled':
+      return 'Esta cuenta está deshabilitada.';
+    case 'auth/missing-email':
+      return 'Escribe tu correo.';
     case 'auth/operation-not-allowed':
       return 'El acceso con correo aún no está habilitado en el servidor.';
     default:

@@ -66,6 +66,10 @@ Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
 - **Reglas de Firestore** ([`firestore.rules`](firestore.rules)): cada cuenta solo lee y escribe bajo
   `users/{uid}`, solo con el correo verificado, solo en las rutas que usa la app y con tipos y tamaños
   máximos. Se publican en la consola de Firebase → Firestore Database → Reglas.
+- **Recuperar contraseña** (`/recuperar`) y **página propia para los enlaces del correo** (`/accion`):
+  contraseña nueva con sus requisitos a la vista, y verificación de correo que vuelve a la app. Para que
+  los correos apunten ahí: Firebase → Authentication → Plantillas → editar plantilla → *Personalizar URL
+  de acción* → `https://paper-planner-amm.pages.dev/accion`.
 - **Verificación de correo**: al registrarse se envía un enlace; hasta abrirlo, la app muestra
   `/verificar` y no guarda datos.
 - **Cabeceras de seguridad** ([`public/_headers`](public/_headers), las aplica Cloudflare Pages):

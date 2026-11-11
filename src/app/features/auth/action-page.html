@@ -1,0 +1,88 @@
+<main class="auth">
+  <section class="card">
+    <p class="kicker">Paper Planner</p>
+
+    @switch (state().kind) {
+      @case ('loading') {
+        <h1>Un momento…</h1>
+        <p class="lead" role="status">Revisando el enlace.</p>
+      }
+
+      @case ('reset') {
+        @let email = $any(state()).email;
+        <h1>Nueva contraseña</h1>
+        <p class="lead">Para la cuenta <strong>{{ email }}</strong>.</p>
+
+        <form (ngSubmit)="savePassword(email)">
+          <!-- Ayuda a los gestores de contraseñas a guardar la nueva con el correo correcto. -->
+          <input type="email" name="username" [value]="email" autocomplete="username" hidden />
+          <label>
+            Contraseña nueva
+            <input
+              name="password"
+              [type]="show ? 'text' : 'password'"
+              [(ngModel)]="password"
+              autocomplete="new-password"
+              required
+              autofocus
+            />
+          </label>
+          <ul class="rules" aria-label="Requisitos de la contraseña">
+            @for (rule of rules; track rule.text) {
+              <li [class.ok]="rule.ok(password)">{{ rule.ok(password) ? '✓' : '○' }} {{ rule.text }}</li>
+            }
+          </ul>
+          <label>
+            Confirmar contraseña
+            <input
+              name="confirm"
+              [type]="show ? 'text' : 'password'"
+              [(ngModel)]="confirm"
+              autocomplete="new-password"
+              required
+            />
+          </label>
+          <label class="inline">
+            <input type="checkbox" name="show" [(ngModel)]="show" />
+            Mostrar contraseña
+          </label>
+
+          @if (mismatch) {
+            <p class="error" role="alert">Las contraseñas no coinciden.</p>
+          }
+          @if (error()) {
+            <p class="error" role="alert">{{ error() }}</p>
+          }
+
+          <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Guardando…' : 'Guardar contraseña' }}</button>
+        </form>
+      }
+
+      @case ('reset-done') {
+        <h1>¡Listo!</h1>
+        <p class="notice" role="status">✅ Tu contraseña cambió. Ya puedes iniciar sesión con la nueva.</p>
+        <a class="button-link" routerLink="/login" [queryParams]="{ email: $any(state()).email }">Iniciar sesión</a>
+      }
+
+      @case ('verified') {
+        <h1>Correo verificado</h1>
+        <p class="notice" role="status">✅ Tu correo quedó confirmado. Tu calendario ya se puede guardar en la nube.</p>
+        <button type="button" class="primary" (click)="continueAfterVerify()">
+          {{ auth.user() ? 'Ir a mi calendario' : 'Iniciar sesión' }}
+        </button>
+      }
+
+      @case ('error') {
+        <h1>Enlace no válido</h1>
+        <p class="error" role="alert">{{ $any(state()).message }}</p>
+        @if ($any(state()).retry === 'reset') {
+          <a class="button-link" routerLink="/recuperar">Pedir un enlace nuevo</a>
+        } @else if ($any(state()).retry === 'verify') {
+          <a class="button-link" routerLink="/verificar">Volver a verificar mi correo</a>
+        } @else {
+          <a class="button-link" routerLink="/">Ir al inicio</a>
+        }
+      }
+    }
+  </section>
+</main>

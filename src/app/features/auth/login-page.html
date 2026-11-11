@@ -14,13 +14,10 @@
         Contraseña
         <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required />
       </label>
-      <button type="button" class="link" (click)="forgot()" [disabled]="busy()">¿Olvidaste tu contraseña?</button>
+      <a class="forgot" routerLink="/recuperar" [queryParams]="email.trim() ? { email: email.trim() } : {}">¿Olvidaste tu contraseña?</a>
 
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
-      }
-      @if (info()) {
-        <p class="notice" role="status">{{ info() }}</p>
       }
 
       <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Entrando…' : 'Entrar' }}</button>
