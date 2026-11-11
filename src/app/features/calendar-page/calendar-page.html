@@ -24,6 +24,9 @@
         <blockquote class="quote">
           <p>“{{ quote().text }}”</p>
           <cite>{{ quote().author }}</cite>
+          @if (theme.ambience(); as amb) {
+            <span class="ambience" [attr.title]="amb.name">{{ amb.emoji }} {{ amb.note }}</span>
+          }
         </blockquote>
       }
 
@@ -50,7 +53,7 @@
               <p class="menu-user">👤 {{ auth.user()?.name }}</p>
               <button type="button" role="menuitem" (click)="accountOpen.set(true)">👤 Mi cuenta</button>
               <button type="button" role="menuitem" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
-              <button type="button" role="menuitem" (click)="themesOpen.set(true)">🎨 Colores</button>
+              <button type="button" role="menuitem" (click)="themesOpen.set(true)">🎨 Temas</button>
               <button
                 type="button"
                 role="menuitemcheckbox"

@@ -226,6 +226,12 @@ h1 {
   }
 }
 
+// Tema Colombiano: franja con los colores de la bandera arriba del encabezado.
+:host-context([data-theme='colombian']) .sticky {
+  border-top: 5px solid transparent;
+  border-image: linear-gradient(90deg, #fcd116 0 50%, #003893 50% 75%, #ce1126 75% 100%) 1;
+}
+
 // Frase del mes en el espacio libre entre las flechas y las vistas.
 .quote {
   min-width: 0;
@@ -239,6 +245,15 @@ h1 {
     font-family: var(--hand);
     font-size: clamp(0.95rem, 1.6vw, 1.2rem);
     line-height: 1.2;
+  }
+
+  // Nota de la ambientación del mes (temas como "Colombiano").
+  .ambience {
+    display: block;
+    margin-top: 2px;
+    color: var(--red);
+    font-size: 0.78rem;
+    font-weight: 600;
   }
 
   cite {

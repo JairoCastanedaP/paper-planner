@@ -4,6 +4,7 @@ import {
   ElementRef,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal,
   viewChild,
@@ -15,6 +16,7 @@ import { MONTHS, WEEKDAYS, fromKey, monthGrid, monthKeyOf, toKey, todayKey } fro
 import { Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
 import { PreferencesService } from '../../core/preferences';
+import { ThemeService } from '../../core/themes';
 import { quoteOfMonth } from '../../core/quotes';
 import { ReminderService } from '../../core/reminders';
 import { TourService } from '../../core/tour';
@@ -83,6 +85,8 @@ export class CalendarPage {
   protected readonly accountOpen = signal(false);
   protected readonly menuOpen = signal(false);
   protected readonly prefs = inject(PreferencesService);
+  /** Para la ambientación por mes de temas como "Colombiano". */
+  protected readonly theme = inject(ThemeService);
   /** La cuenta aún no aceptó la versión vigente de la política y los términos. */
   protected readonly needsConsent = signal(false);
   protected readonly categoriesOpen = signal(false);
@@ -204,6 +208,13 @@ export class CalendarPage {
         .catch((e) => console.warn('No se pudo revisar la autorización', e));
     }
     const destroyRef = inject(DestroyRef);
+    // Temas con ambientación por mes: se aplica la del mes que se está viendo (no en la vista anual).
+    effect(() => {
+      const view = this.view();
+      const month = view === 'month' ? this.month() : view === 'day' ? fromKey(this.day()).getMonth() : null;
+      this.theme.ambienceMonth.set(month);
+    });
+    destroyRef.onDestroy(() => this.theme.ambienceMonth.set(null));
     // La altura del encabezado fijo la usa la fila de días de la semana para quedar justo debajo.
     afterNextRender(() => {
       const el = this.stickyHeader().nativeElement;
