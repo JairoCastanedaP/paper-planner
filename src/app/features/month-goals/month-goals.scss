@@ -1,6 +1,6 @@
 .notes {
-  margin-bottom: 14px;
-  padding: 10px 14px;
+  height: 100%;
+  padding: 8px 12px;
   border: 2px solid var(--line);
   border-radius: 4px;
   background: var(--card);
@@ -18,8 +18,8 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 28px;
-  margin: 10px 0 0;
+  gap: 6px 22px;
+  margin: 6px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -27,20 +27,20 @@ h2 {
 .goal {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-family: var(--hand);
 
   &.money {
     flex-basis: 100%;
     font-family: var(--ui);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
   }
 }
 
 // Casilla para marcar el objetivo como realizado.
 .box {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   margin: 0;
   accent-color: var(--red);
@@ -63,7 +63,7 @@ h2 {
   background: none;
   color: var(--ink);
   font-family: var(--hand);
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
   font-weight: 400;
   letter-spacing: 0.02em;
   line-height: 1.15;
@@ -157,8 +157,8 @@ h2 {
 
 .bar {
   overflow: hidden;
-  width: 130px;
-  height: 14px;
+  width: 100px;
+  height: 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--paper);
@@ -173,7 +173,7 @@ h2 {
 
 .count {
   font-family: var(--ui);
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   font-weight: 700;
 }
 
@@ -193,7 +193,7 @@ h2 {
 .actions {
   display: flex;
   gap: 14px;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .link {
