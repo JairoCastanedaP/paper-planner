@@ -39,7 +39,10 @@ export class LocalPlannerStorage {
  */
 @Injectable({ providedIn: 'root' })
 export class CloudPlannerStorage {
-  private readonly db = firebaseDb();
+  /** Se pide cada vez: al cerrar sesión se descarta la instancia y se crea otra. */
+  private get db() {
+    return firebaseDb();
+  }
 
   /**
    * Escucha los datos de la cuenta, también los cambios hechos desde otro dispositivo.

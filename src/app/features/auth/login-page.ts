@@ -33,6 +33,7 @@ export class LoginPage {
       this.error.set(error);
       this.password = '';
     } else {
+      // Si el correo no está verificado, el guard lo lleva a /verificar.
       this.router.navigate(['/calendario']);
     }
   }

@@ -139,3 +139,19 @@ button.link {
     font-size: inherit;
   }
 }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+
+  button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+}
+
+.switch button.link {
+  font-size: inherit;
+}

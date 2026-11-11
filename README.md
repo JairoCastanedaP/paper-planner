@@ -61,8 +61,18 @@ Un aviso permite **conservarlos** o **empezar en blanco** (y deshacerlo).
   ofrece **subirlo a la cuenta**.
 - **Modo invitado:** en el navegador (`localStorage`).
 
-Las reglas de seguridad están en [`firestore.rules`](firestore.rules): cada cuenta solo lee y escribe sus
-propios datos. Se publican en la consola de Firebase → Firestore Database → Reglas.
+## Seguridad
+
+- **Reglas de Firestore** ([`firestore.rules`](firestore.rules)): cada cuenta solo lee y escribe bajo
+  `users/{uid}`, solo con el correo verificado, solo en las rutas que usa la app y con tipos y tamaños
+  máximos. Se publican en la consola de Firebase → Firestore Database → Reglas.
+- **Verificación de correo**: al registrarse se envía un enlace; hasta abrirlo, la app muestra
+  `/verificar` y no guarda datos.
+- **Cabeceras de seguridad** ([`public/_headers`](public/_headers), las aplica Cloudflare Pages):
+  Content-Security-Policy (sin scripts en línea), anti-clickjacking, HSTS, Referrer-Policy y
+  Permissions-Policy. Por eso el build de producción no incrusta el CSS crítico (`inlineCritical: false`).
+- **Al cerrar sesión** se borra la copia local de Firestore del navegador.
+- **Aviso de versión nueva**: la app instalada revisa si hay una versión publicada y ofrece "Actualizar".
 
 ## Stack
 

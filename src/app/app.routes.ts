@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth';
+import { authGuard, guestGuard, unverifiedGuard } from './core/auth';
 import { LoginPage } from './features/auth/login-page';
 import { RegisterPage } from './features/auth/register-page';
+import { VerifyPage } from './features/auth/verify-page';
 import { LandingPage } from './features/landing/landing-page';
 
 export const routes: Routes = [
@@ -9,6 +10,7 @@ export const routes: Routes = [
   { path: '', component: LandingPage, canActivate: [guestGuard], title: 'Paper Planner · Tu calendario de papel, ahora digital' },
   { path: 'login', component: LoginPage, canActivate: [guestGuard], title: 'Iniciar sesión · Paper Planner' },
   { path: 'registro', component: RegisterPage, canActivate: [guestGuard], title: 'Crear cuenta · Paper Planner' },
+  { path: 'verificar', component: VerifyPage, canActivate: [unverifiedGuard], title: 'Verifica tu correo · Paper Planner' },
   // El calendario (y Firestore) se descargan solo al entrar: la bienvenida y el login cargan más rápido.
   {
     path: 'calendario',
