@@ -15,6 +15,7 @@
         @let holiday = holidayOn(day);
         @let image = inMonth(day) ? store.dayImage(day) : undefined;
         @let specials = store.commemorationsOn(day);
+        @let parts = layout(occurrences, holiday);
         <div
           class="cell"
           role="gridcell"
@@ -37,6 +38,16 @@
             @if (holiday) {
               <span class="holiday-name" [attr.title]="holiday">{{ holiday }}</span>
             }
+            @if (parts.beside.length) {
+              <div class="beside">
+                @for (o of parts.beside; track o.key) {
+                  <app-event-chip
+                    [occurrence]="o"
+                    (highlightChange)="highlightChange.emit({ key: o.key, on: $event })"
+                  />
+                }
+              </div>
+            }
             @if (specials.length) {
               <span class="specials" [attr.title]="namesOf(specials)" [attr.aria-label]="namesOf(specials)">
                 @for (s of specials.slice(0, 2); track s.name) {
@@ -46,14 +57,14 @@
             }
           </div>
           <div class="chips">
-            @for (o of occurrences.slice(0, maxVisible); track o.key) {
+            @for (o of parts.below; track o.key) {
               <app-event-chip
                 [occurrence]="o"
                 (highlightChange)="highlightChange.emit({ key: o.key, on: $event })"
               />
             }
-            @if (occurrences.length > maxVisible) {
-              <span class="more">+{{ occurrences.length - maxVisible }} más</span>
+            @if (parts.hidden > 0) {
+              <span class="more">+{{ parts.hidden }} más</span>
             }
           </div>
         </div>
