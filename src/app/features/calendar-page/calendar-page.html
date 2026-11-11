@@ -1,5 +1,14 @@
 <main class="page">
-  <div class="sticky" #sticky [class.compact]="compact()">
+  @let decor = theme.ambience()?.decor;
+  <div class="sticky" #sticky [class.compact]="compact()" [class.christmas]="decor === 'christmas'">
+    @if (decor === 'christmas') {
+      <!-- Guirnalda de luces navideñas a lo ancho del encabezado. -->
+      <div class="lights" aria-hidden="true">
+        @for (bulb of bulbs; track $index) {
+          <span class="bulb"></span>
+        }
+      </div>
+    }
     <header class="top">
       <!-- El título reserva el ancho del texto más largo de la vista (texto invisible), así
            las flechas no se mueven al pasar de "SEPTIEMBRE" a "MAYO". -->
@@ -9,7 +18,18 @@
           <span class="sizer" aria-hidden="true">{{ longest().kicker }}</span>
         </p>
         <h1 class="sized">
-          <span>{{ title() }}</span>
+          <span class="label">
+            {{ title() }}
+            @if (decor === 'christmas') {
+              <!-- Gorro de Papá Noel sobre la última letra del mes. -->
+              <svg class="santa-hat" viewBox="0 0 64 52" aria-hidden="true">
+                <path d="M8 40 C 14 16, 34 2, 52 10 C 46 16, 44 26, 50 34 Z" fill="#d32f2f" />
+                <path d="M52 10 C 46 16, 44 26, 50 34 L 46 35 C 41 26, 43 16, 48 11 Z" fill="#a51e1e" />
+                <circle cx="54" cy="36" r="6" fill="#ffffff" stroke="#e5e5e5" />
+                <rect x="2" y="36" width="50" height="12" rx="6" fill="#ffffff" stroke="#e5e5e5" />
+              </svg>
+            }
+          </span>
           <span class="sizer" aria-hidden="true">{{ longest().title }}</span>
         </h1>
       </div>
@@ -141,6 +161,9 @@
           />
         </div>
 
+        @if (decor === 'christmas') {
+          <span class="santa" aria-hidden="true" title="¡Feliz Navidad!">🎅</span>
+        }
         <app-month-grid
           data-tour="grid"
           [weeks]="weeks()"

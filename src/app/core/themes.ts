@@ -9,6 +9,8 @@ export interface MonthAmbience {
   note: string;
   /** Variables CSS que reemplazan las del tema durante ese mes. */
   tokens: Record<string, string>;
+  /** Decoración especial del calendario (dibujos sobre el título, luces...). */
+  decor?: 'christmas';
 }
 
 /** Paleta completa: colores base de la hoja y colores del marcador por categoría. */

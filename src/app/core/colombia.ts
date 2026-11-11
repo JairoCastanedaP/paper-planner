@@ -77,5 +77,6 @@ export const COLOMBIAN_MONTHS: MonthAmbience[] = [
     name: 'Navidad',
     note: 'Navidad: mes para compartir con nuestros seres queridos.',
     tokens: { '--red': '#b71c1c', '--red-hover': '#931616', '--sunday': '#e1f0dc' },
+    decor: 'christmas',
   },
 ];
