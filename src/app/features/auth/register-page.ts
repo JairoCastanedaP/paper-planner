@@ -30,6 +30,6 @@ export class RegisterPage {
     const error = await this.auth.register(this.name, this.email, this.password);
     this.busy.set(false);
     if (error) this.error.set(error);
-    else this.router.navigate(['/calendario']);
+    else this.router.navigate(['/verificar']);
   }
 }

@@ -1,0 +1,28 @@
+<main class="auth">
+  <section class="card">
+    <p class="kicker">Paper Planner</p>
+    <h1>Verifica tu correo</h1>
+    <p class="lead">Un paso más para proteger tu calendario.</p>
+
+    <p class="notice">
+      📧 Te enviamos un enlace a <strong>{{ auth.user()?.email }}</strong>. Ábrelo y luego vuelve aquí.
+      Si no lo ves, revisa la carpeta de spam.
+    </p>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    @if (info()) {
+      <p class="notice" role="status">{{ info() }}</p>
+    }
+
+    <div class="actions">
+      <button type="button" class="primary" (click)="check()" [disabled]="busy()">Ya lo verifiqué</button>
+      <button type="button" (click)="resend()" [disabled]="busy()">Reenviar el correo</button>
+    </div>
+
+    <p class="switch">
+      ¿Te equivocaste de correo? <button type="button" class="link" (click)="logout()">Cerrar sesión</button>
+    </p>
+  </section>
+</main>

@@ -1,0 +1,23 @@
+# Cabeceras de seguridad de Cloudflare Pages (se aplican a todo el sitio).
+# https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Content-Security-Policy: de dónde puede cargar cosas la app.
+#   - scripts: solo los propios (sin scripts en línea).
+#   - estilos en línea: los usa Angular para los estilos de cada componente.
+#   - fuentes: Google Fonts.
+#   - conexiones: Firebase Auth (identitytoolkit, securetoken) y Firestore.
+#   - frame-ancestors 'none': nadie puede meter la app dentro de un iframe (clickjacking).
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src https://paper-planner-col.firebaseapp.com; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+# El service worker y su configuración nunca se guardan en caché: así se detectan las versiones nuevas.
+/ngsw-worker.js
+  Cache-Control: no-cache
+/ngsw.json
+  Cache-Control: no-cache

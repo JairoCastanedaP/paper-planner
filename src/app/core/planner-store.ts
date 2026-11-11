@@ -33,10 +33,11 @@ export class PlannerStore {
   private readonly state = signal<PlannerData>(createEmptyData());
   private undoSeq = 0;
 
-  /** Cuenta cuyos datos se muestran: uid, 'guest' (invitado) o null (sin sesión). */
+  /** Cuenta cuyos datos se muestran: uid, 'guest' (invitado) o null (sin sesión o sin verificar el correo). */
   private readonly owner = computed(() => {
     const user = this.auth.user();
-    return user ? (user.guest ? 'guest' : user.uid) : null;
+    if (!user || !user.verified) return null;
+    return user.guest ? 'guest' : user.uid;
   });
   /** uid de la cuenta en la nube (null en modo invitado). */
   private uid: string | null = null;

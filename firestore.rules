@@ -3,12 +3,56 @@ rules_version = '2';
 // Reglas de seguridad de Firestore para Paper Planner.
 // Se publican en: consola de Firebase → Firestore Database → Reglas.
 //
-// Cada cuenta solo puede leer y escribir lo que está bajo users/{su uid}.
-// Todo lo demás queda cerrado.
+// - Cada cuenta solo lee y escribe lo suyo, bajo users/{su uid}, y solo con el correo verificado.
+// - Solo existen las rutas que usa la app; cualquier otra queda cerrada.
+// - Se validan formas y tamaños para que nadie pueda llenar la base de datos con basura
+//   (en el plan gratuito eso agotaría la cuota de todos los usuarios).
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+    function isOwner(uid) {
+      return request.auth != null
+        && request.auth.uid == uid
+        && request.auth.token.email_verified == true;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // Perfil: qué versión de la política y los términos aceptó y cuándo.
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && incoming().keys().hasOnly(['name', 'privacyVersion', 'termsVersion', 'acceptedAt'])
+        && incoming().privacyVersion is string && incoming().privacyVersion.size() <= 20
+        && incoming().termsVersion is string && incoming().termsVersion.size() <= 20
+        && incoming().acceptedAt == request.time
+        && (!('name' in incoming()) || (incoming().name is string && incoming().name.size() <= 100));
+
+      // Todo el calendario en un documento (menos las imágenes).
+      match /planner/{docId} {
+        allow read, delete: if isOwner(uid) && docId == 'data';
+        allow create, update: if isOwner(uid) && docId == 'data'
+          && incoming().keys().hasOnly(['version', 'demo', 'categories', 'events', 'highlights', 'goals', 'specialDays'])
+          && incoming().version == 1
+          && incoming().categories is list && incoming().categories.size() <= 100
+          && incoming().events is list && incoming().events.size() <= 5000
+          && incoming().goals is list && incoming().goals.size() <= 3000
+          && incoming().highlights is map && incoming().highlights.size() <= 60000
+          && (!('specialDays' in incoming()) || (incoming().specialDays is list && incoming().specialDays.size() <= 500))
+          && (!('demo' in incoming()) || incoming().demo is bool);
+      }
+
+      // Una imagen de fondo por día: users/{uid}/dayImages/2026-11-15 → { data: 'data:image/...' }
+      match /dayImages/{date} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+          && incoming().keys().hasOnly(['data'])
+          && incoming().data is string
+          && incoming().data.size() < 900000;
+      }
     }
   }
 }

@@ -1,8 +1,10 @@
 import {
   Firestore,
+  clearIndexedDbPersistence,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
+  terminate,
 } from 'firebase/firestore';
 import { firebaseApp } from './firebase';
 
@@ -19,4 +21,17 @@ export function firebaseDb(): Firestore {
     ignoreUndefinedProperties: true,
     localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
   }));
+}
+
+/**
+ * Borra la copia local del calendario (al cerrar sesión), para que en un computador
+ * compartido nadie más la vea. Si hay otra pestaña de la app abierta, la copia no se
+ * puede borrar en ese momento; igual queda protegida porque sin sesión no se muestra.
+ */
+export async function clearFirestoreCache(): Promise<void> {
+  const current = db;
+  if (!current) return;
+  db = undefined;
+  await terminate(current);
+  await clearIndexedDbPersistence(current).catch((e) => console.warn('No se pudo borrar la copia local', e));
 }

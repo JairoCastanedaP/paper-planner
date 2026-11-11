@@ -5,6 +5,7 @@ import {
   User,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
@@ -18,10 +19,12 @@ export interface AppUser {
   name: string;
   email: string | null;
   guest: boolean;
+  /** Correo confirmado con el enlace que envía Firebase (sin esto no se guardan datos). */
+  verified: boolean;
 }
 
 const GUEST_KEY = 'paper-planner:guest';
-const GUEST: AppUser = { uid: 'guest', name: 'Invitado', email: null, guest: true };
+const GUEST: AppUser = { uid: 'guest', name: 'Invitado', email: null, guest: true, verified: true };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -61,6 +64,7 @@ export class AuthService {
       await updateProfile(user, { displayName: name.trim() });
       // onAuthStateChanged ya disparó antes de tener el nombre: se actualiza aquí.
       this.account.set(toAppUser(user));
+      await sendEmailVerification(user).catch((e) => console.error(e));
       return null;
     } catch (e) {
       return authMessage(e);
@@ -76,6 +80,31 @@ export class AuthService {
     }
   }
 
+  /** Vuelve a enviar el correo con el enlace de verificación. */
+  async resendVerification(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    if (!user) return 'Inicia sesión de nuevo.';
+    try {
+      await sendEmailVerification(user);
+      return null;
+    } catch (e) {
+      return authMessage(e);
+    }
+  }
+
+  /**
+   * Consulta a Firebase si ya se abrió el enlace de verificación.
+   * Renueva el token para que las reglas de Firestore vean el correo como verificado.
+   */
+  async refreshVerification(): Promise<boolean> {
+    const user = this.auth.currentUser;
+    if (!user) return false;
+    await user.reload();
+    if (user.emailVerified) await user.getIdToken(true);
+    this.account.set(toAppUser(user));
+    return user.emailVerified;
+  }
+
   /** Entrar sin cuenta para conocer la app con los datos de ejemplo. */
   enterAsGuest(): void {
     this.setGuest(true);
@@ -83,7 +112,11 @@ export class AuthService {
 
   async logout(): Promise<void> {
     this.setGuest(false);
-    if (this.account()) await signOut(this.auth);
+    if (!this.account()) return;
+    await signOut(this.auth);
+    // Se importa aquí para no cargar Firestore en la bienvenida y el login.
+    const { clearFirestoreCache } = await import('./firestore');
+    await clearFirestoreCache();
   }
 
   private setGuest(on: boolean): void {
@@ -103,6 +136,7 @@ function toAppUser(user: User): AppUser {
     name: user.displayName || user.email?.split('@')[0] || 'Usuario',
     email: user.email,
     guest: false,
+    verified: user.emailVerified,
   };
 }
 
@@ -140,12 +174,24 @@ function authMessage(error: unknown): string {
   }
 }
 
-/** Solo usuarios con sesión (o en modo demo); los demás van al login. */
+/** Solo usuarios con sesión y correo verificado (o en modo demo); los demás van al login. */
 export const authGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
   await auth.ready;
-  return auth.isLoggedIn() || router.createUrlTree(['/login']);
+  const user = auth.user();
+  if (!user) return router.createUrlTree(['/login']);
+  return user.verified || router.createUrlTree(['/verificar']);
+};
+
+/** La pantalla de verificación es solo para cuentas que aún no confirman el correo. */
+export const unverifiedGuard: CanActivateFn = async () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  await auth.ready;
+  const user = auth.user();
+  if (!user) return router.createUrlTree(['/login']);
+  return !user.verified || router.createUrlTree(['/calendario']);
 };
 
 /** Bienvenida, login y registro solo sin sesión; con sesión se va al calendario. */
