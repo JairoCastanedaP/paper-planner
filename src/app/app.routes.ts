@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard, unverifiedGuard } from './core/auth';
+import { ActionPage } from './features/auth/action-page';
+import { ForgotPage } from './features/auth/forgot-page';
 import { LoginPage } from './features/auth/login-page';
 import { RegisterPage } from './features/auth/register-page';
 import { VerifyPage } from './features/auth/verify-page';
@@ -13,6 +15,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginPage, canActivate: [guestGuard], title: 'Iniciar sesión · Paper Planner' },
   { path: 'registro', component: RegisterPage, canActivate: [guestGuard], title: 'Crear cuenta · Paper Planner' },
   { path: 'verificar', component: VerifyPage, canActivate: [unverifiedGuard], title: 'Verifica tu correo · Paper Planner' },
+  // Recuperar contraseña y destino de los enlaces que llegan por correo (con o sin sesión).
+  { path: 'recuperar', component: ForgotPage, title: 'Recuperar contraseña · Paper Planner' },
+  { path: 'accion', component: ActionPage, title: 'Paper Planner' },
   // El calendario (y Firestore) se descargan solo al entrar: la bienvenida y el login cargan más rápido.
   {
     path: 'calendario',

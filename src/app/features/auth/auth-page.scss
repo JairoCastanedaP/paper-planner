@@ -182,3 +182,41 @@ label.consent {
   font-size: 0.78rem;
   font-weight: 400;
 }
+
+// Requisitos de la contraseña nueva: se marcan mientras se escribe.
+.rules {
+  margin: -6px 0 0;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  list-style: none;
+
+  .ok {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 400;
+
+  input {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.card > .button-link,
+.card > button.primary {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.forgot {
+  align-self: flex-end;
+  font-size: 0.85rem;
+}
