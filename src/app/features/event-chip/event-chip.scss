@@ -92,3 +92,11 @@
     display: none;
   }
 }
+
+// Computador (misma consulta que DESKTOP_QUERY en core/screen.ts): días grandes, letra más legible.
+@media (min-width: 1200px) and (pointer: fine) {
+  :host {
+    padding: 2px 6px;
+    font-size: 0.98rem;
+  }
+}

@@ -4,6 +4,19 @@
   padding: 16px 16px 32px;
 }
 
+// Computador (misma consulta que DESKTOP_QUERY en core/screen.ts): usa casi todo el ancho.
+@media (min-width: 1200px) and (pointer: fine) {
+  .page {
+    max-width: 1920px;
+    padding: 16px 24px 24px;
+  }
+
+  .sticky {
+    margin: -16px -24px 10px;
+    padding: 10px 24px 8px;
+  }
+}
+
 // Encabezado fijo: una sola fila con título, flechas, vistas, buscar y menú.
 .sticky {
   position: sticky;
