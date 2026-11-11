@@ -239,3 +239,15 @@
     font-size: 0.65rem;
   }
 }
+
+// Computador (misma consulta que DESKTOP_QUERY en core/screen.ts): los días crecen para
+// llenar el alto de la pantalla, como una hoja completa; las actividades van debajo del número.
+@media (min-width: 1200px) and (pointer: fine) {
+  .cell {
+    min-height: max(118px, calc((100dvh - 330px) / var(--weeks, 6)));
+  }
+
+  .chips {
+    gap: 3px;
+  }
+}

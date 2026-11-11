@@ -4,6 +4,22 @@
   padding: 16px 16px 32px;
 }
 
+// Computador (misma consulta que DESKTOP_QUERY en core/screen.ts): usa casi todo el ancho.
+// Margen lateral proporcional al ancho (entre 40 y 96 px) para que se vea centrado.
+@media (min-width: 1200px) and (pointer: fine) {
+  .page {
+    --side: clamp(40px, 4.5vw, 96px);
+
+    max-width: 1920px;
+    padding: 16px var(--side) 24px;
+  }
+
+  .sticky {
+    margin: -16px calc(-1 * var(--side)) 10px;
+    padding: 10px var(--side) 8px;
+  }
+}
+
 // Encabezado fijo: una sola fila con título, flechas, vistas, buscar y menú.
 .sticky {
   position: sticky;
@@ -42,6 +58,20 @@
 
 .title {
   min-width: 0;
+}
+
+// Texto visible y texto invisible más largo en la misma celda: el ancho es el del más largo.
+.sized {
+  display: grid;
+
+  > span {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+
+  .sizer {
+    visibility: hidden;
+  }
 }
 
 .kicker {
@@ -196,6 +226,172 @@ h1 {
   }
 }
 
+// Tema Colombiano: franja con los colores de la bandera arriba del encabezado.
+:host-context([data-theme='colombian']) .sticky {
+  border-top: 5px solid transparent;
+  border-image: linear-gradient(90deg, #fcd116 0 50%, #003893 50% 75%, #ce1126 75% 100%) 1;
+}
+
+// ── Adornos del mes en los márgenes (tema Colombiano) ─────
+// Solo en los márgenes blancos de los lados: no tocan el encabezado ni el calendario.
+// Se muestran en computador, donde hay margen libre (misma consulta que DESKTOP_QUERY).
+.side-decor {
+  display: none;
+}
+
+@media (min-width: 1200px) and (pointer: fine) {
+  .side-decor {
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    width: calc(var(--side) - 8px);
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0 16px;
+    pointer-events: none;
+
+    // Siempre pegados al borde de la ventana (aunque la página esté centrada en pantallas muy anchas).
+    &.left {
+      left: 4px;
+    }
+
+    &.right {
+      right: 4px;
+    }
+  }
+
+  .deco-top {
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+
+  .deco-bottom {
+    font-size: 2.2rem;
+    line-height: 1;
+    white-space: nowrap;
+    animation: sway 3s ease-in-out infinite;
+  }
+
+  // Guirnalda vertical: un cable ondulado con luces, banderines o dibujos.
+  .garland {
+    position: relative;
+    display: flex;
+    width: 34px;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: 6px 0;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 22px;
+      background: radial-gradient(ellipse 14px 26px at 0 50%, transparent 62%, #2f3b2f 64%, #2f3b2f 72%, transparent 74%)
+        0 0 / 22px 46px repeat-y;
+      content: '';
+      transform: translateX(-30%);
+    }
+
+    // Los elementos se alternan a un lado y otro del cable.
+    > :nth-child(odd) {
+      align-self: flex-start;
+    }
+
+    > :nth-child(even) {
+      align-self: flex-end;
+    }
+
+    > :nth-child(4n + 2) {
+      animation-delay: 0.4s;
+    }
+
+    > :nth-child(4n + 3) {
+      animation-delay: 0.8s;
+    }
+
+    > :nth-child(4n) {
+      animation-delay: 1.2s;
+    }
+  }
+
+  // Luces de colores que titilan.
+  .bulb {
+    position: relative;
+    width: 10px;
+    height: 14px;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    background: var(--bulb);
+    box-shadow: 0 0 9px 2px var(--bulb);
+    animation: twinkle 1.6s ease-in-out infinite;
+
+    &:nth-child(odd) {
+      transform: rotate(-25deg);
+    }
+
+    &:nth-child(even) {
+      transform: rotate(25deg);
+    }
+  }
+
+  // Banderines triangulares que ondean.
+  .flag {
+    width: 16px;
+    height: 18px;
+    background: var(--flag);
+    filter: drop-shadow(0 0 1px rgb(0 0 0 / 35%));
+    animation: flutter 2.2s ease-in-out infinite;
+
+    &:nth-child(odd) {
+      clip-path: polygon(100% 0, 0 50%, 100% 100%);
+      transform-origin: right center;
+    }
+
+    &:nth-child(even) {
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      transform-origin: left center;
+    }
+  }
+
+  // Dibujos (flores, notas musicales, corazones...).
+  .item {
+    font-size: 1.05rem;
+    line-height: 1;
+    animation: sway 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.35;
+    box-shadow: none;
+  }
+}
+
+@keyframes flutter {
+  50% {
+    transform: scaleX(0.75);
+  }
+}
+
+@keyframes sway {
+  50% {
+    transform: rotate(8deg) translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bulb,
+  .flag,
+  .item,
+  .deco-bottom {
+    animation: none;
+  }
+}
+
 // Frase del mes en el espacio libre entre las flechas y las vistas.
 .quote {
   min-width: 0;
@@ -209,6 +405,15 @@ h1 {
     font-family: var(--hand);
     font-size: clamp(0.95rem, 1.6vw, 1.2rem);
     line-height: 1.2;
+  }
+
+  // Nota de la ambientación del mes (temas como "Colombiano").
+  .ambience {
+    display: block;
+    margin-top: 2px;
+    color: var(--red);
+    font-size: 0.78rem;
+    font-weight: 600;
   }
 
   cite {

@@ -1,4 +1,4 @@
-<div class="grid" role="grid" aria-label="Calendario del mes">
+<div class="grid" role="grid" aria-label="Calendario del mes" [style.--weeks]="weeks().length">
   <div class="head" role="row">
     @for (name of weekdays; track $index) {
       <div class="weekday" role="columnheader">

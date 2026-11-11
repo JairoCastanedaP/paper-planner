@@ -1,4 +1,30 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
+import { COLOMBIAN_MONTHS } from './colombia';
+
+/**
+ * Adornos de los márgenes laterales (solo en computador, donde hay espacio libre).
+ * Cada margen tiene un adorno arriba, una guirnalda vertical y un adorno abajo.
+ */
+export interface SideDecor {
+  /** Adornos de arriba: [izquierda, derecha]. */
+  top: [string, string];
+  /** Adornos de abajo: [izquierda, derecha]. */
+  bottom: [string, string];
+  /** Luces de colores, banderines de colores o una guirnalda de emojis. */
+  garland: { kind: 'bulbs' | 'flags'; colors: string[] } | { kind: 'items'; items: string[] };
+}
+
+/** Ambientación de un mes (temas que cambian con el mes, como "Colombiano"). */
+export interface MonthAmbience {
+  emoji: string;
+  name: string;
+  /** Nota corta que se muestra debajo de la frase del mes. */
+  note: string;
+  /** Variables CSS que reemplazan las del tema durante ese mes. */
+  tokens: Record<string, string>;
+  /** Adornos de los márgenes laterales. */
+  decor?: SideDecor;
+}
 
 /** Paleta completa: colores base de la hoja y colores del marcador por categoría. */
 export interface Theme {
@@ -9,6 +35,8 @@ export interface Theme {
   /** Variables CSS que se aplican en :root. */
   tokens: Record<string, string>;
   categoryColors: Record<string, string>;
+  /** Si existe, cada mes (0 = enero) tiene su propia ambientación. */
+  monthly?: MonthAmbience[];
 }
 
 const LIGHT_BASE = {
@@ -126,6 +154,33 @@ export const THEMES: Theme[] = [
     },
   },
   {
+    id: 'colombian',
+    name: 'Colombiano',
+    description: 'Cada mes se ambienta con una fiesta o tradición de Colombia.',
+    tokens: {
+      ...LIGHT_BASE,
+      '--paper': '#fbf8f1',
+      '--card': '#fffdf8',
+      '--ink': '#1d1b19',
+      '--muted': '#6b645b',
+      '--line': '#0b2a5b',
+      '--soft-line': '#d6d6dc',
+      '--red': '#ce1126',
+      '--red-hover': '#a50d1e',
+      '--sunday': '#fff3c4',
+      '--out': '#f0eee6',
+      '--hover': '#fff6d6',
+    },
+    categoryColors: {
+      academic: '#ffa94d',
+      english: '#8ce563',
+      finance: '#ff6fb5',
+      birthday: '#fcd116',
+      project: '#6cb4ff',
+    },
+    monthly: COLOMBIAN_MONTHS,
+  },
+  {
     id: 'night',
     name: 'Nocturno',
     description: 'Fondo oscuro con marcadores neón.',
@@ -167,14 +222,24 @@ export class ThemeService {
   readonly themeId = signal(readThemeId());
   readonly theme = computed(() => THEMES.find((t) => t.id === this.themeId()) ?? THEMES[0]);
 
+  /** Mes que se está viendo (0 = enero), o null fuera del calendario o en la vista anual. */
+  readonly ambienceMonth = signal<number | null>(null);
+  /** Ambientación del mes visible, solo si el tema la tiene (p. ej. "Colombiano"). */
+  readonly ambience = computed(() => {
+    const month = this.ambienceMonth();
+    return month === null ? null : (this.theme().monthly?.[month] ?? null);
+  });
+
   constructor() {
     effect(() => {
       const theme = this.theme();
       const root = document.documentElement;
-      for (const [name, value] of Object.entries(theme.tokens)) root.style.setProperty(name, value);
+      const tokens = { ...theme.tokens, ...(this.ambience()?.tokens ?? {}) };
+      for (const [name, value] of Object.entries(tokens)) root.style.setProperty(name, value);
+      root.dataset['theme'] = theme.id;
       root.style.setProperty('--done', theme.categoryColors['english'] ?? '#8ce563');
       root.style.colorScheme = theme.dark ? 'dark' : 'light';
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme.tokens['--red']);
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', tokens['--red']);
       try {
         localStorage.setItem(THEME_KEY, theme.id);
       } catch {

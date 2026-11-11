@@ -39,7 +39,10 @@ el lápiz de la tablet o el mouse.
   y lo más relevante de cada mes: objetivos, actividades muy importantes, cumpleaños y total económico.
 - **Actividades muy importantes** (⭐) con **recordatorio en ventana modal**: en el momento, 15 min, 1 h,
   3 h o 1 día antes. Se puede posponer 10 minutos o marcar como visto.
-- **Temas de color**: Estándar (los colores del calendario de papel), Pastel, Océano, Bosque y Nocturno.
+- **Temas** (menú ☰ → Temas): Estándar (los colores del calendario de papel), Pastel, Océano, Bosque,
+  **Colombiano** y Nocturno. El tema Colombiano ambienta cada mes con una fiesta o tradición del país
+  (color de acento, domingos y festivos, y una nota bajo la frase del mes); se define en
+  [`src/app/core/colombia.ts`](src/app/core/colombia.ts).
   El tema se guarda en cada dispositivo.
 - **Pantalla de bienvenida** (`/`): presenta la app y lleva a iniciar sesión o crear cuenta. Al cerrar sesión se vuelve a ella;
   con sesión iniciada, `/` lleva directo al calendario (`/calendario`).

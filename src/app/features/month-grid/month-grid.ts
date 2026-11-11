@@ -6,6 +6,7 @@ import { Occurrence } from '../../core/models';
 import { MoonPhase, moonPhasesBetween } from '../../core/moon';
 import { PlannerStore } from '../../core/planner-store';
 import { PreferencesService } from '../../core/preferences';
+import { ScreenService } from '../../core/screen';
 import { EventChip } from '../event-chip/event-chip';
 
 /** Cómo se reparten las actividades de un día: junto al número y debajo. */
@@ -45,6 +46,9 @@ export class MonthGrid {
   protected readonly holidayOn = holidayOn;
   protected readonly maxVisible = 4;
   private readonly prefs = inject(PreferencesService);
+  private readonly screen = inject(ScreenService);
+  /** En computador los días son más altos: caben más actividades antes de "+n más". */
+  private readonly desktopVisible = 5;
 
   /** Fases de la luna de las semanas visibles (solo si están activadas en el menú). */
   protected readonly moons = computed(() => {
@@ -62,8 +66,13 @@ export class MonthGrid {
    * Desde la primera actividad, las primeras (las ⭐ importantes antes) van a la derecha
    * del número, que si no queda vacío; así cada día ocupa menos alto. Con festivo no,
    * porque ese espacio lo usa el nombre del festivo.
+   * En computador (pantalla grande) se mantiene el acomodo clásico: todas debajo del número.
    */
   protected layout(occurrences: Occurrence[], holiday: string | undefined): DayLayout {
+    if (this.screen.isDesktop()) {
+      const below = occurrences.slice(0, this.desktopVisible);
+      return { beside: [], below, hidden: occurrences.length - below.length };
+    }
     if (occurrences.length < BESIDE_FROM || holiday) {
       const below = occurrences.slice(0, this.maxVisible);
       return { beside: [], below, hidden: occurrences.length - below.length };

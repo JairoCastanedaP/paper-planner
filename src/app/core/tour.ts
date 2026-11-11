@@ -46,7 +46,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     target: 'menu',
     title: 'Hazlo tuyo',
-    text: 'En este menú creas tus categorías, eliges los colores, administras tu cuenta y puedes volver a ver esta guía.',
+    text: 'En este menú creas tus categorías, eliges el tema, administras tu cuenta y puedes volver a ver esta guía.',
   },
   {
     title: '¡Listo!',
