@@ -1,6 +1,19 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
 import { COLOMBIAN_MONTHS } from './colombia';
 
+/**
+ * Adornos de los márgenes laterales (solo en computador, donde hay espacio libre).
+ * Cada margen tiene un adorno arriba, una guirnalda vertical y un adorno abajo.
+ */
+export interface SideDecor {
+  /** Adornos de arriba: [izquierda, derecha]. */
+  top: [string, string];
+  /** Adornos de abajo: [izquierda, derecha]. */
+  bottom: [string, string];
+  /** Luces de colores, banderines de colores o una guirnalda de emojis. */
+  garland: { kind: 'bulbs' | 'flags'; colors: string[] } | { kind: 'items'; items: string[] };
+}
+
 /** Ambientación de un mes (temas que cambian con el mes, como "Colombiano"). */
 export interface MonthAmbience {
   emoji: string;
@@ -9,8 +22,8 @@ export interface MonthAmbience {
   note: string;
   /** Variables CSS que reemplazan las del tema durante ese mes. */
   tokens: Record<string, string>;
-  /** Decoración especial del calendario (dibujos sobre el título, luces...). */
-  decor?: 'christmas';
+  /** Adornos de los márgenes laterales. */
+  decor?: SideDecor;
 }
 
 /** Paleta completa: colores base de la hoja y colores del marcador por categoría. */

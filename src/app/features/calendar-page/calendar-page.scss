@@ -232,8 +232,8 @@ h1 {
   border-image: linear-gradient(90deg, #fcd116 0 50%, #003893 50% 75%, #ce1126 75% 100%) 1;
 }
 
-// ── Navidad (tema Colombiano, diciembre) ─────────────────
-// Adornos solo en los márgenes blancos de los lados: no tocan el encabezado ni el calendario.
+// ── Adornos del mes en los márgenes (tema Colombiano) ─────
+// Solo en los márgenes blancos de los lados: no tocan el encabezado ni el calendario.
 // Se muestran en computador, donde hay margen libre (misma consulta que DESKTOP_QUERY).
 .side-decor {
   display: none;
@@ -267,7 +267,14 @@ h1 {
     line-height: 1;
   }
 
-  // Guirnalda vertical: un cable ondulado con bombillos de colores que titilan.
+  .deco-bottom {
+    font-size: 2.2rem;
+    line-height: 1;
+    white-space: nowrap;
+    animation: sway 3s ease-in-out infinite;
+  }
+
+  // Guirnalda vertical: un cable ondulado con luces, banderines o dibujos.
   .garland {
     position: relative;
     display: flex;
@@ -288,8 +295,30 @@ h1 {
       content: '';
       transform: translateX(-30%);
     }
+
+    // Los elementos se alternan a un lado y otro del cable.
+    > :nth-child(odd) {
+      align-self: flex-start;
+    }
+
+    > :nth-child(even) {
+      align-self: flex-end;
+    }
+
+    > :nth-child(4n + 2) {
+      animation-delay: 0.4s;
+    }
+
+    > :nth-child(4n + 3) {
+      animation-delay: 0.8s;
+    }
+
+    > :nth-child(4n) {
+      animation-delay: 1.2s;
+    }
   }
 
+  // Luces de colores que titilan.
   .bulb {
     position: relative;
     width: 10px;
@@ -300,50 +329,38 @@ h1 {
     animation: twinkle 1.6s ease-in-out infinite;
 
     &:nth-child(odd) {
-      align-self: flex-start;
       transform: rotate(-25deg);
     }
 
     &:nth-child(even) {
-      align-self: flex-end;
       transform: rotate(25deg);
     }
+  }
 
-    &:nth-child(4n + 1) {
-      --bulb: #ff3b3b;
+  // Banderines triangulares que ondean.
+  .flag {
+    width: 16px;
+    height: 18px;
+    background: var(--flag);
+    filter: drop-shadow(0 0 1px rgb(0 0 0 / 35%));
+    animation: flutter 2.2s ease-in-out infinite;
+
+    &:nth-child(odd) {
+      clip-path: polygon(100% 0, 0 50%, 100% 100%);
+      transform-origin: right center;
     }
 
-    &:nth-child(4n + 2) {
-      --bulb: #ffd43b;
-      animation-delay: 0.4s;
-    }
-
-    &:nth-child(4n + 3) {
-      --bulb: #40c057;
-      animation-delay: 0.8s;
-    }
-
-    &:nth-child(4n) {
-      --bulb: #4dabf7;
-      animation-delay: 1.2s;
+    &:nth-child(even) {
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      transform-origin: left center;
     }
   }
 
-  .deco-bottom {
-    display: flex;
-    align-items: flex-end;
-    font-size: 2.4rem;
+  // Dibujos (flores, notas musicales, corazones...).
+  .item {
+    font-size: 1.05rem;
     line-height: 1;
-  }
-
-  .santa {
-    display: inline-block;
-    animation: wave 3s ease-in-out infinite;
-  }
-
-  .gift {
-    margin-left: -10px;
-    font-size: 1.5rem;
+    animation: sway 2.6s ease-in-out infinite;
   }
 }
 
@@ -354,15 +371,23 @@ h1 {
   }
 }
 
-@keyframes wave {
+@keyframes flutter {
   50% {
-    transform: rotate(8deg) translateY(-3px);
+    transform: scaleX(0.75);
+  }
+}
+
+@keyframes sway {
+  50% {
+    transform: rotate(8deg) translateY(-2px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bulb,
-  .santa {
+  .flag,
+  .item,
+  .deco-bottom {
     animation: none;
   }
 }

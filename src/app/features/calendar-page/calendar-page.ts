@@ -85,8 +85,10 @@ export class CalendarPage {
   protected readonly accountOpen = signal(false);
   protected readonly menuOpen = signal(false);
   protected readonly prefs = inject(PreferencesService);
-  /** Bombillos de cada guirnalda lateral (tema Colombiano en diciembre). */
-  protected readonly bulbs = Array.from({ length: 22 });
+  /** Cuántos elementos lleva cada guirnalda lateral, según su tipo (tema Colombiano). */
+  protected readonly bulbSlots = Array.from({ length: 22 });
+  protected readonly flagSlots = Array.from({ length: 18 });
+  protected readonly itemSlots = Array.from({ length: 14 });
   /** Para la ambientación por mes de temas como "Colombiano". */
   protected readonly theme = inject(ThemeService);
   /** La cuenta aún no aceptó la versión vigente de la política y los términos. */

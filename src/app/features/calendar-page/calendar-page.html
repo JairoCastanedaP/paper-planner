@@ -1,22 +1,33 @@
 <main class="page">
   @let decor = theme.ambience()?.decor;
-  @if (decor === 'christmas') {
-    <!-- Adornos navideños en los márgenes laterales (solo en pantallas con margen libre). -->
-    @for (side of ['left', 'right']; track side) {
-      <div class="side-decor" [class]="side" aria-hidden="true">
-        <span class="deco-top">{{ side === 'left' ? '⭐' : '🔔' }}</span>
+  @if (decor) {
+    <!-- Adornos del mes en los márgenes laterales (solo en computador, donde hay margen libre). -->
+    @for (side of [0, 1]; track side) {
+      <div class="side-decor" [class.left]="side === 0" [class.right]="side === 1" aria-hidden="true">
+        <span class="deco-top">{{ decor.top[side] }}</span>
         <div class="garland">
-          @for (bulb of bulbs; track $index) {
-            <span class="bulb"></span>
+          @switch (decor.garland.kind) {
+            @case ('items') {
+              @let items = $any(decor.garland).items;
+              @for (slot of itemSlots; track $index) {
+                <span class="item">{{ items[$index % items.length] }}</span>
+              }
+            }
+            @case ('flags') {
+              @let colors = $any(decor.garland).colors;
+              @for (slot of flagSlots; track $index) {
+                <span class="flag" [style.--flag]="colors[$index % colors.length]"></span>
+              }
+            }
+            @default {
+              @let colors = $any(decor.garland).colors;
+              @for (slot of bulbSlots; track $index) {
+                <span class="bulb" [style.--bulb]="colors[$index % colors.length]"></span>
+              }
+            }
           }
         </div>
-        <span class="deco-bottom">
-          @if (side === 'left') {
-            🎄
-          } @else {
-            <span class="santa">🎅</span><span class="gift">🎁</span>
-          }
-        </span>
+        <span class="deco-bottom">{{ decor.bottom[side] }}</span>
       </div>
     }
   }
