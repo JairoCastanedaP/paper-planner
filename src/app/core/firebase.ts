@@ -2,6 +2,7 @@ import { isDevMode } from '@angular/core';
 import { FirebaseApp, initializeApp } from 'firebase/app';
 import { ReCaptchaEnterpriseProvider, initializeAppCheck } from 'firebase/app-check';
 import { Auth, getAuth } from 'firebase/auth';
+import { lang } from './i18n';
 
 /**
  * Configuración web del proyecto de Firebase "paper-planner-col".
@@ -61,7 +62,8 @@ function startAppCheck(app: FirebaseApp): void {
 
 export function firebaseAuth(): Auth {
   const auth = getAuth(firebaseApp());
-  auth.languageCode = 'es';
+  // Los correos de verificación y recuperación llegan en el idioma de la app.
+  auth.languageCode = lang();
   return auth;
 }
 

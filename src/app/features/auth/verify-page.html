@@ -1,12 +1,13 @@
 <main class="auth">
+  <app-lang-switch />
   <section class="card">
     <p class="kicker">Paper Planner</p>
-    <h1>Verifica tu correo</h1>
-    <p class="lead">Un paso más para proteger tu calendario.</p>
+    <h1>{{ tx('Verifica tu correo', 'Verify your email') }}</h1>
+    <p class="lead">{{ tx('Un paso más para proteger tu calendario.', 'One more step to protect your calendar.') }}</p>
 
     <p class="notice">
-      📧 Te enviamos un enlace a <strong>{{ auth.user()?.email }}</strong>. Ábrelo y luego vuelve aquí.
-      Si no lo ves, revisa la carpeta de spam.
+      📧 {{ tx('Te enviamos un enlace a', 'We sent a link to') }} <strong>{{ auth.user()?.email }}</strong>.
+      {{ tx('Ábrelo y luego vuelve aquí. Si no lo ves, revisa la carpeta de spam.', "Open it and then come back here. If you don't see it, check your spam folder.") }}
     </p>
 
     @if (error()) {
@@ -17,12 +18,12 @@
     }
 
     <div class="actions">
-      <button type="button" class="primary" (click)="check()" [disabled]="busy()">Ya lo verifiqué</button>
-      <button type="button" (click)="resend()" [disabled]="busy()">Reenviar el correo</button>
+      <button type="button" class="primary" (click)="check()" [disabled]="busy()">{{ tx('Ya lo verifiqué', 'I\'ve verified it') }}</button>
+      <button type="button" (click)="resend()" [disabled]="busy()">{{ tx('Reenviar el correo', 'Resend the email') }}</button>
     </div>
 
     <p class="switch">
-      ¿Te equivocaste de correo? <button type="button" class="link" (click)="logout()">Cerrar sesión</button>
+      {{ tx('¿Te equivocaste de correo?', 'Wrong email?') }} <button type="button" class="link" (click)="logout()">{{ tx('Cerrar sesión', 'Sign out') }}</button>
     </p>
   </section>
 </main>

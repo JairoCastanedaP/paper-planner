@@ -1,5 +1,6 @@
 import { Component, effect, inject } from '@angular/core';
 import { PlannerStore } from '../../core/planner-store';
+import { tx } from '../../core/i18n';
 
 /** Cuánto tiempo se ofrece deshacer. */
 const VISIBLE_MS = 8000;
@@ -12,7 +13,7 @@ const VISIBLE_MS = 8000;
       <div class="toast" role="status" aria-live="polite">
         <span class="message">{{ entry.message }}</span>
         <button type="button" class="undo" (click)="store.undoLast()">Deshacer</button>
-        <button type="button" class="close" (click)="store.dismissUndo(entry.id)" aria-label="Cerrar aviso">×</button>
+        <button type="button" class="close" (click)="store.dismissUndo(entry.id)" [attr.aria-label]="tx('Cerrar aviso', 'Dismiss')">×</button>
       </div>
     }
   `,
@@ -70,6 +71,7 @@ const VISIBLE_MS = 8000;
   `,
 })
 export class UndoToast {
+  protected readonly tx = tx;
   protected readonly store = inject(PlannerStore);
 
   constructor() {

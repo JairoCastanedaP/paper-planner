@@ -1,6 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
+import { LangSwitch } from '../lang-switch/lang-switch';
+import { weekdayInitials } from '../../core/dates';
+import { isEn, tx } from '../../core/i18n';
 
 interface PreviewDay {
   n: number;
@@ -13,19 +16,39 @@ interface Feature {
   icon: string;
   title: string;
   text: string;
+  titleEn: string;
+  textEn: string;
 }
 
 /** Pantalla de bienvenida: lo primero que ve quien entra al sitio sin sesión. */
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterLink],
+  imports: [RouterLink, LangSwitch],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
 export class LandingPage {
+  protected readonly tx = tx;
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   protected readonly year = new Date().getFullYear();
+  protected readonly en = isEn;
+  protected readonly weekInitials = weekdayInitials;
+
+  /** Textos de la hoja de muestra en inglés. */
+  private readonly chipEn: Record<string, string> = {
+    Inglés: 'English',
+    'Curso web': 'Web course',
+    Taller: 'Workshop',
+    'Pago 65 USD': 'Pay 65 USD',
+    Proyecto: 'Project',
+    '👑 Cumple': '👑 Birthday',
+    '⭐ Entrega': '⭐ Deadline',
+    Conversación: 'Conversation',
+  };
+  protected chipLabel(text: string): string {
+    return tx(text, this.chipEn[text] ?? text);
+  }
   /** Se llega aquí justo después de eliminar la cuenta. */
   protected readonly accountDeleted = !!history.state?.accountDeleted;
 
@@ -40,31 +63,43 @@ export class LandingPage {
       icon: '🖍',
       title: 'Resalta como en papel',
       text: 'Pasa el dedo o el lápiz sobre una actividad y queda pintada con el color de su categoría.',
+      titleEn: 'Highlight like on paper',
+      textEn: 'Swipe your finger or pen across an activity and it gets painted with its category color.',
     },
     {
       icon: '🗓',
       title: 'Mes, año y día',
       text: 'Todo el mes de un vistazo, el año con lo más importante de cada mes y la agenda de cada día.',
+      titleEn: 'Month, year and day',
+      textEn: 'The whole month at a glance, the year with the highlights of each month and the agenda of each day.',
     },
     {
       icon: '🎯',
       title: 'Objetivos del mes',
       text: 'Metas con casilla y contadores que avanzan solos a medida que resaltas tus actividades.',
+      titleEn: 'Monthly goals',
+      textEn: 'Goals with checkboxes and counters that move forward on their own as you highlight your activities.',
     },
     {
       icon: '⏰',
       title: 'Recordatorios',
       text: 'Las actividades muy importantes te avisan antes de que lleguen.',
+      titleEn: 'Reminders',
+      textEn: 'Very important activities alert you before they arrive.',
     },
     {
       icon: '🎨',
       title: 'A tu manera',
-      text: 'Tus propias categorías, cinco temas de color, fondos e íconos para los días especiales.',
+      text: 'Tus propias categorías, temas de color, fondos e íconos para los días especiales.',
+      titleEn: 'Your way',
+      textEn: 'Your own categories, color themes, backgrounds and icons for special days.',
     },
     {
       icon: '📱',
       title: 'Celular, tablet y computador',
       text: 'Se instala como app y funciona incluso sin conexión.',
+      titleEn: 'Phone, tablet and computer',
+      textEn: 'Installs as an app and works even offline.',
     },
   ];
 

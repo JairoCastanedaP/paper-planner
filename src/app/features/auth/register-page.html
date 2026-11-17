@@ -1,50 +1,58 @@
 <main class="auth">
-  <a class="back" routerLink="/">← Volver al inicio</a>
+  <app-lang-switch />
+  <a class="back" routerLink="/">← {{ tx('Volver al inicio', 'Back to home') }}</a>
   <section class="card">
     <p class="kicker">Paper Planner</p>
-    <h1>Crear cuenta</h1>
+    <h1>{{ tx('Crear cuenta', 'Create account') }}</h1>
 
-    <p class="lead">Organiza tu mes como en papel, con marcador de colores.</p>
+    <p class="lead">{{ tx('Organiza tu mes como en papel, con marcador de colores.', 'Organize your month like on paper, with colored highlighters.') }}</p>
 
     <form (ngSubmit)="submit()" #form="ngForm">
       <label>
-        Nombre
+        {{ tx('Nombre', 'Name') }}
         <input name="name" [(ngModel)]="name" autocomplete="name" required autofocus />
       </label>
       <label>
-        Correo electrónico
+        {{ tx('Correo electrónico', 'Email') }}
         <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required email />
       </label>
       <label>
-        Contraseña
+        {{ tx('Contraseña', 'Password') }}
         <input name="password" type="password" [(ngModel)]="password" autocomplete="new-password" required minlength="8" aria-describedby="password-hint" />
-        <small id="password-hint" class="hint">Mínimo 8 caracteres, con letras minúsculas y números.</small>
+        <small id="password-hint" class="hint">{{ tx('Mínimo 8 caracteres, con letras minúsculas y números.', 'At least 8 characters, with lowercase letters and numbers.') }}</small>
       </label>
       <label>
-        Confirmar contraseña
+        {{ tx('Confirmar contraseña', 'Confirm password') }}
         <input name="confirm" type="password" [(ngModel)]="confirm" autocomplete="new-password" required />
       </label>
 
       <label class="consent">
         <input type="checkbox" name="accepted" [(ngModel)]="accepted" required />
         <span>
-          Acepto los <a routerLink="/terminos" target="_blank">Términos y Condiciones</a> y autorizo el
-          tratamiento de mis datos según la
-          <a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos</a>, incluidos los
-          datos sensibles que decida registrar y su almacenamiento en servidores fuera de Colombia.
+          @if (en()) {
+            I accept the <a routerLink="/terminos" target="_blank">Terms and Conditions</a> and authorize the
+            processing of my data under the
+            <a routerLink="/privacidad" target="_blank">Data Processing Policy</a>, including any sensitive
+            data I choose to record and its storage on servers outside Colombia.
+          } @else {
+            Acepto los <a routerLink="/terminos" target="_blank">Términos y Condiciones</a> y autorizo el
+            tratamiento de mis datos según la
+            <a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos</a>, incluidos los
+            datos sensibles que decida registrar y su almacenamiento en servidores fuera de Colombia.
+          }
         </span>
       </label>
 
       @if (mismatch) {
-        <p class="error" role="alert">Las contraseñas no coinciden.</p>
+        <p class="error" role="alert">{{ tx('Las contraseñas no coinciden.', 'The passwords don\'t match.') }}</p>
       }
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
       }
 
-      <button type="submit" class="primary" [disabled]="form.invalid || mismatch || busy()">{{ busy() ? 'Creando…' : 'Crear cuenta' }}</button>
+      <button type="submit" class="primary" [disabled]="form.invalid || mismatch || busy()">{{ busy() ? tx('Creando…', 'Creating…') : tx('Crear cuenta', 'Create account') }}</button>
     </form>
 
-    <p class="switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+    <p class="switch">{{ tx('¿Ya tienes cuenta?', 'Already have an account?') }} <a routerLink="/login">{{ tx('Inicia sesión', 'Sign in') }}</a></p>
   </section>
 </main>

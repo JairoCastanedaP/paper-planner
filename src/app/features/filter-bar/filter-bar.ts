@@ -9,15 +9,16 @@ import {
   viewChild,
 } from '@angular/core';
 import { PlannerStore } from '../../core/planner-store';
+import { lang, tx } from '../../core/i18n';
 
 /** Chips para ver solo las actividades de ciertas categorías. */
 @Component({
   selector: 'app-filter-bar',
   template: `
-    <div class="bar" #bar role="group" aria-label="Filtrar por categoría">
-      <span class="label" data-fixed>Ver:</span>
+    <div class="bar" #bar role="group" [attr.aria-label]="tx('Filtrar por categoría', 'Filter by category')">
+      <span class="label" data-fixed>{{ tx('Ver:', 'Show:') }}</span>
       <button type="button" class="chip all" data-fixed [class.on]="!selected().length" [attr.aria-pressed]="!selected().length" (click)="selectedChange.emit([])">
-        Todas
+        {{ tx('Todas', 'All') }}
       </button>
       @for (c of store.categories(); track c.id) {
         <button
@@ -76,6 +77,7 @@ import { PlannerStore } from '../../core/planner-store';
   `,
 })
 export class FilterBar {
+  protected readonly tx = tx;
   readonly selected = input<string[]>([]);
   /** Conteo del periodo visible cuando hay filtro (p. ej. "12 en noviembre · 9 resaltadas"). */
   readonly summary = input('');
@@ -89,6 +91,7 @@ export class FilterBar {
     afterRenderEffect(() => {
       this.store.categories();
       this.summary();
+      lang();
       this.pack();
     });
     const observer = new ResizeObserver(() => this.pack());

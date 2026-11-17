@@ -1,24 +1,24 @@
 <main class="auth">
-  <a class="back" routerLink="/login">← Volver a iniciar sesión</a>
+  <app-lang-switch />
+  <a class="back" routerLink="/login">← {{ tx('Volver a iniciar sesión', 'Back to sign in') }}</a>
   <section class="card">
     <p class="kicker">Paper Planner</p>
-    <h1>¿Olvidaste tu contraseña?</h1>
+    <h1>{{ tx('¿Olvidaste tu contraseña?', 'Forgot your password?') }}</h1>
 
     @if (sentTo()) {
       <p class="notice" role="status">
-        📧 Si existe una cuenta con <strong>{{ sentTo() }}</strong>, te enviamos un enlace para crear una
-        contraseña nueva. Revisa también la carpeta de spam; el enlace vence en una hora.
+        📧 {{ tx('Si existe una cuenta con', 'If an account exists for') }} <strong>{{ sentTo() }}</strong>{{ tx(', te enviamos un enlace para crear una contraseña nueva. Revisa también la carpeta de spam; el enlace vence en una hora.', ', we sent you a link to create a new password. Check your spam folder too; the link expires in one hour.') }}
       </p>
       <div class="actions">
-        <a class="button-link" routerLink="/login" [queryParams]="{ email: sentTo() }">Volver a iniciar sesión</a>
-        <button type="button" (click)="sentTo.set('')">No me llegó: enviarlo otra vez</button>
+        <a class="button-link" routerLink="/login" [queryParams]="{ email: sentTo() }">{{ tx('Volver a iniciar sesión', 'Back to sign in') }}</a>
+        <button type="button" (click)="sentTo.set('')">{{ tx('No me llegó: enviarlo otra vez', 'Didn\'t get it? Send it again') }}</button>
       </div>
     } @else {
-      <p class="lead">Escribe el correo de tu cuenta y te enviamos un enlace para crear una nueva.</p>
+      <p class="lead">{{ tx('Escribe el correo de tu cuenta y te enviamos un enlace para crear una nueva.', 'Enter your account\'s email and we\'ll send you a link to create a new one.') }}</p>
 
       <form (ngSubmit)="submit()">
         <label>
-          Correo electrónico
+          {{ tx('Correo electrónico', 'Email') }}
           <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required autofocus />
         </label>
 
@@ -26,7 +26,7 @@
           <p class="error" role="alert">{{ error() }}</p>
         }
 
-        <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Enviando…' : 'Enviar enlace' }}</button>
+        <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? tx('Enviando…', 'Sending…') : tx('Enviar enlace', 'Send link') }}</button>
       </form>
     }
   </section>

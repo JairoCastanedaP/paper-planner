@@ -1,14 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth';
+import { isEn, tx } from '../../core/i18n';
+import { LangSwitch } from '../lang-switch/lang-switch';
 
 /** Después de registrarse: hay que abrir el enlace que llegó al correo antes de guardar datos. */
 @Component({
   selector: 'app-verify-page',
+  imports: [LangSwitch],
   templateUrl: './verify-page.html',
   styleUrl: './auth-page.scss',
 })
 export class VerifyPage {
+  protected readonly tx = tx;
+  protected readonly en = isEn;
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
@@ -23,7 +28,7 @@ export class VerifyPage {
     const verified = await this.auth.refreshVerification().catch(() => false);
     this.busy.set(false);
     if (verified) this.router.navigate(['/calendario']);
-    else this.error.set('Todavía no vemos tu correo verificado. Abre el enlace del correo y vuelve a intentarlo.');
+    else this.error.set(tx('Todavía no vemos tu correo verificado. Abre el enlace del correo y vuelve a intentarlo.', "We don't see your email verified yet. Open the link in the email and try again."));
   }
 
   protected async resend(): Promise<void> {
@@ -33,7 +38,7 @@ export class VerifyPage {
     const error = await this.auth.resendVerification();
     this.busy.set(false);
     if (error) this.error.set(error);
-    else this.info.set('Te enviamos un correo nuevo. Revisa también la carpeta de spam.');
+    else this.info.set(tx('Te enviamos un correo nuevo. Revisa también la carpeta de spam.', 'We sent you a new email. Check your spam folder too.'));
   }
 
   protected async logout(): Promise<void> {

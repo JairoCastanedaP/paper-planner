@@ -35,6 +35,12 @@ el lápiz de la tablet o el mouse.
   hacia adelante, con la última vez y la próxima vez de lo buscado.
 - **Compromisos económicos**: total del mes por moneda (USD / COP).
 - **PWA**: se instala en celular, tablet y computador, y funciona sin conexión.
+- **Frase del día**: 103 frases (Séneca, Marco Aurelio, Cervantes, Thoreau…), una distinta cada día; un toque la muestra completa.
+- **Exportar** (menú ☰ → Exportar): a **.ics** para Google Calendar, Outlook o el celular (con repeticiones,
+  fecha de fin y recordatorios) o a **Excel (.csv)**; el mes, el año o todas, con el filtro de categorías.
+- **Español e inglés** (menú ☰ → Idioma, o ES | EN en las páginas sin sesión): cambia al instante toda la
+  interfaz, fechas, festivos, frases del día y correos de Firebase. Se guarda por dispositivo; por defecto
+  español. Los documentos legales quedan en español (versión vinculante) con un aviso en inglés.
 - **Vista anual**: los 12 meses con mini calendario (festivos, puntos por categoría, ⭐ importantes)
   y lo más relevante de cada mes: objetivos, actividades muy importantes, cumpleaños y total económico.
 - **Actividades muy importantes** (⭐) con **recordatorio en ventana modal**: en el momento, 15 min, 1 h,

@@ -1,9 +1,27 @@
-export const WEEKDAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-export const WEEKDAY_INITIALS = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-export const MONTHS = [
+import { isEn } from './i18n';
+
+const WEEKDAYS_ES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS_ES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
 ];
+const MONTHS_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** Nombres de los días (0 = domingo) en el idioma actual. */
+export const weekdays = (): string[] => (isEn() ? WEEKDAYS_EN : WEEKDAYS_ES);
+/** Iniciales de los días: D L M M J V S / S M T W T F S. */
+export const weekdayInitials = (): string[] => weekdays().map((d) => d[0]);
+/** Abreviatura de un día: 'lun' / 'Mon'. */
+export const weekdayShort = (day: number): string =>
+  isEn() ? WEEKDAYS_EN[day].slice(0, 3) : WEEKDAYS_ES[day].slice(0, 3).toLowerCase();
+/** Nombres de los meses (0 = enero) en el idioma actual. */
+export const months = (): string[] => (isEn() ? MONTHS_EN : MONTHS_ES);
+/** Mes dentro de una frase: 'noviembre' / 'November'. */
+export const monthInText = (month: number): string => (isEn() ? MONTHS_EN[month] : MONTHS_ES[month].toLowerCase());
 
 export const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -45,16 +63,24 @@ export function endOfMonthKey(key: string): string {
   return toKey(new Date(d.getFullYear(), d.getMonth() + 1, 0));
 }
 
-/** '30 de noviembre de 2026' */
+/** '30 de noviembre de 2026' / 'November 30, 2026' */
 export function formatDate(key: string): string {
   const d = fromKey(key);
-  return `${d.getDate()} de ${MONTHS[d.getMonth()].toLowerCase()} de ${d.getFullYear()}`;
+  return isEn()
+    ? `${MONTHS_EN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
+    : `${d.getDate()} de ${MONTHS_ES[d.getMonth()].toLowerCase()} de ${d.getFullYear()}`;
 }
 
-/** 'Martes 10 de noviembre de 2026' */
+/** 'Martes 10 de noviembre de 2026' / 'Tuesday, November 10, 2026' */
 export function formatLong(key: string): string {
   const d = fromKey(key);
-  return `${WEEKDAYS[d.getDay()]} ${d.getDate()} de ${MONTHS[d.getMonth()].toLowerCase()} de ${d.getFullYear()}`;
+  return isEn() ? `${WEEKDAYS_EN[d.getDay()]}, ${formatDate(key)}` : `${WEEKDAYS_ES[d.getDay()]} ${formatDate(key)}`;
+}
+
+/** 'Mes día': 'Martes 10' / 'Tuesday 10'. */
+export function weekdayAndDay(key: string): string {
+  const d = fromKey(key);
+  return `${weekdays()[d.getDay()]} ${d.getDate()}`;
 }
 
 /** '21:00' → '9:00pm', como se escribe en el calendario de papel. */

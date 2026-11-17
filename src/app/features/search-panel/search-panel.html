@@ -1,6 +1,6 @@
 <div class="backdrop" (click)="closed.emit()"></div>
 
-<section class="dialog" role="dialog" aria-modal="true" aria-label="Buscar">
+<section class="dialog" role="dialog" aria-modal="true" [attr.aria-label]="tx('Buscar', 'Search')">
   <div class="search-box">
     <span aria-hidden="true">🔍</span>
     <input
@@ -8,28 +8,28 @@
       type="search"
       [value]="query()"
       (input)="query.set($any($event.target).value)"
-      placeholder="Buscar actividades, notas u objetivos…"
-      aria-label="Buscar"
+      [placeholder]="tx('Buscar actividades, notas u objetivos…', 'Search activities, notes or goals…')"
+      [attr.aria-label]="tx('Buscar', 'Search')"
     />
-    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+    <button type="button" class="close" (click)="closed.emit()" [attr.aria-label]="tx('Cerrar', 'Close')">×</button>
   </div>
 
   @if (!active()) {
-    <p class="hint">Escribe al menos 2 letras. Busca en títulos, notas, categorías y objetivos, un año hacia atrás y hacia adelante.</p>
+    <p class="hint">{{ tx('Escribe al menos 2 letras. Busca en títulos, notas, categorías y objetivos, un año hacia atrás y hacia adelante.', 'Type at least 2 letters. It searches titles, notes, categories and goals, one year back and forward.') }}</p>
   } @else if (empty()) {
-    <p class="hint">No hay resultados para "{{ query() }}".</p>
+    <p class="hint">{{ tx('No hay resultados para', 'No results for') }} "{{ query() }}".</p>
   } @else {
     @if (past().length || upcoming().length) {
       <div class="summary">
         @if (past()[0]; as last) {
           <button type="button" (click)="openDay(last.date)">
-            <small>Última vez</small>
+            <small>{{ tx('Última vez', 'Last time') }}</small>
             <strong>{{ when(last) }}</strong>
           </button>
         }
         @if (upcoming()[0]; as next) {
           <button type="button" (click)="openDay(next.date)">
-            <small>Próxima</small>
+            <small>{{ tx('Próxima', 'Next') }}</small>
             <strong>{{ when(next) }}</strong>
           </button>
         }
@@ -37,7 +37,7 @@
     }
 
     @if (upcoming().length) {
-      <h3>Próximas</h3>
+      <h3>{{ tx('Próximas', 'Upcoming') }}</h3>
       <ul class="results">
         @for (o of upcoming(); track o.key) {
           <li>
@@ -51,7 +51,7 @@
     }
 
     @if (past().length) {
-      <h3>Pasadas</h3>
+      <h3>{{ tx('Pasadas', 'Past') }}</h3>
       <ul class="results">
         @for (o of past(); track o.key) {
           <li>
@@ -60,7 +60,7 @@
               <span class="date">
                 {{ when(o) }}
                 @if (o.highlighted) {
-                  · <span class="check">✓ resaltada</span>
+                  · <span class="check">✓ {{ tx('resaltada', 'highlighted') }}</span>
                 }
               </span>
             </button>
@@ -70,7 +70,7 @@
     }
 
     @if (goals().length) {
-      <h3>Objetivos</h3>
+      <h3>{{ tx('Objetivos', 'Goals') }}</h3>
       <ul class="results">
         @for (r of goals(); track r.goal.id) {
           <li>

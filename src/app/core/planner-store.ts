@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { AuthService } from './auth';
+import { tx } from './i18n';
 import { newId } from './ids';
 import { createEmptyData } from './categories';
 import { Commemoration, builtInCommemorationsOn } from './commemorations';
@@ -189,7 +190,7 @@ export class PlannerStore {
     const data = this.importable();
     if (!data) return;
     this.importable.set(null);
-    this.commit(() => ({ ...data, demo: false }), 'Se subió el calendario de este navegador');
+    this.commit(() => ({ ...data, demo: false }), tx('Se subió el calendario de este navegador', "This browser's calendar was uploaded"));
   }
 
   dismissImport(): void {
@@ -209,7 +210,7 @@ export class PlannerStore {
   /** Borra los datos de ejemplo y deja el calendario en blanco (se puede deshacer). */
   clearDemo(): void {
     // demo: false = el usuario eligió empezar en blanco (no se vuelven a cargar los ejemplos).
-    this.commit(() => ({ ...createEmptyData(), demo: false }), 'Se borraron los datos de ejemplo');
+    this.commit(() => ({ ...createEmptyData(), demo: false }), tx('Se borraron los datos de ejemplo', 'The sample data was deleted'));
   }
 
   /** Conserva los datos de ejemplo como propios y oculta el aviso. */
@@ -259,7 +260,7 @@ export class PlannerStore {
         events: s.events.filter((e) => e.id !== id),
         highlights: withoutKeys(s.highlights, (key) => key.startsWith(`${id}@`)),
       }),
-      `Se eliminó "${title}"`,
+      tx(`Se eliminó "${title}"`, `"${title}" was deleted`),
     );
   }
 
@@ -275,7 +276,7 @@ export class PlannerStore {
         ),
         highlights: withoutKeys(s.highlights, (k) => k === key),
       }),
-      `Se quitó "${title}" de ese día`,
+      tx(`Se quitó "${title}" de ese día`, `"${title}" was removed from that day`),
     );
   }
 
@@ -298,8 +299,8 @@ export class PlannerStore {
   }
 
   deleteGoal(id: string): void {
-    const title = this.goals().find((g) => g.id === id)?.title ?? 'Objetivo';
-    this.commit((s) => ({ ...s, goals: s.goals.filter((g) => g.id !== id) }), `Se eliminó "${title}"`);
+    const title = this.goals().find((g) => g.id === id)?.title ?? tx('Objetivo', 'Goal');
+    this.commit((s) => ({ ...s, goals: s.goals.filter((g) => g.id !== id) }), tx(`Se eliminó "${title}"`, `"${title}" was deleted`));
   }
 
   copyGoals(fromMonth: string, toMonth: string): void {
@@ -326,7 +327,7 @@ export class PlannerStore {
 
   /** Elimina la categoría; sus actividades y objetivos pasan a `moveTo`. */
   deleteCategory(id: string, moveTo: string): void {
-    const name = this.state().categories.find((c) => c.id === id)?.name ?? 'Categoría';
+    const name = this.state().categories.find((c) => c.id === id)?.name ?? tx('Categoría', 'Category');
     this.commit(
       (s) => ({
         ...s,
@@ -334,7 +335,7 @@ export class PlannerStore {
         events: s.events.map((e) => (e.categoryId === id ? { ...e, categoryId: moveTo } : e)),
         goals: s.goals.map((g) => (g.categoryId === id ? { ...g, categoryId: moveTo } : g)),
       }),
-      `Se eliminó la categoría "${name}"`,
+      tx(`Se eliminó la categoría "${name}"`, `The category "${name}" was deleted`),
     );
   }
 
@@ -352,7 +353,7 @@ export class PlannerStore {
         else delete dayImages[date];
         return { ...s, dayImages };
       },
-      image ? undefined : 'Se quitó la imagen de fondo',
+      image ? undefined : tx('Se quitó la imagen de fondo', 'The background image was removed'),
     );
   }
 
@@ -374,10 +375,10 @@ export class PlannerStore {
   }
 
   deleteSpecialDay(id: string): void {
-    const name = this.state().specialDays?.find((d) => d.id === id)?.name ?? 'Día especial';
+    const name = this.state().specialDays?.find((d) => d.id === id)?.name ?? tx('Día especial', 'Special day');
     this.commit(
       (s) => ({ ...s, specialDays: (s.specialDays ?? []).filter((d) => d.id !== id) }),
-      `Se eliminó "${name}"`,
+      tx(`Se eliminó "${name}"`, `"${name}" was deleted`),
     );
   }
 

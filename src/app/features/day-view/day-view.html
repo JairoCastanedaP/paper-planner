@@ -2,15 +2,15 @@
   <section class="hero" [class.with-image]="image()" [style.--bg]="image() ? 'url(' + image() + ')' : null">
     <div class="badges">
       @if (isToday()) {
-        <span class="badge today-badge">Hoy</span>
+        <span class="badge today-badge">{{ tx('Hoy', 'Today') }}</span>
       }
       @if (holiday(); as name) {
-        <span class="badge holiday">Festivo · {{ name }}</span>
+        <span class="badge holiday">{{ tx('Festivo', 'Holiday') }} · {{ name }}</span>
       }
       @if (moon(); as m) {
         <span class="badge special">
           <span class="emoji">{{ m.emoji }}</span>
-          {{ m.name }} · {{ m.at.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' }) }}
+          {{ m.name }} · {{ m.at.toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' }) }}
         </span>
       }
       @for (c of commemorations(); track c.name) {
@@ -24,12 +24,12 @@
 }
 
 <div class="columns">
-  <section class="agenda" aria-label="Agenda del día">
-    <h3>Agenda</h3>
+  <section class="agenda" [attr.aria-label]="tx('Agenda del día', 'Day agenda')">
+    <h3>{{ tx('Agenda', 'Agenda') }}</h3>
 
     @if (allDay().length) {
       <div class="all-day">
-        <span class="hour-label">Todo el día</span>
+        <span class="hour-label">{{ tx('Todo el día', 'All day') }}</span>
         <div class="items">
           @for (o of allDay(); track o.key) {
             <app-event-chip [occurrence]="o" size="large" (highlightChange)="highlightChange.emit({ key: o.key, on: $event })" />
@@ -52,8 +52,8 @@
     </ol>
   </section>
 
-  <section class="detail" aria-label="Detalle del día">
-    <h3>Detalle</h3>
+  <section class="detail" [attr.aria-label]="tx('Detalle del día', 'Day details')">
+    <h3>{{ tx('Detalle', 'Details') }}</h3>
     <app-day-detail [date]="date()" />
   </section>
 </div>

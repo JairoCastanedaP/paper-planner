@@ -16,6 +16,7 @@ import { pad } from '../../core/dates';
 import { newId } from '../../core/ids';
 import { MonthGoal, Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
+import { lang, locale, tx } from '../../core/i18n';
 
 interface GoalDraft {
   title: string;
@@ -36,6 +37,7 @@ type Editor = { mode: 'new' } | { mode: 'edit'; id: string };
   styleUrl: './month-goals.scss',
 })
 export class MonthGoals {
+  protected readonly tx = tx;
   readonly month = input.required<string>();
   readonly occurrences = input.required<Occurrence[]>();
 
@@ -70,7 +72,7 @@ export class MonthGoals {
       const cur = currency ?? 'USD';
       sums.set(cur, (sums.get(cur) ?? 0) + amount);
     }
-    return [...sums].map(([cur, total]) => `${total.toLocaleString('es-CO')} ${cur}`);
+    return [...sums].map(([cur, total]) => `${total.toLocaleString(locale())} ${cur}`);
   });
 
   protected readonly editor = signal<Editor | null>(null);
@@ -85,6 +87,7 @@ export class MonthGoals {
     afterRenderEffect(() => {
       this.goals();
       this.occurrences();
+      lang();
       this.pack();
     });
     const observer = new ResizeObserver(() => this.pack());

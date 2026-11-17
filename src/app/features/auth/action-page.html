@@ -1,23 +1,24 @@
 <main class="auth">
+  <app-lang-switch />
   <section class="card">
     <p class="kicker">Paper Planner</p>
 
     @switch (state().kind) {
       @case ('loading') {
-        <h1>Un momento…</h1>
-        <p class="lead" role="status">Revisando el enlace.</p>
+        <h1>{{ tx('Un momento…', 'One moment…') }}</h1>
+        <p class="lead" role="status">{{ tx('Revisando el enlace.', 'Checking the link.') }}</p>
       }
 
       @case ('reset') {
         @let email = $any(state()).email;
-        <h1>Nueva contraseña</h1>
-        <p class="lead">Para la cuenta <strong>{{ email }}</strong>.</p>
+        <h1>{{ tx('Nueva contraseña', 'New password') }}</h1>
+        <p class="lead">{{ tx('Para la cuenta', 'For the account') }} <strong>{{ email }}</strong>.</p>
 
         <form (ngSubmit)="savePassword(email)">
           <!-- Ayuda a los gestores de contraseñas a guardar la nueva con el correo correcto. -->
           <input type="email" name="username" [value]="email" autocomplete="username" hidden />
           <label>
-            Contraseña nueva
+            {{ tx('Contraseña nueva', 'New password') }}
             <input
               name="password"
               [type]="show ? 'text' : 'password'"
@@ -27,13 +28,13 @@
               autofocus
             />
           </label>
-          <ul class="rules" aria-label="Requisitos de la contraseña">
-            @for (rule of rules; track rule.text) {
-              <li [class.ok]="rule.ok(password)">{{ rule.ok(password) ? '✓' : '○' }} {{ rule.text }}</li>
+          <ul class="rules" [attr.aria-label]="tx('Requisitos de la contraseña', 'Password requirements')">
+            @for (rule of rules; track $index) {
+              <li [class.ok]="rule.ok(password)">{{ rule.ok(password) ? '✓' : '○' }} {{ rule.text() }}</li>
             }
           </ul>
           <label>
-            Confirmar contraseña
+            {{ tx('Confirmar contraseña', 'Confirm password') }}
             <input
               name="confirm"
               [type]="show ? 'text' : 'password'"
@@ -44,43 +45,43 @@
           </label>
           <label class="inline">
             <input type="checkbox" name="show" [(ngModel)]="show" />
-            Mostrar contraseña
+            {{ tx('Mostrar contraseña', 'Show password') }}
           </label>
 
           @if (mismatch) {
-            <p class="error" role="alert">Las contraseñas no coinciden.</p>
+            <p class="error" role="alert">{{ tx('Las contraseñas no coinciden.', 'The passwords don\'t match.') }}</p>
           }
           @if (error()) {
             <p class="error" role="alert">{{ error() }}</p>
           }
 
-          <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Guardando…' : 'Guardar contraseña' }}</button>
+          <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? tx('Guardando…', 'Saving…') : tx('Guardar contraseña', 'Save password') }}</button>
         </form>
       }
 
       @case ('reset-done') {
-        <h1>¡Listo!</h1>
-        <p class="notice" role="status">✅ Tu contraseña cambió. Ya puedes iniciar sesión con la nueva.</p>
-        <a class="button-link" routerLink="/login" [queryParams]="{ email: $any(state()).email }">Iniciar sesión</a>
+        <h1>{{ tx('¡Listo!', 'Done!') }}</h1>
+        <p class="notice" role="status">✅ {{ tx('Tu contraseña cambió. Ya puedes iniciar sesión con la nueva.', 'Your password changed. You can now sign in with the new one.') }}</p>
+        <a class="button-link" routerLink="/login" [queryParams]="{ email: $any(state()).email }">{{ tx('Iniciar sesión', 'Sign in') }}</a>
       }
 
       @case ('verified') {
-        <h1>Correo verificado</h1>
-        <p class="notice" role="status">✅ Tu correo quedó confirmado. Tu calendario ya se puede guardar en la nube.</p>
+        <h1>{{ tx('Correo verificado', 'Email verified') }}</h1>
+        <p class="notice" role="status">✅ {{ tx('Tu correo quedó confirmado. Tu calendario ya se puede guardar en la nube.', 'Your email is confirmed. Your calendar can now be saved to the cloud.') }}</p>
         <button type="button" class="primary" (click)="continueAfterVerify()">
-          {{ auth.user() ? 'Ir a mi calendario' : 'Iniciar sesión' }}
+          {{ auth.user() ? tx('Ir a mi calendario', 'Go to my calendar') : tx('Iniciar sesión', 'Sign in') }}
         </button>
       }
 
       @case ('error') {
-        <h1>Enlace no válido</h1>
+        <h1>{{ tx('Enlace no válido', 'Invalid link') }}</h1>
         <p class="error" role="alert">{{ $any(state()).message }}</p>
         @if ($any(state()).retry === 'reset') {
-          <a class="button-link" routerLink="/recuperar">Pedir un enlace nuevo</a>
+          <a class="button-link" routerLink="/recuperar">{{ tx('Pedir un enlace nuevo', 'Request a new link') }}</a>
         } @else if ($any(state()).retry === 'verify') {
-          <a class="button-link" routerLink="/verificar">Volver a verificar mi correo</a>
+          <a class="button-link" routerLink="/verificar">{{ tx('Volver a verificar mi correo', 'Verify my email again') }}</a>
         } @else {
-          <a class="button-link" routerLink="/">Ir al inicio</a>
+          <a class="button-link" routerLink="/">{{ tx('Ir al inicio', 'Go to home') }}</a>
         }
       }
     }

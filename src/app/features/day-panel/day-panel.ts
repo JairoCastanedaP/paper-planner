@@ -3,6 +3,7 @@ import { formatLong } from '../../core/dates';
 import { holidayOn } from '../../core/holidays';
 import { PlannerStore } from '../../core/planner-store';
 import { DayDetail } from '../day-detail/day-detail';
+import { tx } from '../../core/i18n';
 
 /** Panel lateral con el detalle de un día: notas sin límite de espacio. */
 @Component({
@@ -13,6 +14,7 @@ import { DayDetail } from '../day-detail/day-detail';
   host: { '(document:keydown.escape)': 'closed.emit()' },
 })
 export class DayPanel {
+  protected readonly tx = tx;
   readonly date = input.required<string>();
   readonly closed = output<void>();
   /** Abrir la vista completa del día. */

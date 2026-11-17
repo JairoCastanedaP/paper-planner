@@ -1,31 +1,32 @@
 <main class="auth">
-  <a class="back" routerLink="/">← Volver al inicio</a>
+  <app-lang-switch />
+  <a class="back" routerLink="/">← {{ tx('Volver al inicio', 'Back to home') }}</a>
   <section class="card">
     <p class="kicker">Paper Planner</p>
-    <h1>Iniciar sesión</h1>
-    <p class="lead">Tu calendario de papel, ahora en todos tus dispositivos.</p>
+    <h1>{{ tx('Iniciar sesión', 'Sign in') }}</h1>
+    <p class="lead">{{ tx('Tu calendario de papel, ahora en todos tus dispositivos.', 'Your paper calendar, now on all your devices.') }}</p>
 
     <form (ngSubmit)="submit()">
       <label>
-        Correo electrónico
+        {{ tx('Correo electrónico', 'Email') }}
         <input name="email" type="email" [(ngModel)]="email" autocomplete="email" required autofocus />
       </label>
       <label>
-        Contraseña
+        {{ tx('Contraseña', 'Password') }}
         <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" required />
       </label>
-      <a class="forgot" routerLink="/recuperar" [queryParams]="email.trim() ? { email: email.trim() } : {}">¿Olvidaste tu contraseña?</a>
+      <a class="forgot" routerLink="/recuperar" [queryParams]="email.trim() ? { email: email.trim() } : {}">{{ tx('¿Olvidaste tu contraseña?', 'Forgot your password?') }}</a>
 
       @if (error()) {
         <p class="error" role="alert">{{ error() }}</p>
       }
 
-      <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? 'Entrando…' : 'Entrar' }}</button>
+      <button type="submit" class="primary" [disabled]="busy()">{{ busy() ? tx('Entrando…', 'Signing in…') : tx('Entrar', 'Sign in') }}</button>
     </form>
 
-    <p class="switch">¿No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>
+    <p class="switch">{{ tx('¿No tienes cuenta?', "Don't have an account?") }} <a routerLink="/registro">{{ tx('Regístrate', 'Sign up') }}</a></p>
     <p class="switch demo">
-      ¿Solo quieres conocerla? <button type="button" class="link" (click)="demo()">Ver la demo sin cuenta</button>
+      {{ tx('¿Solo quieres conocerla?', 'Just want to look around?') }} <button type="button" class="link" (click)="demo()">{{ tx('Ver la demo sin cuenta', 'Try the demo without an account') }}</button>
     </p>
   </section>
 </main>

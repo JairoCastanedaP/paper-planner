@@ -2,8 +2,8 @@
 
 <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="theme-title">
   <header>
-    <h2 id="theme-title">Temas del calendario</h2>
-    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+    <h2 id="theme-title">{{ tx('Temas del calendario', 'Calendar themes') }}</h2>
+    <button type="button" class="close" (click)="closed.emit()" [attr.aria-label]="tx('Cerrar', 'Close')">×</button>
   </header>
 
   <div class="options" role="radiogroup" aria-labelledby="theme-title">
@@ -26,8 +26,8 @@
           </span>
         </span>
         <span class="text">
-          <strong>{{ t.name }}</strong>
-          <small>{{ t.description }}</small>
+          <strong>{{ tx(t.name, t.nameEn) }}</strong>
+          <small>{{ tx(t.description, t.descriptionEn) }}</small>
         </span>
         @if (themes.themeId() === t.id) {
           <span class="check" aria-hidden="true">✓</span>
@@ -36,5 +36,5 @@
     }
   </div>
 
-  <p class="hint">El tema se guarda en este dispositivo.</p>
+  <p class="hint">{{ tx('El tema se guarda en este dispositivo.', 'The theme is saved on this device.') }}</p>
 </section>

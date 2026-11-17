@@ -12,7 +12,8 @@ import {
 import { Router } from '@angular/router';
 import { hasCurrentConsent } from '../../core/account';
 import { AuthService } from '../../core/auth';
-import { MONTHS, WEEKDAYS, fromKey, monthGrid, monthKeyOf, toKey, todayKey } from '../../core/dates';
+import { fromKey, monthGrid, monthInText, monthKeyOf, months, toKey, todayKey, weekdayAndDay } from '../../core/dates';
+import { Lang, lang, setLang, tx } from '../../core/i18n';
 import { Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
 import { PreferencesService } from '../../core/preferences';
@@ -103,6 +104,13 @@ export class CalendarPage {
   /** Al bajar, el encabezado se compacta y queda fijo arriba. */
   protected readonly compact = signal(false);
 
+  protected readonly tx = tx;
+  protected readonly lang = lang;
+
+  protected switchLang(): void {
+    setLang(lang() === 'es' ? 'en' : ('es' satisfies Lang));
+  }
+
   protected readonly monthKey = computed(() => monthKeyOf(this.year(), this.month()));
   /** Mes que se ofrece exportar: el visible (en la vista de día, el de ese día). */
   protected readonly exportMonth = computed(() =>
@@ -114,10 +122,10 @@ export class CalendarPage {
       case 'month':
         return `Paper Planner ${this.year()}`;
       case 'year':
-        return 'Paper Planner · Vista anual';
+        return tx('Paper Planner · Vista anual', 'Paper Planner · Year view');
       case 'day': {
         const d = fromKey(this.day());
-        return `${MONTHS[d.getMonth()]} ${d.getFullYear()} · Vista del día`;
+        return `${months()[d.getMonth()]} ${d.getFullYear()} · ${tx('Vista del día', 'Day view')}`;
       }
     }
   });
@@ -126,29 +134,30 @@ export class CalendarPage {
   protected readonly longest = computed(() => {
     switch (this.view()) {
       case 'month':
-        return { kicker: `Paper Planner ${this.year()}`, title: 'Septiembre' };
+        return { kicker: `Paper Planner ${this.year()}`, title: tx('Septiembre', 'September') };
       case 'year':
-        return { kicker: 'Paper Planner · Vista anual', title: String(this.year()) };
+        return { kicker: tx('Paper Planner · Vista anual', 'Paper Planner · Year view'), title: String(this.year()) };
       case 'day':
-        return { kicker: `Septiembre ${fromKey(this.day()).getFullYear()} · Vista del día`, title: 'Miércoles 30' };
+        return {
+          kicker: `${tx('Septiembre', 'September')} ${fromKey(this.day()).getFullYear()} · ${tx('Vista del día', 'Day view')}`,
+          title: tx('Miércoles 30', 'Wednesday 30'),
+        };
     }
   });
 
   protected readonly title = computed(() => {
     switch (this.view()) {
       case 'month':
-        return MONTHS[this.month()];
+        return months()[this.month()];
       case 'year':
         return String(this.year());
-      case 'day': {
-        const d = fromKey(this.day());
-        return `${WEEKDAYS[d.getDay()]} ${d.getDate()}`;
-      }
+      case 'day':
+        return weekdayAndDay(this.day());
     }
   });
 
   protected readonly periodName = computed(() =>
-    ({ month: 'mes', year: 'año', day: 'día' })[this.view()],
+    tx({ month: 'mes', year: 'año', day: 'día' }[this.view()], { month: 'month', year: 'year', day: 'day' }[this.view()]),
   );
 
   protected readonly weeks = computed(() => monthGrid(this.year(), this.month()));
@@ -190,11 +199,11 @@ export class CalendarPage {
     switch (this.view()) {
       case 'month':
         found = this.monthOccurrences().filter(pass);
-        where = `en ${MONTHS[this.month()].toLowerCase()}`;
+        where = tx(`en ${monthInText(this.month())}`, `in ${monthInText(this.month())}`);
         break;
       case 'day':
         found = this.store.occurrencesOn(this.day()).filter(pass);
-        where = 'este día';
+        where = tx('este día', 'this day');
         break;
       case 'year': {
         found = [];
@@ -202,12 +211,15 @@ export class CalendarPage {
         for (let d = new Date(year, 0, 1); d.getFullYear() === year; d.setDate(d.getDate() + 1)) {
           found.push(...this.store.occurrencesOn(toKey(d)).filter(pass));
         }
-        where = `en ${year}`;
+        where = tx(`en ${year}`, `in ${year}`);
         break;
       }
     }
     const done = found.filter((o) => o.highlighted).length;
-    return `${found.length} ${found.length === 1 ? 'actividad' : 'actividades'} ${where} · ${done} resaltadas`;
+    return tx(
+      `${found.length} ${found.length === 1 ? 'actividad' : 'actividades'} ${where} · ${done} resaltadas`,
+      `${found.length} ${found.length === 1 ? 'activity' : 'activities'} ${where} · ${done} highlighted`,
+    );
   });
 
   constructor() {

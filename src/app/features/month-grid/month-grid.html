@@ -1,6 +1,6 @@
-<div class="grid" role="grid" aria-label="Calendario del mes" [style.--weeks]="weeks().length">
+<div class="grid" role="grid" [attr.aria-label]="tx('Calendario del mes', 'Month calendar')" [style.--weeks]="weeks().length">
   <div class="head" role="row">
-    @for (name of weekdays; track $index) {
+    @for (name of weekdays(); track $index) {
       <div class="weekday" role="columnheader">
         <span class="long">{{ name }}</span>
         <span class="short">{{ name.slice(0, 3) }}</span>
@@ -26,7 +26,7 @@
           [class.holiday]="holiday"
           [class.with-image]="image"
           [style.--bg]="image ? 'url(' + image + ')' : null"
-          [attr.aria-label]="holiday ? day + ', festivo: ' + holiday : day"
+          [attr.aria-label]="holiday ? day + tx(', festivo: ', ', holiday: ') + holiday : day"
           (click)="daySelected.emit(day)"
           (keydown.enter)="daySelected.emit(day)"
         >
@@ -64,7 +64,7 @@
               />
             }
             @if (parts.hidden > 0) {
-              <span class="more">+{{ parts.hidden }} más</span>
+              <span class="more">+{{ parts.hidden }} {{ tx('más', 'more') }}</span>
             }
           </div>
         </div>

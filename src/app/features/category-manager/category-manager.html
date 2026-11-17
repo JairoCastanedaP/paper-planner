@@ -2,11 +2,11 @@
 
 <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="categories-title">
   <header>
-    <h2 id="categories-title">Categorías</h2>
-    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+    <h2 id="categories-title">{{ tx('Categorías', 'Categories') }}</h2>
+    <button type="button" class="close" (click)="closed.emit()" [attr.aria-label]="tx('Cerrar', 'Close')">×</button>
   </header>
 
-  <p class="hint">Los cambios se guardan solos. El color que elijas se mantiene aunque cambies de tema.</p>
+  <p class="hint">{{ tx('Los cambios se guardan solos. El color que elijas se mantiene aunque cambies de tema.', 'Changes are saved automatically. The color you choose stays even if you change the theme.') }}</p>
 
   <ul class="list">
     @for (row of rows(); track row.category.id) {
@@ -17,40 +17,40 @@
             class="color"
             [value]="row.category.color"
             (input)="setColor(row.raw, $any($event.target).value)"
-            [attr.aria-label]="'Color de ' + row.category.name"
+            [attr.aria-label]="tx('Color de ', 'Color of ') + row.category.name"
           />
           <input
             class="icon"
             [value]="row.raw.icon ?? ''"
             (change)="setIcon(row.raw, $any($event.target).value)"
-            placeholder="ícono"
+            [placeholder]="tx('ícono', 'icon')"
             maxlength="4"
-            [attr.aria-label]="'Icono de ' + row.category.name"
+            [attr.aria-label]="tx('Icono de ', 'Icon of ') + row.category.name"
           />
           <input
             class="name"
             [value]="row.raw.name"
             (change)="rename(row.raw, $any($event.target).value)"
-            [attr.aria-label]="'Nombre de ' + row.category.name"
+            [attr.aria-label]="tx('Nombre de ', 'Name of ') + row.category.name"
           />
           <button
             type="button"
             class="delete"
             (click)="askDelete(row.category)"
             [disabled]="rows().length === 1"
-            [attr.aria-label]="'Eliminar ' + row.category.name"
+            [attr.aria-label]="tx('Eliminar ', 'Delete ') + row.category.name"
           >🗑</button>
         </div>
 
         @if (row.raw.customColor && row.themeHasColor) {
-          <button type="button" class="link" (click)="useThemeColor(row.raw)">Usar el color del tema</button>
+          <button type="button" class="link" (click)="useThemeColor(row.raw)">{{ tx('Usar el color del tema', 'Use the theme color') }}</button>
         }
 
         @if (pending(); as p) {
           @if (p.id === row.category.id) {
             <div class="confirm" role="alert">
-              <span>"{{ row.category.name }}" tiene {{ usageText(p) }}. ¿A qué categoría pasan?</span>
-              <select [(ngModel)]="p.moveTo" name="moveTo" aria-label="Mover a la categoría">
+              <span>"{{ row.category.name }}" {{ tx('tiene', 'has') }} {{ usageText(p) }}. {{ tx('¿A qué categoría pasan?', 'Which category should they move to?') }}</span>
+              <select [(ngModel)]="p.moveTo" name="moveTo" [attr.aria-label]="tx('Mover a la categoría', 'Move to category')">
                 @for (other of rows(); track other.category.id) {
                   @if (other.category.id !== p.id) {
                     <option [value]="other.category.id">{{ other.category.icon ?? '' }} {{ other.category.name }}</option>
@@ -58,8 +58,8 @@
                 }
               </select>
               <span class="confirm-actions">
-                <button type="button" (click)="pending.set(null)">Cancelar</button>
-                <button type="button" class="primary" (click)="confirmDelete()">Mover y eliminar</button>
+                <button type="button" (click)="pending.set(null)">{{ tx('Cancelar', 'Cancel') }}</button>
+                <button type="button" class="primary" (click)="confirmDelete()">{{ tx('Mover y eliminar', 'Move and delete') }}</button>
               </span>
             </div>
           }
@@ -69,12 +69,12 @@
   </ul>
 
   <form class="new" (ngSubmit)="add()">
-    <h3>Nueva categoría</h3>
+    <h3>{{ tx('Nueva categoría', 'New category') }}</h3>
     <div class="fields">
-      <input type="color" class="color" name="newColor" [(ngModel)]="newColor" aria-label="Color de la nueva categoría" />
-      <input class="icon" name="newIcon" [(ngModel)]="newIcon" placeholder="ícono" maxlength="4" aria-label="Icono de la nueva categoría" />
-      <input class="name" name="newName" [(ngModel)]="newName" placeholder="p. ej. Salud" aria-label="Nombre de la nueva categoría" required />
-      <button type="submit" class="primary" [disabled]="!newName.trim()">Agregar</button>
+      <input type="color" class="color" name="newColor" [(ngModel)]="newColor" [attr.aria-label]="tx('Color de la nueva categoría', 'Color of the new category')" />
+      <input class="icon" name="newIcon" [(ngModel)]="newIcon" [placeholder]="tx('ícono', 'icon')" maxlength="4" [attr.aria-label]="tx('Icono de la nueva categoría', 'Icon of the new category')" />
+      <input class="name" name="newName" [(ngModel)]="newName" [placeholder]="tx('p. ej. Salud', 'e.g. Health')" [attr.aria-label]="tx('Nombre de la nueva categoría', 'Name of the new category')" required />
+      <button type="submit" class="primary" [disabled]="!newName.trim()">{{ tx('Agregar', 'Add') }}</button>
     </div>
   </form>
 </section>

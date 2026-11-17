@@ -4,6 +4,7 @@ import { newId } from '../../core/ids';
 import { Category } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
 import { ThemeService } from '../../core/themes';
+import { tx } from '../../core/i18n';
 
 /** Colores sugeridos para categorías nuevas (tonos de marcador). */
 const SUGGESTED = ['#ff8a65', '#4dd0e1', '#ba68c8', '#aed581', '#ffd54f', '#90a4ae', '#f06292', '#7986cb'];
@@ -24,6 +25,7 @@ interface PendingDelete {
   host: { '(document:keydown.escape)': 'closed.emit()' },
 })
 export class CategoryManager {
+  protected readonly tx = tx;
   readonly closed = output<void>();
 
   protected readonly store = inject(PlannerStore);
@@ -74,8 +76,8 @@ export class CategoryManager {
 
   protected usageText(p: PendingDelete): string {
     const parts: string[] = [];
-    if (p.events) parts.push(`${p.events} ${p.events === 1 ? 'actividad' : 'actividades'}`);
-    if (p.goals) parts.push(`${p.goals} ${p.goals === 1 ? 'objetivo' : 'objetivos'}`);
+    if (p.events) parts.push(`${p.events} ${p.events === 1 ? tx('actividad', 'activity') : tx('actividades', 'activities')}`);
+    if (p.goals) parts.push(`${p.goals} ${p.goals === 1 ? tx('objetivo', 'goal') : tx('objetivos', 'goals')}`);
     return parts.join(' y ');
   }
 

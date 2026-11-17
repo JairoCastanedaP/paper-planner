@@ -2,6 +2,7 @@ import { Component, ElementRef, computed, inject, input, output, signal } from '
 import { formatTime } from '../../core/dates';
 import { Occurrence } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
+import { locale } from '../../core/i18n';
 
 /** Distancia mínima (px) para que un toque se considere trazo de marcador. */
 const DRAG_THRESHOLD = 10;
@@ -44,7 +45,7 @@ export class EventChip {
   protected readonly time = computed(() => formatTime(this.occurrence().event.time));
   protected readonly amount = computed(() => {
     const { amount, currency } = this.occurrence().event;
-    return amount ? `${amount.toLocaleString('es-CO')} ${currency ?? ''}`.trim() : '';
+    return amount ? `${amount.toLocaleString(locale())} ${currency ?? ''}`.trim() : '';
   });
   protected readonly tooltip = computed(() =>
     [this.time(), this.occurrence().event.title, this.amount()].filter(Boolean).join(' · '),

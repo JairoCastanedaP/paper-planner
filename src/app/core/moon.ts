@@ -1,4 +1,5 @@
 import { toKey } from './dates';
+import { tx } from './i18n';
 
 /** Una de las cuatro fases principales, en el día (hora local) en que ocurre. */
 export interface MoonPhase {
@@ -9,10 +10,10 @@ export interface MoonPhase {
 }
 
 const PHASES = [
-  { emoji: '🌑', name: 'Luna nueva' },
-  { emoji: '🌓', name: 'Cuarto creciente' },
-  { emoji: '🌕', name: 'Luna llena' },
-  { emoji: '🌗', name: 'Cuarto menguante' },
+  { emoji: '🌑', es: 'Luna nueva', en: 'New moon' },
+  { emoji: '🌓', es: 'Cuarto creciente', en: 'First quarter' },
+  { emoji: '🌕', es: 'Luna llena', en: 'Full moon' },
+  { emoji: '🌗', es: 'Cuarto menguante', en: 'Last quarter' },
 ];
 
 const RAD = Math.PI / 180;
@@ -100,7 +101,7 @@ export function moonPhasesBetween(from: string, to: string): Map<string, MoonPha
       const at = phaseDate(k + q / 4);
       const key = toKey(at);
       if (key > to) return result;
-      if (key >= from) result.set(key, { ...PHASES[q], at });
+      if (key >= from) result.set(key, { emoji: PHASES[q].emoji, name: tx(PHASES[q].es, PHASES[q].en), at });
     }
     k++;
   }

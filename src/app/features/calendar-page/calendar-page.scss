@@ -189,11 +189,32 @@ h1 {
 }
 
 // Interruptor (p. ej. fases de la luna) dentro del menú.
-.menu .toggle {
+.menu .toggle,
+.menu .lang {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+}
+
+// Selector de idioma: ES | EN, el activo resaltado.
+.lang-pill {
+  display: inline-flex;
+  overflow: hidden;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  span {
+    padding: 1px 7px;
+  }
+
+  .on {
+    background: var(--line);
+    color: var(--on-line);
+  }
 }
 
 .switch {

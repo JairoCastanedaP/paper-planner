@@ -1,13 +1,13 @@
 <div class="year">
   @for (m of months(); track m.index) {
     <article class="month" [class.current]="isCurrent(m.index)">
-      <button type="button" class="month-title" (click)="monthOpened.emit(m.index)" [attr.aria-label]="'Abrir ' + m.name">
+      <button type="button" class="month-title" (click)="monthOpened.emit(m.index)" [attr.aria-label]="tx('Abrir ', 'Open ') + m.name">
         {{ m.name }}
         <span class="open" aria-hidden="true">›</span>
       </button>
 
       <div class="mini" role="grid" [attr.aria-label]="m.name">
-        @for (initial of initials; track $index) {
+        @for (initial of initials(); track $index) {
           <span class="initial" [class.sun]="$first" role="columnheader">{{ initial }}</span>
         }
         @for (week of m.weeks; track week[0].date) {
@@ -50,10 +50,10 @@
             }
           </li>
         } @empty {
-          <li class="none">Sin notas</li>
+          <li class="none">{{ tx('Sin notas', 'No notes') }}</li>
         }
         @if (m.hidden) {
-          <li class="more">+{{ m.hidden }} más</li>
+          <li class="more">+{{ m.hidden }} {{ tx('más', 'more') }}</li>
         }
       </ul>
     </article>

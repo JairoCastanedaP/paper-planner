@@ -7,6 +7,7 @@ import { PlannerStore } from '../../core/planner-store';
 import { describeRecurrence } from '../../core/recurrence';
 import { EventChip } from '../event-chip/event-chip';
 import { EventForm } from '../event-form/event-form';
+import { tx } from '../../core/i18n';
 
 type Mode = { kind: 'list' } | { kind: 'new' } | { kind: 'edit'; event: PlannerEvent };
 
@@ -21,6 +22,7 @@ const EMOJI_SUGGESTIONS = ['🎉', '🎂', '💍', '🎓', '✈️', '🏆', '�
   styleUrl: './day-detail.scss',
 })
 export class DayDetail {
+  protected readonly tx = tx;
   readonly date = input.required<string>();
 
   private readonly store = inject(PlannerStore);
@@ -78,7 +80,7 @@ export class DayDetail {
     try {
       this.store.setDayImage(this.date(), await compressImage(file));
     } catch (err) {
-      this.imageError.set(err instanceof Error ? err.message : 'No se pudo usar la imagen.');
+      this.imageError.set(err instanceof Error ? err.message : tx('No se pudo usar la imagen.', 'The image could not be used.'));
     } finally {
       this.loadingImage.set(false);
     }

@@ -1,13 +1,13 @@
 <form (ngSubmit)="submit()" #form="ngForm">
-  <h3>{{ isEdit() ? 'Editar actividad' : 'Nueva actividad' }}</h3>
+  <h3>{{ isEdit() ? tx('Editar actividad', 'Edit activity') : tx('Nueva actividad', 'New activity') }}</h3>
 
   <label>
-    Título
-    <input name="title" [(ngModel)]="draft.title" required autofocus placeholder="p. ej. Reunión de equipo" />
+    {{ tx('Título', 'Title') }}
+    <input name="title" [(ngModel)]="draft.title" required autofocus [placeholder]="tx('p. ej. Reunión de equipo', 'e.g. Team meeting')" />
   </label>
 
   <fieldset class="categories">
-    <legend>Categoría</legend>
+    <legend>{{ tx('Categoría', 'Category') }}</legend>
     @for (c of store.categories(); track c.id) {
       <label class="cat" [style.--cat]="c.color" [class.selected]="draft.categoryId === c.id">
         <input type="radio" name="categoryId" [value]="c.id" [(ngModel)]="draft.categoryId" (ngModelChange)="onCategoryChange()" />
@@ -18,45 +18,45 @@
 
   <div class="row">
     <label>
-      {{ draft.recurrence === 'none' ? 'Fecha' : 'Desde' }}
+      {{ draft.recurrence === 'none' ? tx('Fecha', 'Date') : tx('Desde', 'From') }}
       <input type="date" name="date" [(ngModel)]="draft.date" required />
     </label>
     <label>
-      Hora (opcional)
+      {{ tx('Hora (opcional)', 'Time (optional)') }}
       <input type="time" name="time" [(ngModel)]="draft.time" />
     </label>
   </div>
 
   <div class="row">
     <label>
-      Se repite
+      {{ tx('Se repite', 'Repeats') }}
       <select name="recurrence" [(ngModel)]="draft.recurrence">
-        <option value="none">No se repite</option>
-        <option value="weekly">Cada semana</option>
-        <option value="monthly">Cada mes</option>
-        <option value="yearly">Cada año</option>
+        <option value="none">{{ tx('No se repite', 'Doesn\'t repeat') }}</option>
+        <option value="weekly">{{ tx('Cada semana', 'Weekly') }}</option>
+        <option value="monthly">{{ tx('Cada mes', 'Monthly') }}</option>
+        <option value="yearly">{{ tx('Cada año', 'Yearly') }}</option>
       </select>
     </label>
     @if (draft.recurrence !== 'none') {
       <label>
-        Termina
+        {{ tx('Termina', 'Ends') }}
         <select name="ends" [(ngModel)]="draft.ends">
-          <option value="never">Nunca</option>
-          <option value="month">Fin de {{ startMonth() }}</option>
-          <option value="date">En una fecha…</option>
+          <option value="never">{{ tx('Nunca', 'Never') }}</option>
+          <option value="month">{{ tx('Fin de ', 'End of ') + startMonth() }}</option>
+          <option value="date">{{ tx('En una fecha…', 'On a date…') }}</option>
         </select>
       </label>
     }
   </div>
 
   @if (draft.recurrence === 'weekly') {
-    <div class="weekdays" role="group" aria-label="Días de la semana">
-      @for (initial of initials; track $index) {
+    <div class="weekdays" role="group" [attr.aria-label]="tx('Días de la semana', 'Days of the week')">
+      @for (initial of initials(); track $index) {
         <button
           type="button"
           [class.on]="draft.weekdays[$index]"
           [attr.aria-pressed]="draft.weekdays[$index]"
-          [attr.aria-label]="weekdayNames[$index]"
+          [attr.aria-label]="weekdayNames()[$index]"
           (click)="toggleWeekday($index)"
         >{{ initial }}</button>
       }
@@ -66,7 +66,7 @@
   @if (draft.recurrence !== 'none') {
     @if (draft.ends === 'date') {
       <label>
-        Se repite hasta el
+        {{ tx('Se repite hasta el', 'Repeats until') }}
         <input type="date" name="until" [(ngModel)]="draft.until" [min]="draft.date" required />
       </label>
     }
@@ -77,11 +77,11 @@
 
   <div class="row">
     <label>
-      Valor (opcional)
+      {{ tx('Valor (opcional)', 'Amount (optional)') }}
       <input type="number" name="amount" min="0" step="any" [(ngModel)]="draft.amount" placeholder="0" />
     </label>
     <label>
-      Moneda
+      {{ tx('Moneda', 'Currency') }}
       <select name="currency" [(ngModel)]="draft.currency">
         <option value="USD">USD</option>
         <option value="COP">COP</option>
@@ -92,14 +92,14 @@
   <div class="important" [class.on]="draft.important">
     <label class="toggle">
       <input type="checkbox" name="important" [(ngModel)]="draft.important" />
-      ⭐ Muy importante
+      ⭐ {{ tx('Muy importante', 'Very important') }}
     </label>
     @if (draft.important) {
       <label>
-        Recordarme
+        {{ tx('Recordarme', 'Remind me') }}
         <select name="reminderMinutes" [(ngModel)]="draft.reminderMinutes">
           @for (o of reminderOptions; track o.value) {
-            <option [ngValue]="o.value">{{ o.label }}</option>
+            <option [ngValue]="o.value">{{ tx(o.label, o.labelEn) }}</option>
           }
         </select>
       </label>
@@ -107,12 +107,12 @@
   </div>
 
   <label>
-    Notas
-    <textarea name="notes" rows="4" [(ngModel)]="draft.notes" placeholder="Todo lo que no cabía en la hoja…"></textarea>
+    {{ tx('Notas', 'Notes') }}
+    <textarea name="notes" rows="4" [(ngModel)]="draft.notes" [placeholder]="tx('Todo lo que no cabía en la hoja…', 'Everything that did not fit on the page…')"></textarea>
   </label>
 
   <div class="buttons">
-    <button type="button" (click)="cancelled.emit()">Cancelar</button>
-    <button type="submit" class="primary" [disabled]="form.invalid">Guardar</button>
+    <button type="button" (click)="cancelled.emit()">{{ tx('Cancelar', 'Cancel') }}</button>
+    <button type="submit" class="primary" [disabled]="form.invalid">{{ tx('Guardar', 'Save') }}</button>
   </div>
 </form>

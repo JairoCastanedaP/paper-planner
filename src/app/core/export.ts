@@ -1,4 +1,5 @@
-import { WEEKDAYS, fromKey, toKey } from './dates';
+import { fromKey, toKey, weekdays } from './dates';
+import { tx } from './i18n';
 import { Category, Occurrence, PlannerEvent } from './models';
 import { describeRecurrence, occursOn } from './recurrence';
 
@@ -16,26 +17,32 @@ export function daysBetween(from: string, to: string): string[] {
 // ── Excel (.csv) ─────────────────────────────────────────────
 
 /**
- * Tabla con una fila por actividad y día. Usa ";" como separador y BOM UTF-8, que es lo que
- * Excel en español abre directamente con las tildes y columnas correctas.
+ * Tabla con una fila por actividad y día, con BOM UTF-8 para que Excel respete las tildes.
+ * En español usa ";" y coma decimal (Excel en español); en inglés, "," y punto decimal.
  */
 export function toCsv(occurrences: Occurrence[], categories: Map<string, Category>): string {
-  const header = ['Fecha', 'Día', 'Hora', 'Actividad', 'Categoría', 'Importante', 'Resaltada', 'Valor', 'Moneda', 'Repetición', 'Notas'];
+  const header = tx(
+    'Fecha;Día;Hora;Actividad;Categoría;Importante;Resaltada;Valor;Moneda;Repetición;Notas',
+    'Date;Day;Time;Activity;Category;Important;Highlighted;Amount;Currency;Repeats;Notes',
+  ).split(';');
+  const yes = tx('Sí', 'Yes');
+  const no = 'No';
   const rows = occurrences.map(({ event: ev, date, highlighted }) => [
     date,
-    WEEKDAYS[fromKey(date).getDay()],
+    weekdays()[fromKey(date).getDay()],
     ev.time ?? '',
     ev.title,
     categories.get(ev.categoryId)?.name ?? '',
-    ev.important ? 'Sí' : 'No',
-    highlighted ? 'Sí' : 'No',
-    ev.amount ? String(ev.amount).replace('.', ',') : '',
+    ev.important ? yes : no,
+    highlighted ? yes : no,
+    ev.amount ? tx(String(ev.amount).replace('.', ','), String(ev.amount)) : '',
     ev.amount ? (ev.currency ?? '') : '',
     describeRecurrence(ev),
     ev.notes ?? '',
   ]);
-  const cell = (v: string) => (/[;"\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
-  return '\uFEFF' + [header, ...rows].map((r) => r.map(cell).join(';')).join('\r\n') + '\r\n';
+  const sep = tx(';', ',');
+  const cell = (v: string) => (/[;,"\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
+  return '\uFEFF' + [header, ...rows].map((r) => r.map(cell).join(sep)).join('\r\n') + '\r\n';
 }
 
 // ── Calendario (.ics) ────────────────────────────────────────
@@ -125,7 +132,7 @@ function firstDay(ev: PlannerEvent): string | null {
 function eventLines(ev: PlannerEvent, date: string, uid: string, stamp: string, categories: Map<string, Category>, series: boolean): string[] {
   const description = [
     ev.notes,
-    ev.amount ? `Valor: ${ev.amount} ${ev.currency ?? ''}`.trim() : '',
+    ev.amount ? `${tx('Valor', 'Amount')}: ${ev.amount} ${ev.currency ?? ''}`.trim() : '',
   ].filter(Boolean).join('\n');
   const lines = [
     'BEGIN:VEVENT',

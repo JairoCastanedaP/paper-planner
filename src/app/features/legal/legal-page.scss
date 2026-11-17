@@ -77,3 +77,12 @@ a {
   padding-top: 14px;
   border-top: 1px solid var(--soft-line);
 }
+
+// Aviso en inglés: el documento solo está en español.
+.lang-note {
+  padding: 10px 12px;
+  border-left: 4px solid var(--red);
+  border-radius: 4px;
+  background: var(--sunday);
+  line-height: 1.45;
+}

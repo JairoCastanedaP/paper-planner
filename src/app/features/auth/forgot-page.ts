@@ -2,15 +2,19 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
+import { isEn, tx } from '../../core/i18n';
+import { LangSwitch } from '../lang-switch/lang-switch';
 
 /** "¿Olvidaste tu contraseña?": pide el enlace para crear una nueva. */
 @Component({
   selector: 'app-forgot-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LangSwitch],
   templateUrl: './forgot-page.html',
   styleUrl: './auth-page.scss',
 })
 export class ForgotPage {
+  protected readonly tx = tx;
+  protected readonly en = isEn;
   private readonly auth = inject(AuthService);
 
   /** Si se llega desde el login con el correo ya escrito, se reutiliza. */
@@ -23,7 +27,7 @@ export class ForgotPage {
     this.error.set('');
     const email = this.email.trim();
     if (!email) {
-      this.error.set('Escribe el correo de tu cuenta.');
+      this.error.set(tx('Escribe el correo de tu cuenta.', "Enter your account's email."));
       return;
     }
     this.busy.set(true);

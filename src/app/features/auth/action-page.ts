@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
 import { PASSWORD_RULES, passwordIsValid } from '../../core/password';
+import { isEn, tx } from '../../core/i18n';
+import { LangSwitch } from '../lang-switch/lang-switch';
 
 type State =
   | { kind: 'loading' }
@@ -18,11 +20,13 @@ type State =
  */
 @Component({
   selector: 'app-action-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LangSwitch],
   templateUrl: './action-page.html',
   styleUrl: './auth-page.scss',
 })
 export class ActionPage {
+  protected readonly tx = tx;
+  protected readonly en = isEn;
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly params = inject(ActivatedRoute).snapshot.queryParamMap;
@@ -42,7 +46,7 @@ export class ActionPage {
 
   private async start(mode: string | null): Promise<void> {
     if (!this.code) {
-      this.state.set({ kind: 'error', message: 'El enlace está incompleto. Ábrelo de nuevo desde el correo.' });
+      this.state.set({ kind: 'error', message: tx('El enlace está incompleto. Ábrelo de nuevo desde el correo.', 'The link is incomplete. Open it again from the email.') });
       return;
     }
     if (mode === 'resetPassword') {
@@ -56,7 +60,7 @@ export class ActionPage {
       const error = await this.auth.applyVerification(this.code);
       this.state.set(error ? { kind: 'error', message: error, retry: 'verify' } : { kind: 'verified' });
     } else {
-      this.state.set({ kind: 'error', message: 'Este enlace no es para Paper Planner o ya no se puede usar.' });
+      this.state.set({ kind: 'error', message: tx('Este enlace no es para Paper Planner o ya no se puede usar.', 'This link is not for Paper Planner or can no longer be used.') });
     }
   }
 
@@ -67,11 +71,11 @@ export class ActionPage {
   protected async savePassword(email: string): Promise<void> {
     this.error.set('');
     if (!passwordIsValid(this.password)) {
-      this.error.set('La contraseña todavía no cumple los requisitos.');
+      this.error.set(tx('La contraseña todavía no cumple los requisitos.', "The password doesn't meet the requirements yet."));
       return;
     }
     if (this.password !== this.confirm) {
-      this.error.set('Las contraseñas no coinciden.');
+      this.error.set(tx('Las contraseñas no coinciden.', "The passwords don't match."));
       return;
     }
     this.busy.set(true);

@@ -1,5 +1,6 @@
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { TourService } from '../../core/tour';
+import { tx } from '../../core/i18n';
 
 interface Box {
   top: number;
@@ -24,6 +25,7 @@ const GAP = 12;
   },
 })
 export class TourOverlay {
+  protected readonly tx = tx;
   protected readonly tour = inject(TourService);
   protected readonly box = signal<Box | null>(null);
   private readonly viewport = signal({ w: window.innerWidth, h: window.innerHeight });

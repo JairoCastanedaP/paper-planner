@@ -1,7 +1,7 @@
 @switch (mode().kind) {
   @case ('list') {
     @if (occurrences().length === 0) {
-      <p class="empty">No hay actividades este día.</p>
+      <p class="empty">{{ tx('No hay actividades este día.', 'No activities on this day.') }}</p>
     }
 
     <ul class="list">
@@ -17,59 +17,59 @@
 
           @if (confirmingDelete() === o.key) {
             <div class="confirm">
-              <span>Esta actividad se repite. ¿Qué quieres eliminar?</span>
-              <button type="button" (click)="deleteOne(o)">Solo este día</button>
-              <button type="button" class="danger" (click)="deleteSeries(o)">Toda la serie</button>
-              <button type="button" (click)="confirmingDelete.set(null)">Cancelar</button>
+              <span>{{ tx('Esta actividad se repite. ¿Qué quieres eliminar?', 'This activity repeats. What do you want to delete?') }}</span>
+              <button type="button" (click)="deleteOne(o)">{{ tx('Solo este día', 'Only this day') }}</button>
+              <button type="button" class="danger" (click)="deleteSeries(o)">{{ tx('Toda la serie', 'The whole series') }}</button>
+              <button type="button" (click)="confirmingDelete.set(null)">{{ tx('Cancelar', 'Cancel') }}</button>
             </div>
           } @else {
             <div class="actions">
               <button type="button" (click)="setHighlight(o, !o.highlighted)">
-                {{ o.highlighted ? 'Quitar resaltado' : '🖍 Resaltar' }}
+                {{ o.highlighted ? tx('Quitar resaltado', 'Remove highlight') : '🖍 ' + tx('Resaltar', 'Highlight') }}
               </button>
-              <button type="button" (click)="mode.set({ kind: 'edit', event: o.event })">Editar</button>
-              <button type="button" class="danger" (click)="askDelete(o)">Eliminar</button>
+              <button type="button" (click)="mode.set({ kind: 'edit', event: o.event })">{{ tx('Editar', 'Edit') }}</button>
+              <button type="button" class="danger" (click)="askDelete(o)">{{ tx('Eliminar', 'Delete') }}</button>
             </div>
           }
         </li>
       }
     </ul>
 
-    <button type="button" class="primary add" (click)="mode.set({ kind: 'new' })">+ Agregar actividad</button>
+    <button type="button" class="primary add" (click)="mode.set({ kind: 'new' })">+ {{ tx('Agregar actividad', 'Add activity') }}</button>
 
     <details class="customize">
-      <summary>🎨 Personalizar este día</summary>
+      <summary>🎨 {{ tx('Personalizar este día', 'Customize this day') }}</summary>
 
       <section>
-        <h4>Imagen de fondo</h4>
+        <h4>{{ tx('Imagen de fondo', 'Background image') }}</h4>
         @if (image(); as img) {
-          <img class="preview" [src]="img" alt="Imagen de fondo del día" />
+          <img class="preview" [src]="img" [alt]="tx('Imagen de fondo del día', 'Background image of the day')" />
         }
         <div class="row">
           <label class="file-button">
-            {{ loadingImage() ? 'Procesando…' : image() ? 'Cambiar imagen' : 'Elegir imagen' }}
+            {{ loadingImage() ? tx('Procesando…', 'Processing…') : image() ? tx('Cambiar imagen', 'Change image') : tx('Elegir imagen', 'Choose image') }}
             <input type="file" accept="image/*" (change)="onImageSelected($event)" [disabled]="loadingImage()" />
           </label>
           @if (image()) {
-            <button type="button" class="danger" (click)="removeImage()">Quitar</button>
+            <button type="button" class="danger" (click)="removeImage()">{{ tx('Quitar', 'Remove') }}</button>
           }
         </div>
         @if (imageError()) {
           <p class="error" role="alert">{{ imageError() }}</p>
         }
-        <p class="help">La imagen se reduce para ocupar poco espacio y se ve en el mes y en la vista del día.</p>
+        <p class="help">{{ tx('La imagen se reduce para ocupar poco espacio y se ve en el mes y en la vista del día.', 'The image is shrunk to take little space and shows in the month and day views.') }}</p>
       </section>
 
       <section>
-        <h4>Día especial</h4>
+        <h4>{{ tx('Día especial', 'Special day') }}</h4>
         @for (d of specialDays(); track d.id) {
           <div class="special">
             <span class="emoji">{{ d.emoji }}</span>
             <span class="name">{{ d.name }}</span>
             @if (d.yearly) {
-              <small>cada año</small>
+              <small>{{ tx('cada año', 'every year') }}</small>
             }
-            <button type="button" class="icon-btn" (click)="removeSpecialDay(d.id)" [attr.aria-label]="'Quitar ' + d.name">×</button>
+            <button type="button" class="icon-btn" (click)="removeSpecialDay(d.id)" [attr.aria-label]="tx('Quitar ', 'Remove ') + d.name">×</button>
           </div>
         }
         <form class="special-form" (ngSubmit)="addSpecialDay()">
@@ -83,15 +83,15 @@
                 (click)="special.emoji = e"
               >{{ e }}</button>
             }
-            <input name="emoji" [(ngModel)]="special.emoji" maxlength="4" class="emoji-input" aria-label="Otro emoji" />
+            <input name="emoji" [(ngModel)]="special.emoji" maxlength="4" class="emoji-input" [attr.aria-label]="tx('Otro emoji', 'Other emoji')" />
           </div>
           <div class="row">
-            <input name="specialName" [(ngModel)]="special.name" placeholder="p. ej. Aniversario" class="grow" aria-label="Nombre del día especial" />
+            <input name="specialName" [(ngModel)]="special.name" [placeholder]="tx('p. ej. Aniversario', 'e.g. Anniversary')" class="grow" [attr.aria-label]="tx('Nombre del día especial', 'Name of the special day')" />
             <label class="check">
               <input type="checkbox" name="yearly" [(ngModel)]="special.yearly" />
-              Cada año
+              {{ tx('Cada año', 'Every year') }}
             </label>
-            <button type="submit" [disabled]="!special.name.trim()">Agregar</button>
+            <button type="submit" [disabled]="!special.name.trim()">{{ tx('Agregar', 'Add') }}</button>
           </div>
         </form>
       </section>
@@ -103,7 +103,7 @@
   @case ('edit') {
     @if (mode(); as m) {
       @if (m.kind === 'edit') {
-        <p class="meta">Los cambios aplican a todas las repeticiones.</p>
+        <p class="meta">{{ tx('Los cambios aplican a todas las repeticiones.', 'Changes apply to all repetitions.') }}</p>
         <app-event-form [event]="m.event" [date]="date()" (saved)="save($event)" (cancelled)="mode.set({ kind: 'list' })" />
       }
     }

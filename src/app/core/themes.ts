@@ -1,5 +1,6 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
 import { COLOMBIAN_MONTHS } from './colombia';
+import { tx } from './i18n';
 
 /**
  * Adornos de los márgenes laterales (solo en computador, donde hay espacio libre).
@@ -18,8 +19,10 @@ export interface SideDecor {
 export interface MonthAmbience {
   emoji: string;
   name: string;
-  /** Nota corta que se muestra debajo de la frase del mes. */
+  nameEn: string;
+  /** Nota corta que se muestra debajo de la frase del día. */
   note: string;
+  noteEn: string;
   /** Variables CSS que reemplazan las del tema durante ese mes. */
   tokens: Record<string, string>;
   /** Adornos de los márgenes laterales. */
@@ -30,7 +33,9 @@ export interface MonthAmbience {
 export interface Theme {
   id: string;
   name: string;
+  nameEn: string;
   description: string;
+  descriptionEn: string;
   dark?: boolean;
   /** Variables CSS que se aplican en :root. */
   tokens: Record<string, string>;
@@ -51,7 +56,9 @@ export const THEMES: Theme[] = [
   {
     id: 'standard',
     name: 'Estándar',
+    nameEn: 'Standard',
     description: 'Los colores del calendario de papel.',
+    descriptionEn: 'The colors of the paper calendar.',
     tokens: {
       ...LIGHT_BASE,
       '--paper': '#fbf8f1',
@@ -77,7 +84,9 @@ export const THEMES: Theme[] = [
   {
     id: 'pastel',
     name: 'Pastel',
+    nameEn: 'Pastel',
     description: 'Tonos suaves, como marcadores pastel.',
+    descriptionEn: 'Soft tones, like pastel highlighters.',
     tokens: {
       ...LIGHT_BASE,
       '--paper': '#fdf6f9',
@@ -103,7 +112,9 @@ export const THEMES: Theme[] = [
   {
     id: 'ocean',
     name: 'Océano',
+    nameEn: 'Ocean',
     description: 'Azules y turquesas frescos.',
+    descriptionEn: 'Fresh blues and turquoises.',
     tokens: {
       ...LIGHT_BASE,
       '--paper': '#f2f7f9',
@@ -129,7 +140,9 @@ export const THEMES: Theme[] = [
   {
     id: 'forest',
     name: 'Bosque',
+    nameEn: 'Forest',
     description: 'Verdes y tonos tierra.',
+    descriptionEn: 'Greens and earth tones.',
     tokens: {
       ...LIGHT_BASE,
       '--on-line': '#f4f1e6',
@@ -156,7 +169,9 @@ export const THEMES: Theme[] = [
   {
     id: 'colombian',
     name: 'Colombiano',
+    nameEn: 'Colombian',
     description: 'Cada mes se ambienta con una fiesta o tradición de Colombia.',
+    descriptionEn: 'Each month is themed after a Colombian festival or tradition.',
     tokens: {
       ...LIGHT_BASE,
       '--paper': '#fbf8f1',
@@ -183,7 +198,9 @@ export const THEMES: Theme[] = [
   {
     id: 'night',
     name: 'Nocturno',
+    nameEn: 'Night',
     description: 'Fondo oscuro con marcadores neón.',
+    descriptionEn: 'Dark background with neon highlighters.',
     dark: true,
     tokens: {
       '--on-line': '#ece8e1',
@@ -227,7 +244,8 @@ export class ThemeService {
   /** Ambientación del mes visible, solo si el tema la tiene (p. ej. "Colombiano"). */
   readonly ambience = computed(() => {
     const month = this.ambienceMonth();
-    return month === null ? null : (this.theme().monthly?.[month] ?? null);
+    const a = month === null ? null : (this.theme().monthly?.[month] ?? null);
+    return a && { ...a, name: tx(a.name, a.nameEn), note: tx(a.note, a.noteEn) };
   });
 
   constructor() {
