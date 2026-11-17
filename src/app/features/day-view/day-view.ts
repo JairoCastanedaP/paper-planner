@@ -8,6 +8,7 @@ import { PlannerStore } from '../../core/planner-store';
 import { DayDetail } from '../day-detail/day-detail';
 import { EventChip } from '../event-chip/event-chip';
 import { HighlightChange } from '../month-grid/month-grid';
+import { locale, tx } from '../../core/i18n';
 
 interface HourRow {
   hour: number;
@@ -24,6 +25,8 @@ interface HourRow {
   styleUrl: './day-view.scss',
 })
 export class DayView {
+  protected readonly tx = tx;
+  protected readonly locale = locale;
   readonly date = input.required<string>();
   readonly today = input.required<string>();
   /** Filtro de categorías activo (vacío = todas). */

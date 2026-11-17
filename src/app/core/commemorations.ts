@@ -1,4 +1,5 @@
 import { toKey } from './dates';
+import { isEn } from './i18n';
 
 /** Algo que se celebra o se recuerda ese día, con su dibujo. */
 export interface Commemoration {
@@ -49,6 +50,23 @@ function computeYear(year: number): Map<string, Commemoration[]> {
   return map;
 }
 
+const EN: Record<string, string> = {
+  'Año Nuevo': "New Year's Day",
+  'San Valentín': "Valentine's Day",
+  'Día de la Mujer': "International Women's Day",
+  'Día del Idioma': 'Spanish Language Day',
+  Halloween: 'Halloween',
+  'Día de las Velitas': 'Day of the Little Candles',
+  'Inicia la Novena de Aguinaldos': 'Christmas Novena begins',
+  Nochebuena: 'Christmas Eve',
+  Navidad: 'Christmas',
+  'Día de los Inocentes': "Holy Innocents' Day (April Fools' in Colombia)",
+  'Fin de año': "New Year's Eve",
+  'Día de la Madre': "Mother's Day",
+  'Día del Padre': "Father's Day",
+  'Amor y Amistad': 'Love and Friendship Day',
+};
+
 /** Fechas conmemorativas incluidas en la app para ese día ('YYYY-MM-DD'). */
 export function builtInCommemorationsOn(date: string): Commemoration[] {
   const year = Number(date.slice(0, 4));
@@ -57,5 +75,6 @@ export function builtInCommemorationsOn(date: string): Commemoration[] {
     days = computeYear(year);
     cache.set(year, days);
   }
-  return days.get(date) ?? [];
+  const list = days.get(date) ?? [];
+  return isEn() ? list.map((c) => ({ ...c, name: EN[c.name] ?? c.name })) : list;
 }

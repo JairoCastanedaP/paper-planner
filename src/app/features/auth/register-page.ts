@@ -2,14 +2,18 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth';
+import { isEn, tx } from '../../core/i18n';
+import { LangSwitch } from '../lang-switch/lang-switch';
 
 @Component({
   selector: 'app-register-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, LangSwitch],
   templateUrl: './register-page.html',
   styleUrl: './auth-page.scss',
 })
 export class RegisterPage {
+  protected readonly tx = tx;
+  protected readonly en = isEn;
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 

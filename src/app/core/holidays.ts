@@ -1,4 +1,5 @@
 import { toKey } from './dates';
+import { isEn } from './i18n';
 
 /**
  * Festivos de Colombia (Ley 51 de 1983, "Ley Emiliani").
@@ -78,6 +79,27 @@ function computeYear(year: number): Map<string, string> {
 
 const cache = new Map<number, Map<string, string>>();
 
+const EN: Record<string, string> = {
+  'Año Nuevo': "New Year's Day",
+  'Día del Trabajo': 'Labor Day',
+  'Día de la Independencia': 'Independence Day',
+  'Batalla de Boyacá': 'Battle of Boyacá',
+  'Inmaculada Concepción': 'Immaculate Conception',
+  Navidad: 'Christmas Day',
+  'Día de los Reyes Magos': 'Epiphany',
+  'Día de San José': "Saint Joseph's Day",
+  'San Pedro y San Pablo': 'Saints Peter and Paul',
+  'Asunción de la Virgen': 'Assumption of Mary',
+  'Día de la Raza': 'Columbus Day',
+  'Todos los Santos': "All Saints' Day",
+  'Independencia de Cartagena': 'Independence of Cartagena',
+  'Jueves Santo': 'Maundy Thursday',
+  'Viernes Santo': 'Good Friday',
+  'Ascensión del Señor': 'Ascension Day',
+  'Corpus Christi': 'Corpus Christi',
+  'Sagrado Corazón de Jesús': 'Sacred Heart',
+};
+
 /** Nombre del festivo de ese día ('YYYY-MM-DD'), o undefined si no es festivo. */
 export function holidayOn(date: string): string | undefined {
   const year = Number(date.slice(0, 4));
@@ -86,5 +108,6 @@ export function holidayOn(date: string): string | undefined {
     holidays = computeYear(year);
     cache.set(year, holidays);
   }
-  return holidays.get(date);
+  const name = holidays.get(date);
+  return name && isEn() ? name.split(' · ').map((n) => EN[n] ?? n).join(' · ') : name;
 }

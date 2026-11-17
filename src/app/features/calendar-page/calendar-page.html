@@ -45,10 +45,10 @@
           <span class="sizer" aria-hidden="true">{{ longest().title }}</span>
         </h1>
       </div>
-      <nav class="nav" [attr.aria-label]="'Cambiar de ' + periodName()" data-tour="nav">
-        <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="'Anterior (' + periodName() + ')'">‹</button>
-        <button type="button" class="today" (click)="goToday()">Hoy</button>
-        <button type="button" class="round" (click)="move(1)" [attr.aria-label]="'Siguiente (' + periodName() + ')'">›</button>
+      <nav class="nav" [attr.aria-label]="tx('Cambiar de ', 'Change ') + periodName()" data-tour="nav">
+        <button type="button" class="round" (click)="move(-1)" [attr.aria-label]="tx('Anterior (', 'Previous (') + periodName() + ')'">‹</button>
+        <button type="button" class="today" (click)="goToday()">{{ tx('Hoy', 'Today') }}</button>
+        <button type="button" class="round" (click)="move(1)" [attr.aria-label]="tx('Siguiente (', 'Next (') + periodName() + ')'">›</button>
       </nav>
 
       <!-- Frase motivadora del mes, como en los calendarios de papel. -->
@@ -68,12 +68,12 @@
       }
 
       <div class="tools">
-        <div class="segmented" role="tablist" aria-label="Vista" data-tour="views">
-          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">Día</button>
-          <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="setView('month')">Mes</button>
-          <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="setView('year')">Año</button>
+        <div class="segmented" role="tablist" [attr.aria-label]="tx('Vista', 'View')" data-tour="views">
+          <button type="button" role="tab" [attr.aria-selected]="view() === 'day'" [class.active]="view() === 'day'" (click)="setView('day')">{{ tx('Día', 'Day') }}</button>
+          <button type="button" role="tab" [attr.aria-selected]="view() === 'month'" [class.active]="view() === 'month'" (click)="setView('month')">{{ tx('Mes', 'Month') }}</button>
+          <button type="button" role="tab" [attr.aria-selected]="view() === 'year'" [class.active]="view() === 'year'" (click)="setView('year')">{{ tx('Año', 'Year') }}</button>
         </div>
-        <button type="button" class="icon" (click)="searchOpen.set(true)" title="Buscar ( / )" aria-label="Buscar" data-tour="search">🔍</button>
+        <button type="button" class="icon" (click)="searchOpen.set(true)" [title]="tx('Buscar ( / )', 'Search ( / )')" [attr.aria-label]="tx('Buscar', 'Search')" data-tour="search">🔍</button>
         <div class="menu-wrap">
           <button
             type="button"
@@ -81,17 +81,23 @@
             (click)="toggleMenu($event)"
             [attr.aria-expanded]="menuOpen()"
             aria-haspopup="menu"
-            aria-label="Menú"
-            title="Menú"
+            [attr.aria-label]="tx('Menú', 'Menu')"
+            [title]="tx('Menú', 'Menu')"
             data-tour="menu"
           >☰</button>
           @if (menuOpen()) {
             <div class="menu" role="menu" (click)="menuOpen.set(false)">
               <p class="menu-user">👤 {{ auth.user()?.name }}</p>
-              <button type="button" role="menuitem" (click)="accountOpen.set(true)">👤 Mi cuenta</button>
-              <button type="button" role="menuitem" (click)="categoriesOpen.set(true)">🏷 Categorías</button>
-              <button type="button" role="menuitem" (click)="themesOpen.set(true)">🎨 Temas</button>
-              <button type="button" role="menuitem" (click)="exportOpen.set(true)">📤 Exportar</button>
+              <button type="button" role="menuitem" (click)="accountOpen.set(true)">👤 {{ tx('Mi cuenta', 'My account') }}</button>
+              <button type="button" role="menuitem" (click)="categoriesOpen.set(true)">🏷 {{ tx('Categorías', 'Categories') }}</button>
+              <button type="button" role="menuitem" (click)="themesOpen.set(true)">🎨 {{ tx('Temas', 'Themes') }}</button>
+              <button type="button" role="menuitem" (click)="exportOpen.set(true)">📤 {{ tx('Exportar', 'Export') }}</button>
+              <button type="button" role="menuitem" class="lang" (click)="switchLang(); $event.stopPropagation()">
+                🌐 {{ tx('Idioma', 'Language') }}
+                <span class="lang-pill" aria-hidden="true">
+                  <span [class.on]="lang() === 'es'">ES</span><span [class.on]="lang() === 'en'">EN</span>
+                </span>
+              </button>
               <button
                 type="button"
                 role="menuitemcheckbox"
@@ -99,11 +105,11 @@
                 [attr.aria-checked]="prefs.showMoon()"
                 (click)="prefs.toggleMoon()"
               >
-                🌙 Fases de la luna
+                🌙 {{ tx('Fases de la luna', 'Moon phases') }}
                 <span class="switch" [class.on]="prefs.showMoon()" aria-hidden="true"></span>
               </button>
-              <button type="button" role="menuitem" (click)="startTour()">❔ Guía de uso</button>
-              <button type="button" role="menuitem" class="logout" (click)="logout()">↩ Cerrar sesión</button>
+              <button type="button" role="menuitem" (click)="startTour()">❔ {{ tx('Guía de uso', 'User guide') }}</button>
+              <button type="button" role="menuitem" class="logout" (click)="logout()">↩ {{ tx('Cerrar sesión', 'Sign out') }}</button>
             </div>
           }
         </div>
@@ -112,7 +118,7 @@
 
     <!-- Al bajar en la vista de mes, los objetivos quedan a la vista en una línea. -->
     @if (compact() && view() === 'month' && goalStrip().length) {
-      <ul class="goal-strip" aria-label="Objetivos del mes">
+      <ul class="goal-strip" [attr.aria-label]="tx('Objetivos del mes', 'Goals of the month')">
         @for (g of goalStrip(); track g.id) {
           <li [class.done]="g.done">
             <span aria-hidden="true">{{ g.done ? '✅' : '🎯' }}</span>
@@ -129,42 +135,40 @@
   @if (store.saveFailed()) {
     <p class="storage-alert" role="alert">
       @if (auth.user()?.guest) {
-        ⚠️ No se pudieron guardar los últimos cambios: el almacenamiento del navegador está lleno.
-        Quita algunas imágenes de fondo para liberar espacio.
+        ⚠️ {{ tx('No se pudieron guardar los últimos cambios: el almacenamiento del navegador está lleno. Quita algunas imágenes de fondo para liberar espacio.', 'Your latest changes could not be saved: the browser storage is full. Remove some background images to free up space.') }}
       } @else {
-        ⚠️ No se pudieron guardar los últimos cambios en tu cuenta. Revisa tu conexión; si sigue
-        pasando, quita algunas imágenes de fondo.
+        ⚠️ {{ tx('No se pudieron guardar los últimos cambios en tu cuenta. Revisa tu conexión; si sigue pasando, quita algunas imágenes de fondo.', 'Your latest changes could not be saved to your account. Check your connection; if it keeps happening, remove some background images.') }}
       }
     </p>
   }
   @if (store.loadFailed()) {
     <p class="storage-alert" role="alert">
-      ⚠️ No se pudo leer tu calendario de la nube. Recarga la página; si sigue pasando, cierra sesión y vuelve a entrar.
+      ⚠️ {{ tx('No se pudo leer tu calendario de la nube. Recarga la página; si sigue pasando, cierra sesión y vuelve a entrar.', 'Your calendar could not be read from the cloud. Reload the page; if it keeps happening, sign out and sign in again.') }}
     </p>
   }
 
   @if (store.importable()) {
     <aside class="demo-banner" role="note">
-      <span>📥 Encontramos un calendario guardado <strong>en este navegador</strong>. ¿Quieres subirlo a tu cuenta para verlo en todos tus dispositivos?</span>
+      <span>📥 {{ tx('Encontramos un calendario guardado en este navegador. ¿Quieres subirlo a tu cuenta para verlo en todos tus dispositivos?', 'We found a calendar saved in this browser. Do you want to upload it to your account to see it on all your devices?') }}</span>
       <span class="demo-actions">
-        <button type="button" class="ghost" (click)="store.dismissImport()">No, gracias</button>
-        <button type="button" class="primary" (click)="store.importBrowserCalendar()">Subir a mi cuenta</button>
+        <button type="button" class="ghost" (click)="store.dismissImport()">{{ tx('No, gracias', 'No, thanks') }}</button>
+        <button type="button" class="primary" (click)="store.importBrowserCalendar()">{{ tx('Subir a mi cuenta', 'Upload to my account') }}</button>
       </span>
     </aside>
   }
 
   @if (store.isDemo() && !store.loading() && !store.importable()) {
     <aside class="demo-banner" role="note">
-      <span>👋 Estás viendo <strong>datos de ejemplo</strong> para conocer la app. Explóralos, resáltalos o edítalos con confianza.</span>
+      <span>👋 {{ tx('Estás viendo datos de ejemplo para conocer la app. Explóralos, resáltalos o edítalos con confianza.', "You're looking at sample data to get to know the app. Explore, highlight or edit it freely.") }}</span>
       <span class="demo-actions">
-        <button type="button" class="ghost" (click)="store.keepDemo()">Conservarlos</button>
-        <button type="button" class="primary" (click)="store.clearDemo()">Empezar en blanco</button>
+        <button type="button" class="ghost" (click)="store.keepDemo()">{{ tx('Conservarlos', 'Keep them') }}</button>
+        <button type="button" class="primary" (click)="store.clearDemo()">{{ tx('Empezar en blanco', 'Start blank') }}</button>
       </span>
     </aside>
   }
 
   @if (store.loading()) {
-    <p class="loading" role="status">⏳ Cargando tu calendario…</p>
+    <p class="loading" role="status">⏳ {{ tx('Cargando tu calendario…', 'Loading your calendar…') }}</p>
   } @else {
     @switch (view()) {
       @case ('month') {
@@ -190,8 +194,7 @@
         />
 
         <p class="hint">
-          🖍 Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla
-          (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.
+          🖍 {{ tx('Pasa el dedo, el lápiz o el mouse de lado a lado sobre una actividad para resaltarla (repite el trazo para borrarla). Toca un día para ver sus notas completas o agregar actividades.', 'Swipe your finger, pen or mouse across an activity to highlight it (repeat the stroke to erase it). Tap a day to see all its notes or add activities.') }}
         </p>
       }
       @case ('year') {
@@ -211,8 +214,7 @@
         />
 
         <p class="hint">
-          🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos.
-          Toca el nombre de un mes para abrirlo o un día para ver su detalle.
+          {{ tx('🎯 objetivos · ⭐ muy importantes · 👑 cumpleaños · 💸 compromisos económicos. Toca el nombre de un mes para abrirlo o un día para ver su detalle.', '🎯 goals · ⭐ very important · 👑 birthdays · 💸 payments. Tap a month name to open it or a day to see its details.') }}
         </p>
       }
       @case ('day') {

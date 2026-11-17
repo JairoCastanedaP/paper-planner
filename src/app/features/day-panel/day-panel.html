@@ -6,7 +6,7 @@
       <h2>{{ title() }}</h2>
       <div class="badges">
         @if (holiday(); as name) {
-          <span class="badge holiday">Festivo · {{ name }}</span>
+          <span class="badge holiday">{{ tx('Festivo', 'Holiday') }} · {{ name }}</span>
         }
         @for (c of commemorations(); track c.name) {
           <span class="badge">{{ c.emoji }} {{ c.name }}</span>
@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="header-actions">
-      <button type="button" class="expand" (click)="expanded.emit(date())" title="Ver día completo">⤢ Día</button>
-      <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+      <button type="button" class="expand" (click)="expanded.emit(date())" [title]="tx('Ver día completo', 'Open full day')">⤢ {{ tx('Día', 'Day') }}</button>
+      <button type="button" class="close" (click)="closed.emit()" [attr.aria-label]="tx('Cerrar', 'Close')">×</button>
     </div>
   </header>
 

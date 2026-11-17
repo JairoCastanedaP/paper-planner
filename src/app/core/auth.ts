@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { FirebaseError } from 'firebase/app';
+import { tx } from './i18n';
 import {
   User,
   applyActionCode,
@@ -35,7 +36,7 @@ export class AuthService {
   private readonly account = signal<AppUser | null>(null);
   private readonly guest = signal(readGuest());
 
-  readonly user = computed<AppUser | null>(() => this.account() ?? (this.guest() ? GUEST : null));
+  readonly user = computed<AppUser | null>(() => this.account() ?? (this.guest() ? { ...GUEST, name: tx('Invitado', 'Guest') } : null));
   readonly isLoggedIn = computed(() => this.user() !== null);
 
   /** Se resuelve cuando Firebase ya sabe si había una sesión abierta (al cargar la página). */
@@ -118,7 +119,7 @@ export class AuthService {
   /** Vuelve a enviar el correo con el enlace de verificación. */
   async resendVerification(): Promise<string | null> {
     const user = this.auth.currentUser;
-    if (!user) return 'Inicia sesión de nuevo.';
+    if (!user) return tx('Inicia sesión de nuevo.', 'Please sign in again.');
     try {
       await sendEmailVerification(user);
       return null;
@@ -168,7 +169,7 @@ export class AuthService {
 function toAppUser(user: User): AppUser {
   return {
     uid: user.uid,
-    name: user.displayName || user.email?.split('@')[0] || 'Usuario',
+    name: user.displayName || user.email?.split('@')[0] || tx('Usuario', 'User'),
     email: user.email,
     guest: false,
     verified: user.emailVerified,
@@ -190,31 +191,31 @@ export function authMessage(error: unknown): string {
     case 'auth/invalid-credential':
     case 'auth/wrong-password':
     case 'auth/user-not-found':
-      return 'Correo o contraseña incorrectos.';
+      return tx('Correo o contraseña incorrectos.', 'Wrong email or password.');
     case 'auth/invalid-email':
-      return 'Ese correo no parece válido.';
+      return tx('Ese correo no parece válido.', "That email doesn't look valid.");
     case 'auth/email-already-in-use':
-      return 'Ya existe una cuenta con ese correo. Inicia sesión.';
+      return tx('Ya existe una cuenta con ese correo. Inicia sesión.', 'An account with that email already exists. Sign in instead.');
     case 'auth/weak-password':
     case 'auth/password-does-not-meet-requirements':
-      return 'La contraseña debe tener mínimo 8 caracteres, con letras minúsculas y números.';
+      return tx('La contraseña debe tener mínimo 8 caracteres, con letras minúsculas y números.', 'The password needs at least 8 characters, with lowercase letters and numbers.');
     case 'auth/too-many-requests':
-      return 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.';
+      return tx('Demasiados intentos. Espera unos minutos e inténtalo de nuevo.', 'Too many attempts. Wait a few minutes and try again.');
     case 'auth/network-request-failed':
-      return 'No hay conexión a internet. Revisa tu red e inténtalo de nuevo.';
+      return tx('No hay conexión a internet. Revisa tu red e inténtalo de nuevo.', 'No internet connection. Check your network and try again.');
     case 'auth/expired-action-code':
-      return 'El enlace venció. Pide uno nuevo.';
+      return tx('El enlace venció. Pide uno nuevo.', 'The link has expired. Request a new one.');
     case 'auth/invalid-action-code':
-      return 'El enlace no es válido o ya se usó. Pide uno nuevo.';
+      return tx('El enlace no es válido o ya se usó. Pide uno nuevo.', 'The link is invalid or was already used. Request a new one.');
     case 'auth/user-disabled':
-      return 'Esta cuenta está deshabilitada.';
+      return tx('Esta cuenta está deshabilitada.', 'This account is disabled.');
     case 'auth/missing-email':
-      return 'Escribe tu correo.';
+      return tx('Escribe tu correo.', 'Enter your email.');
     case 'auth/operation-not-allowed':
-      return 'El acceso con correo aún no está habilitado en el servidor.';
+      return tx('El acceso con correo aún no está habilitado en el servidor.', 'Email sign-in is not enabled on the server yet.');
     default:
       console.error(error);
-      return 'Algo salió mal. Inténtalo de nuevo.';
+      return tx('Algo salió mal. Inténtalo de nuevo.', 'Something went wrong. Please try again.');
   }
 }
 

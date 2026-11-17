@@ -1,4 +1,5 @@
-import { WEEKDAYS, formatDate, fromKey } from './dates';
+import { formatDate, fromKey, weekdayShort } from './dates';
+import { tx } from './i18n';
 import { Occurrence, PlannerEvent } from './models';
 
 export const occurrenceKey = (eventId: string, date: string) => `${eventId}@${date}`;
@@ -43,14 +44,14 @@ export function describeRecurrence(ev: PlannerEvent): string {
     case 'none':
       return '';
     case 'weekly':
-      text = 'Cada ' + (r.weekdays ?? []).map((d) => WEEKDAYS[d].slice(0, 3).toLowerCase()).join(', ');
+      text = tx('Cada ', 'Every ') + (r.weekdays ?? []).map(weekdayShort).join(', ');
       break;
     case 'monthly':
-      text = `Cada mes, el día ${Number(ev.date.slice(8))}`;
+      text = tx(`Cada mes, el día ${Number(ev.date.slice(8))}`, `Monthly, on day ${Number(ev.date.slice(8))}`);
       break;
     case 'yearly':
-      text = 'Cada año';
+      text = tx('Cada año', 'Yearly');
       break;
   }
-  return r.until ? `${text}, hasta el ${formatDate(r.until)}` : text;
+  return r.until ? text + tx(`, hasta el ${formatDate(r.until)}`, `, until ${formatDate(r.until)}`) : text;
 }

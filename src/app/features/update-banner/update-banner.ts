@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter } from 'rxjs';
+import { tx } from '../../core/i18n';
 
 /** Revisa si hay una versión nueva publicada cada cuánto (además de al abrir la app). */
 const CHECK_EVERY = 30 * 60 * 1000;
@@ -15,8 +16,8 @@ const CHECK_EVERY = 30 * 60 * 1000;
   template: `
     @if (ready()) {
       <aside class="update" role="status">
-        <span>✨ Hay una versión nueva de Paper Planner.</span>
-        <button type="button" class="primary" (click)="reload()">Actualizar</button>
+        <span>✨ {{ tx('Hay una versión nueva de Paper Planner.', 'A new version of Paper Planner is available.') }}</span>
+        <button type="button" class="primary" (click)="reload()">{{ tx('Actualizar', 'Update') }}</button>
       </aside>
     }
   `,
@@ -44,6 +45,7 @@ const CHECK_EVERY = 30 * 60 * 1000;
   `,
 })
 export class UpdateBanner {
+  protected readonly tx = tx;
   private readonly updates = inject(SwUpdate);
   protected readonly ready = signal(false);
 

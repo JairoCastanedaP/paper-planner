@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { deleteAccount } from '../../core/account';
 import { AuthService } from '../../core/auth';
 import { PlannerStore } from '../../core/planner-store';
+import { tx } from '../../core/i18n';
 
 /** Mi cuenta: datos de la cuenta, documentos legales, descargar mis datos y eliminar la cuenta. */
 @Component({
@@ -14,6 +15,7 @@ import { PlannerStore } from '../../core/planner-store';
   host: { '(document:keydown.escape)': 'close()' },
 })
 export class AccountDialog {
+  protected readonly tx = tx;
   readonly closed = output<void>();
   protected readonly auth = inject(AuthService);
   private readonly store = inject(PlannerStore);
@@ -49,7 +51,7 @@ export class AccountDialog {
   protected async remove(): Promise<void> {
     this.error.set('');
     if (!this.password) {
-      this.error.set('Escribe tu contraseña para confirmar.');
+      this.error.set(tx('Escribe tu contraseña para confirmar.', 'Enter your password to confirm.'));
       return;
     }
     this.busy.set(true);

@@ -1,4 +1,5 @@
 import { Component, inject, output } from '@angular/core';
+import { tx } from '../../core/i18n';
 import { ThemeService } from '../../core/themes';
 
 @Component({
@@ -10,5 +11,6 @@ import { ThemeService } from '../../core/themes';
 export class ThemePicker {
   readonly closed = output<void>();
   protected readonly themes = inject(ThemeService);
+  protected readonly tx = tx;
   protected readonly swatchOrder = ['academic', 'english', 'finance', 'birthday', 'project'];
 }

@@ -8,8 +8,9 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { MONTHS, formatLong, formatTime, toKey, todayKey } from '../../core/dates';
+import { formatLong, months, formatTime, toKey, todayKey } from '../../core/dates';
 import { MonthGoal, Occurrence, PlannerEvent } from '../../core/models';
+import { tx } from '../../core/i18n';
 import { PlannerStore } from '../../core/planner-store';
 import { occurrenceKey, occursOn } from '../../core/recurrence';
 
@@ -38,6 +39,7 @@ export class SearchPanel {
   readonly monthSelected = output<string>();
 
   private readonly store = inject(PlannerStore);
+  protected readonly tx = tx;
   private readonly input = viewChild.required<ElementRef<HTMLInputElement>>('queryInput');
 
   protected readonly query = signal('');
@@ -96,7 +98,7 @@ export class SearchPanel {
       .sort((a, b) => b.month.localeCompare(a.month))
       .map((goal) => {
         const [y, m] = goal.month.split('-').map(Number);
-        return { goal, monthLabel: `${MONTHS[m - 1]} ${y}` };
+        return { goal, monthLabel: `${months()[m - 1]} ${y}` };
       });
   });
 

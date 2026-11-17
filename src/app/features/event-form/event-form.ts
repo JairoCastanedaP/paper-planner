@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MONTHS, WEEKDAY_INITIALS, WEEKDAYS, endOfMonthKey, fromKey } from '../../core/dates';
+import { endOfMonthKey, fromKey, monthInText, weekdayInitials, weekdays } from '../../core/dates';
+import { tx } from '../../core/i18n';
 import { newId } from '../../core/ids';
 import { Currency, PlannerEvent, RecurrenceType } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
@@ -38,14 +39,15 @@ export class EventForm implements OnInit {
   readonly cancelled = output<void>();
 
   protected readonly store = inject(PlannerStore);
-  protected readonly initials = WEEKDAY_INITIALS;
-  protected readonly weekdayNames = WEEKDAYS;
+  protected readonly tx = tx;
+  protected readonly initials = weekdayInitials;
+  protected readonly weekdayNames = weekdays;
   protected readonly reminderOptions = [
-    { value: 0, label: 'En el momento' },
-    { value: 15, label: '15 minutos antes' },
-    { value: 60, label: '1 hora antes' },
-    { value: 180, label: '3 horas antes' },
-    { value: 1440, label: '1 día antes' },
+    { value: 0, label: 'En el momento', labelEn: 'At the time' },
+    { value: 15, label: '15 minutos antes', labelEn: '15 minutes before' },
+    { value: 60, label: '1 hora antes', labelEn: '1 hour before' },
+    { value: 180, label: '3 horas antes', labelEn: '3 hours before' },
+    { value: 1440, label: '1 día antes', labelEn: '1 day before' },
   ];
   protected readonly isEdit = computed(() => this.event() !== null);
   protected draft!: Draft;
@@ -83,7 +85,7 @@ export class EventForm implements OnInit {
 
   /** 'noviembre': el mes en que empieza la repetición. */
   protected startMonth(): string {
-    return this.draft.date ? MONTHS[fromKey(this.draft.date).getMonth()].toLowerCase() : 'el mes';
+    return this.draft.date ? monthInText(fromKey(this.draft.date).getMonth()) : tx('el mes', 'the month');
   }
 
   /** Fecha final según la opción de "Termina" ('' = nunca). */

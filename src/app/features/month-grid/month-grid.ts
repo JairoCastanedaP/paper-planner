@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { Commemoration } from '../../core/commemorations';
-import { WEEKDAYS } from '../../core/dates';
+import { weekdays } from '../../core/dates';
+import { locale, tx } from '../../core/i18n';
 import { holidayOn } from '../../core/holidays';
 import { Occurrence } from '../../core/models';
 import { MoonPhase, moonPhasesBetween } from '../../core/moon';
@@ -42,7 +43,8 @@ export class MonthGrid {
   readonly highlightChange = output<HighlightChange>();
 
   protected readonly store = inject(PlannerStore);
-  protected readonly weekdays = WEEKDAYS;
+  protected readonly weekdays = weekdays;
+  protected readonly tx = tx;
   protected readonly holidayOn = holidayOn;
   protected readonly maxVisible = 4;
   private readonly prefs = inject(PreferencesService);
@@ -59,7 +61,7 @@ export class MonthGrid {
   });
 
   protected moonLabel(phase: MoonPhase): string {
-    return `${phase.name} · ${phase.at.toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}`;
+    return `${phase.name} · ${phase.at.toLocaleTimeString(locale(), { hour: 'numeric', minute: '2-digit' })}`;
   }
 
   /**

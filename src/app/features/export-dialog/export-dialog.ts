@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MONTHS, pad } from '../../core/dates';
+import { monthInText, pad } from '../../core/dates';
+import { tx } from '../../core/i18n';
 import { daysBetween, downloadText, toCsv, toIcs } from '../../core/export';
 import { Occurrence } from '../../core/models';
 import { PlannerStore } from '../../core/planner-store';
@@ -17,6 +18,7 @@ type Range = 'month' | 'year' | 'all';
   host: { '(document:keydown.escape)': 'closed.emit()' },
 })
 export class ExportDialog {
+  protected readonly tx = tx;
   /** Mes que se está viendo (YYYY-MM). */
   readonly month = input.required<string>();
   /** Categorías del filtro activo (vacío = todas). */
@@ -30,7 +32,7 @@ export class ExportDialog {
 
   protected readonly monthName = computed(() => {
     const [y, m] = this.month().split('-').map(Number);
-    return `${MONTHS[m - 1].toLowerCase()} de ${y}`;
+    return tx(`${monthInText(m - 1)} de ${y}`, `${monthInText(m - 1)} ${y}`);
   });
   protected readonly yearName = computed(() => this.month().slice(0, 4));
   protected readonly filterNames = computed(() =>

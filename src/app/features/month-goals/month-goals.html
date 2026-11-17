@@ -1,14 +1,14 @@
 <section class="notes" aria-labelledby="goals-title">
   <div class="head">
-    <h2 id="goals-title">Notas del mes</h2>
+    <h2 id="goals-title">{{ tx('Notas del mes', 'Notes of the month') }}</h2>
     @if (totals().length) {
       <span class="money">💸 <strong>{{ totals().join(' · ') }}</strong></span>
     }
     @if (!editor()) {
       <span class="actions">
-        <button type="button" class="link" (click)="startAdding()">+ Objetivo</button>
+        <button type="button" class="link" (click)="startAdding()">+ {{ tx('Objetivo', 'Goal') }}</button>
         @if (canCopyPrevious()) {
-          <button type="button" class="link" (click)="copyPrevious()">Copiar los del mes anterior</button>
+          <button type="button" class="link" (click)="copyPrevious()">{{ tx('Copiar los del mes anterior', 'Copy last month\'s') }}</button>
         }
       </span>
     }
@@ -23,7 +23,7 @@
             class="box"
             [checked]="goal.done"
             (change)="toggleDone(goal)"
-            [attr.aria-label]="(goal.done ? 'Marcar como pendiente: ' : 'Marcar como realizado: ') + goal.title"
+            [attr.aria-label]="(goal.done ? tx('Marcar como pendiente: ', 'Mark as pending: ') : tx('Marcar como realizado: ', 'Mark as done: ')) + goal.title"
           />
           <span class="name">
             <button
@@ -31,7 +31,7 @@
               class="goal-title"
               (click)="openEditor(goal)"
               [attr.aria-describedby]="goal.detail ? 'goal-tip-' + goal.id : null"
-              [attr.aria-label]="goal.title + ' (clic para editar)'"
+              [attr.aria-label]="goal.title + tx(' (clic para editar)', ' (click to edit)')"
             >
               {{ goal.title }}
               @if (goal.detail) {
@@ -48,7 +48,7 @@
             </span>
             <span class="count">{{ progress(goal) }}/{{ goal.target }}</span>
           }
-          <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="'Eliminar ' + goal.title">×</button>
+          <button class="icon-btn" type="button" (click)="remove(goal)" [attr.aria-label]="tx('Eliminar ', 'Delete ') + goal.title">×</button>
         </li>
       }
     </ul>
@@ -56,52 +56,52 @@
 
   @if (editor(); as e) {
     <form class="goal-editor" (ngSubmit)="save()" #form="ngForm">
-      <h3>{{ e.mode === 'new' ? 'Nuevo objetivo' : 'Editar objetivo' }}</h3>
+      <h3>{{ e.mode === 'new' ? tx('Nuevo objetivo', 'New goal') : tx('Editar objetivo', 'Edit goal') }}</h3>
 
       <div class="row">
         <label class="grow">
-          Objetivo
-          <input #titleInput name="title" [(ngModel)]="draft.title" placeholder="p. ej. Leer dos libros" required />
+          {{ tx('Objetivo', 'Goal') }}
+          <input #titleInput name="title" [(ngModel)]="draft.title" [placeholder]="tx('p. ej. Leer dos libros', 'e.g. Read two books')" required />
         </label>
         <label class="narrow">
-          Meta (opcional)
-          <input name="target" type="number" min="1" [(ngModel)]="draft.target" placeholder="p. ej. 25" />
+          {{ tx('Meta (opcional)', 'Target (optional)') }}
+          <input name="target" type="number" min="1" [(ngModel)]="draft.target" [placeholder]="tx('p. ej. 25', 'e.g. 25')" />
         </label>
       </div>
 
       @if (draft.target) {
         <div class="row">
           <label class="grow">
-            Cuenta actividades de
+            {{ tx('Cuenta actividades de', 'Counts activities of') }}
             <select name="categoryId" [(ngModel)]="draft.categoryId">
-              <option value="">Cualquier categoría</option>
+              <option value="">{{ tx('Cualquier categoría', 'Any category') }}</option>
               @for (c of store.categories(); track c.id) {
                 <option [value]="c.id">{{ c.name }}</option>
               }
             </select>
           </label>
           <label class="grow">
-            Cuyo título contenga (opcional)
-            <input name="match" [(ngModel)]="draft.match" placeholder="p. ej. IA" />
+            {{ tx('Cuyo título contenga (opcional)', 'Whose title contains (optional)') }}
+            <input name="match" [(ngModel)]="draft.match" [placeholder]="tx('p. ej. IA', 'e.g. AI')" />
           </label>
         </div>
-        <p class="help">El contador suma las actividades del mes que resaltes con el marcador y coincidan con la categoría y el texto.</p>
+        <p class="help">{{ tx('El contador suma las actividades del mes que resaltes con el marcador y coincidan con la categoría y el texto.', 'The counter adds up the activities of the month you highlight with the marker that match the category and text.') }}</p>
       }
 
       <label>
-        Detalle (opcional)
+        {{ tx('Detalle (opcional)', 'Details (optional)') }}
         <textarea
           #detailInput
           name="detail"
           rows="3"
           [(ngModel)]="draft.detail"
-          placeholder="Pasos, entregables, enlaces… se ve al pasar el cursor por el objetivo."
+          [placeholder]="tx('Pasos, entregables, enlaces… se ve al pasar el cursor por el objetivo.', 'Steps, deliverables, links… shown when you hover over the goal.')"
         ></textarea>
       </label>
 
       <div class="editor-actions">
-        <button type="button" (click)="editor.set(null)">Cancelar</button>
-        <button type="submit" class="primary" [disabled]="form.invalid">{{ e.mode === 'new' ? 'Agregar' : 'Guardar' }}</button>
+        <button type="button" (click)="editor.set(null)">{{ tx('Cancelar', 'Cancel') }}</button>
+        <button type="submit" class="primary" [disabled]="form.invalid">{{ e.mode === 'new' ? tx('Agregar', 'Add') : tx('Guardar', 'Save') }}</button>
       </div>
     </form>
   }

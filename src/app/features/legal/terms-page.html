@@ -1,9 +1,18 @@
 <main class="legal">
-  <a class="back" routerLink="/">← Volver al inicio</a>
+  <app-lang-switch />
+  <a class="back" routerLink="/">← {{ tx('Volver al inicio', 'Back to home') }}</a>
   <article class="card">
     <p class="kicker">Paper Planner</p>
     <h1>Términos y Condiciones de uso</h1>
     <p class="meta">Vigentes desde el {{ effectiveDate }} · Versión {{ version }}</p>
+    @if (en()) {
+      <p class="lang-note" lang="en">
+        🌐 This document is only available in Spanish, which is its legally binding version under Colombian
+        law. In short: your data is only used to run your calendar, it is never sold, you can download or
+        delete it at any time from <strong>Menu → My account</strong>, and you can write to the contact email
+        for any request.
+      </p>
+    }
 
     <h2>1. Qué es Paper Planner</h2>
     <p>

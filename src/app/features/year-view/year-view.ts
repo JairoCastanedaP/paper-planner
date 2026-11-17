@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { MONTHS, WEEKDAY_INITIALS, monthGrid, monthKeyOf } from '../../core/dates';
+import { monthGrid, monthKeyOf, months, weekdayInitials } from '../../core/dates';
+import { locale, tx } from '../../core/i18n';
 import { holidayOn } from '../../core/holidays';
 import { Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
@@ -50,10 +51,11 @@ export class YearView {
   readonly daySelected = output<string>();
 
   private readonly store = inject(PlannerStore);
-  protected readonly initials = WEEKDAY_INITIALS;
+  protected readonly initials = weekdayInitials;
+  protected readonly tx = tx;
 
   protected readonly months = computed<MonthSummary[]>(() =>
-    MONTHS.map((name, index) => this.summarize(this.year(), index, name)),
+    months().map((name, index) => this.summarize(this.year(), index, name)),
   );
 
   private summarize(year: number, index: number, name: string): MonthSummary {
@@ -88,7 +90,7 @@ export class YearView {
 
     if (filter.length) {
       const done = shown.filter((o) => o.highlighted).length;
-      notes.push({ icon: '🔎', text: `${shown.length} actividades · ${done} resaltadas` });
+      notes.push({ icon: '🔎', text: tx(`${shown.length} actividades · ${done} resaltadas`, `${shown.length} activities · ${done} highlighted`) });
     }
 
     for (const goal of this.store.goals().filter((g) => g.month === key)) {
@@ -118,7 +120,7 @@ export class YearView {
     if (totals.size) {
       notes.push({
         icon: '💸',
-        text: [...totals].map(([cur, total]) => `${total.toLocaleString('es-CO')} ${cur}`).join(' · '),
+        text: [...totals].map(([cur, total]) => `${total.toLocaleString(locale())} ${cur}`).join(' · '),
       });
     }
 

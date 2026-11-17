@@ -1,6 +1,7 @@
 import { EmailAuthProvider, deleteUser, reauthenticateWithCredential } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc, writeBatch } from 'firebase/firestore';
 import { authMessage } from './auth';
+import { tx } from './i18n';
 import { firebaseAuth } from './firebase';
 import { clearFirestoreCache, firebaseDb } from './firestore';
 import { PRIVACY_VERSION, TERMS_VERSION } from './legal';
@@ -32,7 +33,7 @@ export async function hasCurrentConsent(uid: string): Promise<boolean> {
  */
 export async function deleteAccount(password: string): Promise<string | null> {
   const user = firebaseAuth().currentUser;
-  if (!user?.email) return 'Inicia sesión de nuevo.';
+  if (!user?.email) return tx('Inicia sesión de nuevo.', 'Please sign in again.');
   try {
     await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
   } catch (e) {
@@ -49,7 +50,7 @@ export async function deleteAccount(password: string): Promise<string | null> {
     await deleteUser(user);
   } catch (e) {
     console.error(e);
-    return 'No se pudo eliminar la cuenta. Revisa tu conexión e inténtalo de nuevo.';
+    return tx('No se pudo eliminar la cuenta. Revisa tu conexión e inténtalo de nuevo.', 'The account could not be deleted. Check your connection and try again.');
   }
   await clearFirestoreCache();
   return null;

@@ -1,9 +1,10 @@
+import { tx } from './i18n';
 /**
  * Reduce una foto a un JPEG liviano (data URL) para guardarla en el navegador.
  * Una foto de celular pesa varios MB; así queda en ~50–150 KB.
  */
 export async function compressImage(file: File, maxSide = 900, quality = 0.72): Promise<string> {
-  if (!file.type.startsWith('image/')) throw new Error('El archivo no es una imagen.');
+  if (!file.type.startsWith('image/')) throw new Error(tx('El archivo no es una imagen.', 'The file is not an image.'));
   const url = URL.createObjectURL(file);
   try {
     const img = await loadImage(url);
@@ -22,7 +23,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+    img.onerror = () => reject(new Error(tx('No se pudo leer la imagen.', 'The image could not be read.')));
     img.src = src;
   });
 }

@@ -2,13 +2,13 @@
 
 <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="account-title">
   <header>
-    <h2 id="account-title">Mi cuenta</h2>
-    <button type="button" class="close" (click)="close()" aria-label="Cerrar">×</button>
+    <h2 id="account-title">{{ tx('Mi cuenta', 'My account') }}</h2>
+    <button type="button" class="close" (click)="close()" [attr.aria-label]="tx('Cerrar', 'Close')">×</button>
   </header>
 
   @if (auth.user(); as user) {
     @if (user.guest) {
-      <p class="info">Estás usando la demo <strong>sin cuenta</strong>: los datos se guardan solo en este navegador.</p>
+      <p class="info">{{ tx('Estás usando la demo sin cuenta: los datos se guardan solo en este navegador.', 'You\'re using the demo without an account: data is only saved in this browser.') }}</p>
     } @else {
       <p class="info">
         <strong>{{ user.name }}</strong><br />
@@ -17,38 +17,37 @@
     }
   }
 
-  <h3>Tus datos</h3>
-  <p class="help">Descarga una copia de todo tu calendario (actividades, objetivos, resaltados e imágenes) en un archivo.</p>
-  <button type="button" (click)="download()">⬇️ Descargar mis datos</button>
+  <h3>{{ tx('Tus datos', 'Your data') }}</h3>
+  <p class="help">{{ tx('Descarga una copia de todo tu calendario (actividades, objetivos, resaltados e imágenes) en un archivo. Para pasarlo a Google Calendar o Excel usa ☰ → Exportar.', 'Download a copy of your whole calendar (activities, goals, highlights and images) in one file. To move it to Google Calendar or Excel use ☰ → Export.') }}</p>
+  <button type="button" (click)="download()">⬇️ {{ tx('Descargar mis datos', 'Download my data') }}</button>
 
-  <h3>Documentos</h3>
+  <h3>{{ tx('Documentos', 'Documents') }}</h3>
   <ul class="docs">
-    <li><a routerLink="/privacidad" target="_blank">Política de Tratamiento de Datos Personales</a></li>
-    <li><a routerLink="/terminos" target="_blank">Términos y Condiciones</a></li>
+    <li><a routerLink="/privacidad" target="_blank">{{ tx('Política de Tratamiento de Datos Personales', 'Personal Data Processing Policy') }}</a></li>
+    <li><a routerLink="/terminos" target="_blank">{{ tx('Términos y Condiciones', 'Terms and Conditions') }}</a></li>
   </ul>
 
   @if (!auth.user()?.guest) {
-    <h3 class="danger-title">Eliminar cuenta</h3>
+    <h3 class="danger-title">{{ tx('Eliminar cuenta', 'Delete account') }}</h3>
     @if (!confirmingDelete()) {
-      <p class="help">Borra tu cuenta y todo tu calendario de forma permanente.</p>
-      <button type="button" class="danger" (click)="confirmingDelete.set(true)">Eliminar mi cuenta</button>
+      <p class="help">{{ tx('Borra tu cuenta y todo tu calendario de forma permanente.', 'Permanently deletes your account and your whole calendar.') }}</p>
+      <button type="button" class="danger" (click)="confirmingDelete.set(true)">{{ tx('Eliminar mi cuenta', 'Delete my account') }}</button>
     } @else {
       <form class="confirm" (ngSubmit)="remove()">
         <p class="warning">
-          ⚠️ Esto borra <strong>para siempre</strong> tu cuenta y todo tu calendario. No se puede deshacer.
-          Si quieres conservar una copia, descarga tus datos antes.
+          ⚠️ {{ tx('Esto borra para siempre tu cuenta y todo tu calendario. No se puede deshacer. Si quieres conservar una copia, descarga tus datos antes.', 'This deletes your account and your whole calendar forever. It cannot be undone. If you want to keep a copy, download your data first.') }}
         </p>
         <label>
-          Escribe tu contraseña para confirmar
+          {{ tx('Escribe tu contraseña para confirmar', 'Enter your password to confirm') }}
           <input name="password" type="password" [(ngModel)]="password" autocomplete="current-password" />
         </label>
         @if (error()) {
           <p class="error" role="alert">{{ error() }}</p>
         }
         <div class="buttons">
-          <button type="button" (click)="confirmingDelete.set(false)" [disabled]="busy()">Cancelar</button>
+          <button type="button" (click)="confirmingDelete.set(false)" [disabled]="busy()">{{ tx('Cancelar', 'Cancel') }}</button>
           <button type="submit" class="danger" [disabled]="busy()">
-            {{ busy() ? 'Eliminando…' : 'Eliminar definitivamente' }}
+            {{ busy() ? tx('Eliminando…', 'Deleting…') : tx('Eliminar definitivamente', 'Delete permanently') }}
           </button>
         </div>
       </form>

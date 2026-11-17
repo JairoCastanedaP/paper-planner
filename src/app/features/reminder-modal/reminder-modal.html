@@ -3,7 +3,7 @@
     <div class="backdrop"></div>
     <section class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="reminder-title">
       <p class="bell" aria-hidden="true">⏰</p>
-      <h2 id="reminder-title">{{ due.length === 1 ? 'Se acerca algo importante' : 'Se acercan ' + due.length + ' actividades importantes' }}</h2>
+      <h2 id="reminder-title">{{ due.length === 1 ? tx('Se acerca algo importante', 'Something important is coming up') : tx('Se acercan ' + due.length + ' actividades importantes', due.length + ' important activities are coming up') }}</h2>
 
       <ul>
         @for (r of due; track r.occurrence.key) {
@@ -14,15 +14,15 @@
               <span class="notes">{{ r.occurrence.event.notes }}</span>
             }
             <span class="actions">
-              <button type="button" (click)="reminders.snooze(r.occurrence.key, 10)">Recordar en 10 min</button>
-              <button type="button" class="primary" (click)="reminders.dismiss(r.occurrence.key)">Entendido</button>
+              <button type="button" (click)="reminders.snooze(r.occurrence.key, 10)">{{ tx('Recordar en 10 min', 'Remind me in 10 min') }}</button>
+              <button type="button" class="primary" (click)="reminders.dismiss(r.occurrence.key)">{{ tx('Entendido', 'Got it') }}</button>
             </span>
           </li>
         }
       </ul>
 
       @if (due.length > 1) {
-        <button type="button" class="all" (click)="reminders.dismissAll()">Marcar todas como vistas</button>
+        <button type="button" class="all" (click)="reminders.dismissAll()">{{ tx('Marcar todas como vistas', 'Mark all as seen') }}</button>
       }
     </section>
   }
