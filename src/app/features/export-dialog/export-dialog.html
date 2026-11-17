@@ -1,0 +1,62 @@
+<div class="backdrop" (click)="closed.emit()"></div>
+
+<section class="dialog" role="dialog" aria-modal="true" aria-labelledby="export-title">
+  <header>
+    <h2 id="export-title">Exportar</h2>
+    <button type="button" class="close" (click)="closed.emit()" aria-label="Cerrar">×</button>
+  </header>
+
+  <h3>Formato</h3>
+  <div class="choices" role="radiogroup" aria-label="Formato">
+    <button type="button" role="radio" class="choice" [class.on]="format() === 'ics'" [attr.aria-checked]="format() === 'ics'" (click)="setFormat('ics')">
+      <strong>📅 Calendario (.ics)</strong>
+      <span>Para Google Calendar, Outlook o el calendario del celular.</span>
+    </button>
+    <button type="button" role="radio" class="choice" [class.on]="format() === 'csv'" [attr.aria-checked]="format() === 'csv'" (click)="setFormat('csv')">
+      <strong>📊 Excel (.csv)</strong>
+      <span>Una tabla con fecha, hora, categoría, valor, resaltado y notas.</span>
+    </button>
+  </div>
+
+  <h3>Qué exportar</h3>
+  <div class="choices" role="radiogroup" aria-label="Periodo">
+    <button type="button" role="radio" class="choice" [class.on]="effectiveRange() === 'month'" [attr.aria-checked]="effectiveRange() === 'month'" (click)="range.set('month')">
+      <strong>El mes</strong>
+      <span>{{ monthName() }}</span>
+    </button>
+    <button type="button" role="radio" class="choice" [class.on]="effectiveRange() === 'year'" [attr.aria-checked]="effectiveRange() === 'year'" (click)="range.set('year')">
+      <strong>El año</strong>
+      <span>Todo {{ yearName() }}</span>
+    </button>
+    @if (format() === 'ics') {
+      <button type="button" role="radio" class="choice" [class.on]="effectiveRange() === 'all'" [attr.aria-checked]="effectiveRange() === 'all'" (click)="range.set('all')">
+        <strong>Todas</strong>
+        <span>Con sus repeticiones</span>
+      </button>
+    }
+  </div>
+
+  @if (filter().length) {
+    <label class="check">
+      <input type="checkbox" [ngModel]="onlyFiltered()" (ngModelChange)="onlyFiltered.set($event)" />
+      Solo las categorías del filtro: <strong>{{ filterNames() }}</strong>
+    </label>
+  }
+
+  <p class="help">
+    @if (effectiveRange() === 'all') {
+      Cada actividad se exporta una vez con su regla de repetición, fecha de fin y días quitados, así que tu
+      otro calendario las sigue repitiendo igual. Las muy importantes llevan su recordatorio.
+    } @else if (format() === 'ics') {
+      Cada día del periodo va como una actividad suelta. Las muy importantes llevan su recordatorio.
+    } @else {
+      Ábrelo con Excel o Google Sheets. Hay una fila por actividad y por día.
+    }
+  </p>
+
+  <div class="buttons">
+    <span class="count">{{ count() }} {{ count() === 1 ? 'actividad' : 'actividades' }}</span>
+    <button type="button" (click)="closed.emit()">Cancelar</button>
+    <button type="button" class="primary" [disabled]="!count()" (click)="exportFile()">⬇️ Descargar</button>
+  </div>
+</section>

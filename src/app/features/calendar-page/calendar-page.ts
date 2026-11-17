@@ -25,6 +25,7 @@ import { CategoryManager } from '../category-manager/category-manager';
 import { ConsentDialog } from '../consent-dialog/consent-dialog';
 import { DayPanel } from '../day-panel/day-panel';
 import { DayView } from '../day-view/day-view';
+import { ExportDialog } from '../export-dialog/export-dialog';
 import { FilterBar } from '../filter-bar/filter-bar';
 import { MonthGoals } from '../month-goals/month-goals';
 import { HighlightChange, MonthGrid } from '../month-grid/month-grid';
@@ -41,6 +42,7 @@ type View = 'month' | 'year' | 'day';
   selector: 'app-calendar-page',
   imports: [
     MonthGrid,
+    ExportDialog,
     MonthGoals,
     DayPanel,
     DayView,
@@ -94,6 +96,7 @@ export class CalendarPage {
   /** La cuenta aún no aceptó la versión vigente de la política y los términos. */
   protected readonly needsConsent = signal(false);
   protected readonly categoriesOpen = signal(false);
+  protected readonly exportOpen = signal(false);
   protected readonly searchOpen = signal(false);
   /** Categorías filtradas (vacío = todas). */
   protected readonly filter = signal<string[]>([]);
@@ -101,6 +104,10 @@ export class CalendarPage {
   protected readonly compact = signal(false);
 
   protected readonly monthKey = computed(() => monthKeyOf(this.year(), this.month()));
+  /** Mes que se ofrece exportar: el visible (en la vista de día, el de ese día). */
+  protected readonly exportMonth = computed(() =>
+    this.view() === 'day' ? this.day().slice(0, 7) : this.monthKey(),
+  );
 
   protected readonly kicker = computed(() => {
     switch (this.view()) {
@@ -361,6 +368,7 @@ export class CalendarPage {
       this.accountOpen() ||
       this.needsConsent() ||
       this.categoriesOpen() ||
+      this.exportOpen() ||
       this.searchOpen() ||
       this.tour.step() ||
       this.reminders.due().length;
