@@ -53,7 +53,12 @@
 
       <!-- Frase motivadora del mes, como en los calendarios de papel. -->
       @if (view() !== 'year') {
-        <blockquote class="quote">
+        <blockquote
+          class="quote"
+          [class.open]="quoteOpen()"
+          (click)="quoteOpen.set(!quoteOpen())"
+          [attr.title]="quoteOpen() ? null : quote().text"
+        >
           <p>“{{ quote().text }}”</p>
           <cite>{{ quote().author }}</cite>
           @if (theme.ambience(); as amb) {

@@ -17,7 +17,7 @@ import { Occurrence } from '../../core/models';
 import { PlannerStore, goalProgress } from '../../core/planner-store';
 import { PreferencesService } from '../../core/preferences';
 import { ThemeService } from '../../core/themes';
-import { quoteOfMonth } from '../../core/quotes';
+import { quoteOfDay } from '../../core/quotes';
 import { ReminderService } from '../../core/reminders';
 import { TourService } from '../../core/tour';
 import { AccountDialog } from '../account-dialog/account-dialog';
@@ -253,11 +253,10 @@ export class CalendarPage {
       }));
   });
 
-  /** Frase del mes que se está viendo (en la vista de día, la del mes de ese día). */
-  protected readonly quote = computed(() => {
-    const d = this.view() === 'day' ? fromKey(this.day()) : new Date(this.year(), this.month(), 1);
-    return quoteOfMonth(d.getFullYear(), d.getMonth());
-  });
+  /** Frase del día: la de hoy (en la vista de día, la del día que se está viendo). */
+  protected readonly quote = computed(() => quoteOfDay(this.view() === 'day' ? this.day() : this.today()));
+  /** Las frases largas se ven en pocas líneas; un toque las muestra completas. */
+  protected readonly quoteOpen = signal(false);
 
   protected toggleMenu(e: Event): void {
     // Sin esto, el clic llegaría al documento y cerraría el menú de inmediato.
